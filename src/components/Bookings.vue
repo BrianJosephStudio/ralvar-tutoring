@@ -4,12 +4,12 @@
         <div class="bookingTabs">
             <div class="tab">
             <transition name="fade">
-                <component v-if="bookingTab=='bookingType'" is="BookingType" @updateTab="bookingTab=$event"/>
+                <component v-if="bookingTab=='bookingType'" v-bind:is="BookingType" @updateTab="bookingTab=$event"/>
             </transition>
         </div>
         <div class="bookingTabs">
             <transition name="fade">
-                <component v-if="bookingTab=='Calendar'" is="Calendar" @updateTab="bookingTab=$event"/>
+                <component v-if="bookingTab=='Calendar'" v-bind:is="Calendar" @updateTab="bookingTab=$event"/>
             </transition>
         </div>
         </div>
