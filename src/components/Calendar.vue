@@ -27,6 +27,9 @@
     }
 </style>
 <script>
+import FullCalendar from 'fullcalendar'
+import FullCalendarVue from 'fullcalendar-vue'
+
 export default {
     methods:{
         updateTab(tabName){
