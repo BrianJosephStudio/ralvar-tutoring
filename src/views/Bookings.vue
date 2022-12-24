@@ -1,49 +1,44 @@
 <template>
-    <div class="frame">
-        <h1>Book A Class</h1>
-        <div class="bookingTabs">
-            <div class="tab">
+    <h1>Book A Class</h1>
+    <div class="bookingTabs">
+        <router-view v-slot="{Component}">
             <transition name="fade">
-                <component v-if="bookingTab=='bookingType'" v-bind:is="BookingType" @updateTab="bookingTab=$event"/>
+                <component :is="Component"></component>
             </transition>
-        </div>
-        <div class="bookingTabs">
-            <transition name="fade">
-                <component v-if="bookingTab=='Calendar'" v-bind:is="Calendar" @updateTab="bookingTab=$event"/>
-            </transition>
-        </div>
-        </div>
-        <h3>Not sure which one is right for you?</h3>
-        <button v-on:click="changeTitle">Help Me Decide</button>
+        </router-view>
     </div>
+    <h3>Not sure which one is right for you?</h3>
+    <button @click="this.$router.push('./classes')">Help Me Decide</button>
 </template>
 
 <script>
-    import BookingType from './BookingType.vue';
-    import Calendar from './Calendar.vue'
+    import BookingType from './bookings/BookingType.vue';
+    import SingleClass from './bookings/SingleClass.vue';
     export default {
         data(){
             return {
-                bookingTab:'bookingType'
+                bookingTab:'bookingType',
+            }
+        },
+        methods:{
+            updateRoute: () => {
+                this.$router.push()
             }
         },
         components: {
             BookingType,
-            Calendar
+            SingleClass
         }
     }
 </script>
 
 <style scoped>
+    .wrapper{
+        display: flex;
+        flex-wrap: wrap;
+    }
     button{
         font-family: 'Raleway', sans-serif;
-    }
-    .frame {
-        display: flex;
-        flex-direction: column;
-        place-content: top;
-        align-items: center;
-        height: 95vh;
     }
     .helpButton{
         display: flex;
@@ -58,7 +53,7 @@
     }
     .helpButton:active{
         background: hsl(0,0%,80%);
-        transition: 0s;
+        transition: 0.2s;
     }
     .bookingTabs{
         display: flex;
@@ -66,15 +61,12 @@
         position: relative;
         height: 60vh;
     }
-    .tab{
-        position: absolute;
-    }
     .fade-enter-active{
-        transition: 1s ease;
-        transition-delay: 0.3s;
+        transition: 0.75s ease;
+        transition-delay: 0.25s;
     }
     .fade-leave-active{
-        transition: 1s ease;
+        transition: 0.75s ease;
     }
     .fade-enter-from{
         opacity: 0;

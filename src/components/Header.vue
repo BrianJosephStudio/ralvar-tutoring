@@ -1,8 +1,8 @@
 <template>
   <header>
     <div class="navBar">
-      <div class="navButton"><h3>Bookings</h3></div>
-      <div class="navButton"><h3>Classes</h3></div>
+      <div class="navButton" @click="this.$router.push('/bookings')"><h3>Bookings</h3></div>
+      <div class="navButton" @click="this.$router.push('/classes')"><h3>Classes</h3></div>
       <div class="navButton"><h3>About</h3></div>
     </div>
   </header>
@@ -20,16 +20,24 @@ header {
   box-shadow: 0px 0px 15px 0px rgb(184, 184, 184);
   width: 100vw;
   height: 5vh;
+  min-height: 45px;
 }
 .navBar{
   display: flex;
   flex-direction: row;
+  place-content: top;
   margin: auto;
-  align-items: center;
-  cursor: pointer;
+  height: 5vh;
+  min-height: 45px;
 }
 .navButton{
+  position: relative;
+  display: flex;
+  place-content: top;
   transition: 0.2s;
+  cursor: pointer;
+  height: 5vh;
+  min-height: 45px;
 }
 .navButton:hover{
   background: hsl(0, 0%, 95%);
