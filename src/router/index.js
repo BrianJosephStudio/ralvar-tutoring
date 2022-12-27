@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 
+
 const routes = [
   {
     path: "/",
@@ -18,7 +19,10 @@ const routes = [
       {
         path: "single",
         name: "Single Class",
-        component: () => import("../views/bookings/SingleClass.vue")
+        component: () => import("../views/bookings/SingleClass.vue"),
+        props:{
+          selectableDates: 1
+        }
       }
     ]
   },

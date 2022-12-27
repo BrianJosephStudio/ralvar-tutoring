@@ -40,6 +40,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+p{
+  color: black;
+  font-size: 30px;
+  line-height: 35px;
+}
 
 h1 {
   font-family: 'Raleway', sans-serif;
