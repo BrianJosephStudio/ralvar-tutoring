@@ -2,16 +2,15 @@
     <div id="monthGrid" class="monthGrid">
         <DayGrid v-for="day in moment.weekdaysShort()" :title="day" :class="'dayName'" />
 
-        <DayGrid v-for="day in props.monthArray" :day="day" :class="dayGridType(day).class"
+        <DayGrid v-for="day in monthArray" :day="day" :class="dayGridType(day).class"
             :available="dayGridType(day).available" :title="day.format('Do').slice(0, -2)"
-            :data-date="day.format('YYYY/MM/DD hh:mm a')" :id="props.monthArray.indexOf(day)" />
+            :data-date="day.format('YYYY/MM/DD hh:mm a')" :id="monthArray.indexOf(day)" />
     </div>
 </template>
 
 <script setup>
 /* Imports */
 import moment from 'moment'
-import { onMounted } from 'vue';
 import { useStore } from 'vuex'
 import DayGrid from './DayGrid.vue'
 
@@ -21,10 +20,16 @@ const props = defineProps({
 })
 /* Data */
 const store = useStore()
-const currentMonth = store.state.bookings.currentMonth;
+
 /* Methods */
+/**
+ * called during v-for loop to define the class of the v-for isntance
+ * @param {Object} day moment.js isntance 
+ */
 function dayGridType(day) {
-    let currentMonth = store.state.bookings.currentMonth.format('MMMM');
+
+    let currentMonth = store.state.bookings.calendar.currentMonth.format('MMMM');
+
     if (day.format('MMMM') != currentMonth) {
         if (day.weekday() == 0) { return { class: 'otherMonthWeekend', available: false } }
         return { class: 'otherMonth', available: true }

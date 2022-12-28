@@ -1,11 +1,11 @@
 <template>
     <div>
-        <h1>{{ this.$store.state.bookings.currentMonth.format('MMMM') }} {{
-                this.$store.state.bookings.currentMonth.format('YYYY')
-        }}</h1>
+        <h1>{{ this.$store.state.bookings.calendar.currentMonth.format('MMMM') }} {{
+        this.$store.state.bookings.calendar.currentMonth.format('YYYY')
+}}</h1>
         <div class="wrapper">
             <div class="arrowButton" @click="() => changeMonth(-1)"></div>
-            <MonthGrid :monthArray="this.$store.state.bookings.monthArray" />
+            <MonthGrid :monthArray="this.$store.state.bookings.calendar.monthArray" />
             <div class="arrowButton" @click="() => changeMonth(1)"></div>
         </div>
     </div>
@@ -13,47 +13,91 @@
 </template>
 <script setup>
 /* Imports */
-import moment from 'moment';
-import { ref, watch } from 'vue'
+import mitt from 'mitt'
 import MonthGrid from './MonthGrid.vue'
 import { useStore } from 'vuex';
-//
+import { provide } from 'vue';
+
 /* Props */
 const props = defineProps({
     selectableDates: Number
 })
 /* Data */
-const store = useStore();
+const store = useStore()
 store.commit('buildMonth')
+const emitter = mitt()
+provide('emitter', emitter)
+/* Calendar Events Handling */
 
-/* Methods */
-function changeMonth(n) {
-    store.commit('changeMonth', { amount: n }); store.commit('buildMonth')
+emitter.on('monthChange', () => {
     //create div array
-    let dateSel = store.state.bookings.single.selectedDate;
+    let selectedDates = store.state.bookings.calendar.selectedDates;
     let days = document.getElementById('monthGrid').children;
 
-    setTimeout(() => {
-        for (let j = 0; j < days.length; j++) {
-            for (let i = 0; i < dateSel.length; i++) {
-                // console.log(dateSel[i] === days.item(j).getAttribute('data-date'))
-                // days.item(j).className = days.item(j).getAttribute('id')
-                if (dateSel[i] === days.item(j).getAttribute('data-date')) {
+    for (let i = 0; i < days.length; i++) {
+        days.item(i).classList.remove('dayGridActive')
 
-                    days.item(j).className = 'dayGrid';
-                    days.item(j).classList.add('dayGridActive');
-                    console.log(days.item(j).className)
-                    console.log(days.item(j).classList)
-                    console.log(dateSel[i])
-                    console.log(days.item(j).getAttribute('id'))
+        setTimeout(() => {
+            for (let j = 0; j < selectedDates.length; j++) {
+
+                if (selectedDates[j] === days.item(i).getAttribute('data-date')) {
+
+                    days.item(i).className = 'dayGrid';
+                    days.item(i).classList.add('dayGridActive');
 
 
                     break
                 }
             }
-        }
-    }, 5);
 
+        }, 0);
+    }
+})
+emitter.on('selectDate', (event) => {
+    // get dayArray
+    let date = event.currentTarget.getAttribute('data-date');
+    if (event.currentTarget.classList.contains('dayGridActive')) {
+        store.commit('removeDate', { date: date })
+        event.currentTarget.className = event.currentTarget.getAttribute('id')
+    }
+    else {
+        event.currentTarget.className = event.currentTarget.getAttribute('id')
+        store.commit('addDate', { bookingType: 'bundle', date: date })
+    }
+
+    let days = document.getElementById('monthGrid').children;
+    let selectedDates = store.state.bookings.calendar.selectedDates;
+
+    for (let i = 7; i < days.length; i++) {
+        let day = days[i];
+
+        // deselect all days but currentTarget
+        day.className = day.getAttribute('id')
+        for (let j = 0; j < selectedDates.length; j++) {
+
+            if (selectedDates[j] === days.item(i).getAttribute('data-date')) {
+                days.item(i).className = 'dayGrid';
+                days.item(i).classList.add('dayGridActive');
+            }
+        }
+
+    }
+    //Make sure only available days are selectable
+    let available = event.currentTarget.getAttribute('data-av');
+    if (!available) { return }
+
+    // set up select/de-select
+    // event.currentTarget.classList.toggle('dayGridActive')
+
+    //update SelectedDates state
+})
+
+
+
+/* Methods */
+function changeMonth(n) {
+    store.commit('changeMonth', { amount: n }); store.commit('buildMonth')
+    emitter.emit('monthChange')
 }
 
 

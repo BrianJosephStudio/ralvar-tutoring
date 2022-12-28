@@ -6,43 +6,40 @@ import {createStore } from 'vuex'
     state () {
         return {
             bookings : {
-                currentMonth: moment(),
-                monthArray: [],
-                maxDates : 4,
-                single : {
-                    selectedDate : []
-                },
-                bundle : {
-                    selectedDates : []
+                calendar : {
+                    currentMonth: moment(),
+                    monthArray: [],
+                    maxDates : 2,
+                    selectedDates : [],
+                    single : {
+                    },
+                    bundle : {
+                    }
                 }
-            }
+            } 
         }
     },
     mutations: {
-        changeMaxDates : (state,newVal) => {state.bookings.maxDates = newVal},
+        changeMaxDates : (state,newVal) => {state.bookings.calendar.maxDates = newVal},
         addDate : ( state , payload ) => {
-            let dateArray = state.bookings.single.selectedDate;
+            let dateArray = state.bookings.calendar.selectedDates;
             let maxDates = 1;
             if(payload.bookingType == 'bundle'){
-                dateArray = state.bookings.bundle.selectedDates;
-                maxDates = state.bookings.maxDates;
+                maxDates = state.bookings.calendar.maxDates;
             }
             dateArray.push(payload.date);
             if(dateArray.length > maxDates){dateArray.splice(0,1)}
         },
         removeDate : ( state , payload ) => {
-            let dateArray = state.bookings.single.selectedDate;
-            if(payload.bookingType == 'bundle'){
-                dateArray = state.bookings.bundle.selectedDates;
-            }
-            dateArray = dateArray.filter((item)=> item !== payload.date)
+            let dateArray = state.bookings.calendar.selectedDates;
+            state.bookings.calendar.selectedDates = dateArray.filter((item)=> item !== payload.date)
         },
         changeMonth : ( state , payload ) => {
-            let currentMonth = state.bookings.currentMonth;
+            let currentMonth = state.bookings.calendar.currentMonth;
             currentMonth.add(payload.amount,'month')
         },
         buildMonth : ( state ) => {
-            let currentMonth = moment(state.bookings.currentMonth.format('YYYY/MM/DD hh:mm a'), 'YYYY/MM/DD hh:mm a');
+            let currentMonth = moment(state.bookings.calendar.currentMonth.format('YYYY/MM/DD hh:mm a'), 'YYYY/MM/DD hh:mm a');
             let monthDays = [];
             let firstOfMonth = currentMonth.add(currentMonth.date() * -1 + 1, 'days')
             let startDate = firstOfMonth.add((firstOfMonth.day()) * -1, 'days')
@@ -51,7 +48,7 @@ import {createStore } from 'vuex'
                 let date = moment(startDate.add(1, 'days').format('YYYY/MM/DD hh:mm a'), 'YYYY/MM/DD hh:mm a')
                 monthDays.push(date)
             };
-            state.bookings.monthArray = monthDays
+            state.bookings.calendar.monthArray = monthDays
         }
     }
  })
