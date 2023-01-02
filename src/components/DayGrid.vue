@@ -42,18 +42,22 @@ const emitter = inject('emitter')
     margin: 1px;
     width: calc(40vw / 7 - 6px);
     height: calc(25vw / 7 - 6px);
-    border-radius: 15px;
+    border-radius: 0.6vw;
+}
+
+@mixin dayFontSize {
+    font-size: 1.5vw;
 }
 
 @mixin gridHov {
-    background-color: hsl(308, 40%, 85%);
+    background-color: hsl(260, 40%, 85%);
 }
 
 .dayName {
     @include grid;
 
     h1 {
-        font-size: 25px;
+        font-size: 1.1vw;
     }
 }
 
@@ -68,7 +72,7 @@ const emitter = inject('emitter')
     }
 
     h1 {
-        font-size: 40px;
+        @include dayFontSize;
         margin: 0px;
     }
 
@@ -76,10 +80,10 @@ const emitter = inject('emitter')
 
 .dayGridActive {
     cursor: pointer;
-    background-color: hsl(308, 40%, 75%);
+    background-color: hsl(260, 40%, 75%);
 
     &:hover {
-        background-color: hsl(308, 40%, 75%);
+        background-color: hsl(260, 40%, 75%);
     }
 }
 
@@ -88,7 +92,7 @@ const emitter = inject('emitter')
 
     h1 {
         color: lightcoral;
-        font-size: 40px;
+        @include dayFontSize;
         margin: 0px;
     }
 }
@@ -103,7 +107,7 @@ const emitter = inject('emitter')
     }
 
     h1 {
-        font-size: 40px;
+        @include dayFontSize;
     }
 }
 
@@ -113,7 +117,7 @@ const emitter = inject('emitter')
 
     h1 {
         color: lightcoral;
-        font-size: 40px;
+        @include dayFontSize;
         margin: 0px;
     }
 

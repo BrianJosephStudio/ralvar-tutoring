@@ -9,7 +9,7 @@ import {createStore } from 'vuex'
                 calendar : {
                     currentMonth: moment(),
                     monthArray: [],
-                    maxDates : 2,
+                    maxDates : 1,
                     selectedDates : [],
                     single : {
                     },
@@ -32,7 +32,9 @@ import {createStore } from 'vuex'
         },
         removeDate : ( state , payload ) => {
             let dateArray = state.bookings.calendar.selectedDates;
-            state.bookings.calendar.selectedDates = dateArray.filter((item)=> item !== payload.date)
+            for(let i = 0; i < dateArray.length; i++){
+                if(payload.date === dateArray[i]){state.bookings.calendar.selectedDates.splice(i,1); break;}
+            }
         },
         changeMonth : ( state , payload ) => {
             let currentMonth = state.bookings.calendar.currentMonth;

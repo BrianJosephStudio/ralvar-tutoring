@@ -4,9 +4,18 @@
         this.$store.state.bookings.calendar.currentMonth.format('YYYY')
 }}</h1>
         <div class="wrapper">
-            <div class="arrowButton" @click="() => changeMonth(-1)"></div>
+            <div class="arrowButton" @click="() => changeMonth(-1)">
+                <svg width="12" height="24">
+                    <polygon points="0 12, 12 0, 12 24" class="arrow" />
+                </svg>
+            </div>
             <MonthGrid :monthArray="this.$store.state.bookings.calendar.monthArray" />
-            <div class="arrowButton" @click="() => changeMonth(1)"></div>
+            <div class="arrowButton" @click="() => changeMonth(1)">
+                <svg width="12" height="24">
+                    <polygon points="0 0, 12 12, 0 24" class="arrow" />
+                </svg>
+            </div>
+            <DayWindow :date="this.$store.state.bookings.calendar.selectedDates[0]" />
         </div>
     </div>
 
@@ -15,6 +24,7 @@
 /* Imports */
 import mitt from 'mitt'
 import MonthGrid from './MonthGrid.vue'
+import DayWindow from './DayWindow.vue'
 import { useStore } from 'vuex';
 import { provide } from 'vue';
 
@@ -97,7 +107,7 @@ emitter.on('selectDate', (event) => {
 /* Methods */
 function changeMonth(n) {
     store.commit('changeMonth', { amount: n }); store.commit('buildMonth')
-    emitter.emit('monthChange')
+
 }
 
 
@@ -109,18 +119,34 @@ function changeMonth(n) {
     align-items: center;
 
     .arrowButton {
-        background-color: hsl(0, 0%, 94%);
-        margin: 12px;
+        display: flex;
+        place-content: center;
+        background-color: hsl(0, 0%, 93%);
+        margin: 10px;
         height: 150px;
-        width: 60px;
+        width: 40px;
         border-radius: 15px;
         cursor: pointer;
         transition: 0.2s;
 
         &:hover {
-            background-color: hsl(0, 0%, 85%);
+            background-color: hsl(0, 0%, 87%);
+        }
+
+        &:hover .arrow {
+            fill: hsl(0, 0%, 50%);
+        }
+
+        svg {
+            align-self: center;
+        }
+
+        .arrow {
+            fill: hsl(0, 0%, 80%);
+            transition: 0.2s;
         }
     }
+
 
 }
 </style>

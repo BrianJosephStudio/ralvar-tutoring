@@ -49,7 +49,7 @@ function dayGridType(day) {
     width: 40vw;
     height: calc();
     padding: 12px;
-    border-radius: 35px;
+    border-radius: 1.5vw;
     /* box-shadow: 10px 30px 50px 0px hsl(133, 0%, 85%); */
 }
 </style>
