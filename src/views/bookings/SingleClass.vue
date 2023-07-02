@@ -1,19 +1,18 @@
 <template>
     <div class="comp">
-        <!-- <h1 id="mamaguebo"> {{ this.$store.state.bookings.single.selectedDate }}</h1> -->
         <Calendar />
-
     </div>
-
 </template>
 <script setup>
-import moment from 'moment'
-import Calendar from '../../components/Calendar.vue'
+import Calendar from './Calendar.vue'
+import { useStore } from 'vuex'
+import { ref } from 'vue'
+
 </script>
 
 <style scoped>
 .comp {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 </style>

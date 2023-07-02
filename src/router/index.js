@@ -14,12 +14,17 @@ const routes = [
       {
         path: "",
         name: "Booking Types",
-        component: () => import("../views/bookings/BookingType.vue"),
+        component: () => import("../views/bookings/Calendar.vue"),
       },
       {
-        path: "single",
-        name: "Single Class",
-        component: () => import("../views/bookings/SingleClass.vue"),
+        path: "format",
+        name: "Class Format",
+        component: () => import("../components/ClassFormat.vue")
+      },
+      {
+        path: "dates",
+        name: "Dates",
+        component: () => import("../views/bookings/Calendar.vue"),
         props:{
           selectableDates: 1
         }

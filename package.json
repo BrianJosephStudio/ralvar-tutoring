@@ -1,7 +1,7 @@
 {
   "name": "rachel-tutoring",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,11 +13,15 @@
     "@fullcalendar/daygrid": "^6.0.1",
     "@fullcalendar/vue3": "^6.0.1",
     "fullcalendar": "^6.0.1",
+    "install": "^0.13.0",
+    "mitt": "^3.0.0",
     "moment": "^2.29.4",
+    "npm": "^9.2.0",
     "sass": "^1.57.1",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "vuex-persist": "^3.1.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

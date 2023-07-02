@@ -5,8 +5,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: rgb(246, 246, 246);
+  color: hsl(0, 0%, 87%);
+  background-color: #f6f6f6;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -49,7 +49,7 @@ p{
 h1 {
   font-family: 'Raleway', sans-serif;
   color: #1a1a1a;
-  font-size: 3.2em;
+  font-size: 2vw;
   line-height: 1.1;
 }
 h2{

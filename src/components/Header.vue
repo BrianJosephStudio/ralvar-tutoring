@@ -33,7 +33,8 @@ header {
 .navButton{
   position: relative;
   display: flex;
-  place-content: top;
+  flex-direction: column;
+  place-content: center;
   transition: 0.2s;
   cursor: pointer;
   height: 5vh;

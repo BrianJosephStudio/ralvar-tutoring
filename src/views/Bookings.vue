@@ -1,5 +1,5 @@
 <template>
-    <h1>Book A Class</h1>
+    <!-- <ClassProps /> -->
     <div class="bookingTabs">
         <router-view v-slot="{ Component }">
             <transition name="fade">
@@ -13,11 +13,12 @@
 
 <script setup>
 /* Plugins */
+import ClassProps from '../components/ClassProps.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter();
 const updateRoute = () => {
-    router.push('./classes')
+    router.replace('./classes')
 }
 </script>
 
@@ -54,7 +55,7 @@ button {
     place-content: center;
     position: relative;
     height: 60vh;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .fade-enter-active {
@@ -74,5 +75,8 @@ button {
 .fade-leave-to {
     opacity: 0;
     transform: translateX(200px)
+}
+h3{
+    font-size: 1rem;
 }
 </style>

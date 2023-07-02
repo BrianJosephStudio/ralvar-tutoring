@@ -1,14 +1,14 @@
 <template>
-    <div :id="props.id" :class="props.class" :data-date="dataDate" @click="selectDate($event)">
+    <div :id="props.class" :class="props.class" :data-date="dataDate" :data-av="props.available"
+        @click="emitter.emit('selectDate', $event)">
         <h1 ref="grid">{{ title }}</h1>
     </div>
 </template>
 
 <script setup>
 /* Imports */
-import { ref, onUpdated } from 'vue'
+import { ref, onUpdated, inject } from 'vue'
 import { useStore } from 'vuex'
-import moment from 'moment'
 /* Props */
 const props = defineProps({
     available: Boolean,
@@ -22,32 +22,14 @@ const props = defineProps({
 })
 /* Data */
 const store = useStore()
+const emitter = inject('emitter')
 /* Functions */
-function selectDate(event) {
-    let days = document.getElementById('monthGrid').children;
-    for (let i = 7; i < days.length; i++) {
-        let day = days[i];
-        // for (let j = 0; j < dateSelection.length; j++) {
-        //     let sel = dateSelection[j];
-        //     if (day.dataset.date == sel) { alert('yeah') }
-        //     else { alert('nah') }
-        // }
-        if (day === event.currentTarget) { continue }
-        days[i].classList.remove('dayGridActive')
-    }
 
-    if (!props.available) { return }
-
-    event.currentTarget.classList.toggle('dayGridActive')
-
-    let x = event.currentTarget.getAttribute('data-date');
-    store.commit('addDate', { bookingType: 'single', date: x })
-}
 /* Mounted */
-const grid = ref(null)
-onUpdated(() => {
-    grid.value.parentElement.classList.remove('dayGridActive')
-})
+// const grid = ref(null)
+// onUpdated(() => {
+//     grid.value.parentElement.classList.remove('dayGridActive')
+// })
 </script>
 
 
@@ -60,18 +42,22 @@ onUpdated(() => {
     margin: 1px;
     width: calc(40vw / 7 - 6px);
     height: calc(25vw / 7 - 6px);
-    border-radius: 15px;
+    border-radius: 0.6vw;
+}
+
+@mixin dayFontSize {
+    font-size: 1.5vw;
 }
 
 @mixin gridHov {
-    background-color: hsl(308, 40%, 85%);
+    background-color: hsl(260, 40%, 85%);
 }
 
 .dayName {
     @include grid;
 
     h1 {
-        font-size: 25px;
+        font-size: 1.1vw;
     }
 }
 
@@ -86,7 +72,7 @@ onUpdated(() => {
     }
 
     h1 {
-        font-size: 40px;
+        @include dayFontSize;
         margin: 0px;
     }
 
@@ -94,10 +80,10 @@ onUpdated(() => {
 
 .dayGridActive {
     cursor: pointer;
-    background-color: hsl(308, 40%, 75%);
+    background-color: hsl(260, 40%, 75%);
 
     &:hover {
-        background-color: hsl(308, 40%, 75%);
+        background-color: hsl(260, 40%, 75%);
     }
 }
 
@@ -106,7 +92,7 @@ onUpdated(() => {
 
     h1 {
         color: lightcoral;
-        font-size: 40px;
+        @include dayFontSize;
         margin: 0px;
     }
 }
@@ -119,6 +105,10 @@ onUpdated(() => {
     &:hover {
         @include gridHov
     }
+
+    h1 {
+        @include dayFontSize;
+    }
 }
 
 .otherMonthWeekend {
@@ -127,7 +117,7 @@ onUpdated(() => {
 
     h1 {
         color: lightcoral;
-        font-size: 40px;
+        @include dayFontSize;
         margin: 0px;
     }
 
