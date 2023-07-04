@@ -2,13 +2,17 @@
     <div class="container">
         <div class="wrapper">
             <div ref="startTime" class="startTime" @click="toggleOpen" data-menu-id="startTime">
-
+                <h1>
+                    {{ selectedStartTime }}
+                </h1>
             </div>
             <HourMenu :Open="startOpen"></HourMenu>
         </div>
         <div class="wrapper">
             <div ref="endTime" class="endTime" @click="toggleOpen" data-menu-id="endTime">
-
+                <h1>
+                    {{ selectedEndTime }}
+                </h1>
             </div>
             <HourMenu :Open="endOpen" style="margin-left: 2px;"></HourMenu>
         </div>
@@ -27,6 +31,9 @@ const endTime = ref(null)
 
 const startOpen = ref(false)
 const endOpen = ref(false)
+
+const selectedStartTime = ref('12:00')
+const selectedEndTime = ref('18:00')
 
 const emitter = inject('emitter')
 emitter.on('closeMenus', exception => {
@@ -76,13 +83,6 @@ function clickOut(event) {
 
 
 <style scoped lang="scss">
-.wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: visible;
-}
-
 .container {
     display: flex;
     // flex-direction: row;
@@ -92,28 +92,48 @@ function clickOut(event) {
     overflow: visible;
     cursor: pointer;
 
-    .startTime {
-        background-color: hsl(0, 0%, 92%);
-        border-radius: 35px 0px 0px 35px;
-        height: 3vw;
-        width: calc(10vw - 1px);
-        transition: all 0.5s ease;
+    .wrapper {
+        position: relative;
+        display: flex;
+        place-content: center;
+        flex-direction: column;
+        overflow: visible;
 
-        &:hover {
-            box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
+        h1 {
+            align-self: center;
+            // position: absolute;
+            transform: translateY(0vh);
+            transition: 1s;
+            font-size: 1.5vw;
         }
-    }
 
-    .endTime {
-        margin-left: 2px;
-        background-color: hsl(0, 0%, 92%);
-        border-radius: 0px 35px 35px 0px;
-        height: 3vw;
-        width: calc(10vw - 1px);
-        transition: all 0.5s ease;
+        .startTime {
+            display: flex;
+            place-content: center;
+            background-color: hsl(0, 0%, 92%);
+            border-radius: 35px 0px 0px 35px;
+            height: 3vw;
+            width: calc(10vw - 1px);
+            transition: all 0.5s ease;
 
-        &:hover {
-            box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
+            &:hover {
+                box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
+            }
+        }
+
+        .endTime {
+            display: flex;
+            place-content: center;
+            margin-left: 2px;
+            background-color: hsl(0, 0%, 92%);
+            border-radius: 0px 35px 35px 0px;
+            height: 3vw;
+            width: calc(10vw - 1px);
+            transition: all 0.5s ease;
+
+            &:hover {
+                box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
+            }
         }
     }
 }

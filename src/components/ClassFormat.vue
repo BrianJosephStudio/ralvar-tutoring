@@ -42,12 +42,13 @@ function toggleOpen(event) {
         document.removeEventListener('click', clickOut)
     }
 }
-const changeOption = (option) => {
+const changeOption = (event, option) => {
     event.stopPropagation()
+    document.removeEventListener('click', clickOut)
     selected.value = option.index
     isOpen.value = false
 }
-function clickOut(event) {
+function clickOut() {
     document.removeEventListener('click', clickOut)
     emitter.emit('closeMenus')
 }

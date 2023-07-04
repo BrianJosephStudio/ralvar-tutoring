@@ -38,17 +38,7 @@ h1 {
     box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
 }
 
-/* .frame:hover h1 {
-    transform: translateY(-10vh);
-}
-
-.frame:hover p {
-    transform: translateY(0px);
-    opacity: 1;
-} */
-
 .frame:active {
     transition: 0.2s;
-    /* background: hsl(0, 0%, 80%); */
 }
 </style>

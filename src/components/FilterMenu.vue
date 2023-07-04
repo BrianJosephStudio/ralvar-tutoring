@@ -1,6 +1,6 @@
 <template>
     <div class="menu" v-if="Open">
-        <li class="option" v-for="option of ClassFormat.options" @click="ChangeOption(option)">
+        <li class="option" v-for="option of ClassFormat.options" @click="event => ChangeOption(event, option)">
             <h1>{{ option.title }}</h1>
         </li>
     </div>
