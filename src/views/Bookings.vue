@@ -7,8 +7,8 @@
             </transition>
         </router-view>
     </div>
-    <h3>Not sure which one is right for you?</h3>
-    <button @click="updateRoute">Help Me Decide</button>
+    <!-- <h3>Not sure which one is right for you?</h3>
+    <button @click="updateRoute">Help Me Decide</button> -->
 </template>
 
 <script setup>
@@ -76,7 +76,8 @@ button {
     opacity: 0;
     transform: translateX(200px)
 }
-h3{
+
+h3 {
     font-size: 1rem;
 }
 </style>

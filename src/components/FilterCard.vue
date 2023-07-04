@@ -19,7 +19,7 @@ h1 {
 }
 
 .frame {
-    position: relative;
+    /* position: relative; */
     display: flex;
     flex-direction: column;
     place-content: center;

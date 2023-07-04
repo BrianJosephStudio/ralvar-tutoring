@@ -29,12 +29,10 @@
             </div>
         </div>
     </div>
-
 </template>
 <script setup>
 /* Imports */
 import mitt from 'mitt'
-import HourSelection from '../../components/HourSelection.vue'
 import ClassFormat from '../../components/ClassFormat.vue'
 import HourRange from '../../components/HourRange.vue'
 import MonthGrid from '../../components/MonthGrid.vue'
@@ -49,11 +47,10 @@ const props = defineProps({
 /* Data */
 const store = useStore()
 store.commit('buildMonth')
-const emitter = mitt()
-provide('emitter', emitter)
+
 const classFormat = {
-    selected : 0,
-    options : [
+    selected: 0,
+    options: [
         {
             title: '30 Minutes',
             minuteCount: 30,
@@ -77,6 +74,11 @@ const classFormat = {
     ]
 }
 /* Calendar Events Handling */
+
+
+const emitter = mitt()
+provide('emitter', emitter)
+
 
 emitter.on('monthChange', () => {
     renderSelectedDates()
@@ -181,9 +183,9 @@ onMounted(() => { renderSelectedDates() })
         place-content: center;
         background-color: hsl(0, 0%, 93%);
         margin: 10px;
-        height: 150px;
-        width: 40px;
-        border-radius: 15px;
+        height: 8vw;
+        width: 1.6vw;
+        border-radius: 0.6vw;
         cursor: pointer;
         transition: 0.2s;
 
@@ -206,5 +208,4 @@ onMounted(() => { renderSelectedDates() })
     }
 
 }
-
 </style>
