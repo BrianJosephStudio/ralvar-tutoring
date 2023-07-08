@@ -20,6 +20,11 @@ const routes = [
     name: "About",
     component: () => import("@/views/About.vue")
   }*/
+  {
+    path: "/:pathMatch(.*)",
+    component: () => import("../views/TabNotFound.vue"),
+    props: true,
+  },
 ];
 
 const router = createRouter({
