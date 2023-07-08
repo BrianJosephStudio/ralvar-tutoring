@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1>{{ this.$store.state.bookings.calendar.currentMonth }} {{
-            this.$store.state.bookings.calendar.currentYear
+        <h1>{{ $store.state.bookings.calendar.currentMonth }} {{
+            $store.state.bookings.calendar.currentYear
         }}</h1>
         <div class="wrapper">
             <div style="display: flex;">
@@ -15,7 +15,7 @@
                             <polygon points="0 12, 12 0, 12 24" class="arrow" />
                         </svg>
                     </div>
-                    <MonthGrid :monthArray="this.$store.state.bookings.calendar.monthArray" />
+                    <MonthGrid :monthArray="$store.state.bookings.calendar.monthArray" />
                     <div class="arrowButton" @click="() => changeMonth(1)">
                         <svg width="12" height="24">
                             <polygon points="0 0, 12 12, 0 24" class="arrow" />

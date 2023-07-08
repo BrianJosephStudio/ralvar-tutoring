@@ -12,6 +12,7 @@ import { useRouter } from 'vue-router'
 import { inject, ref } from 'vue'
 import FilterCard from './FilterCard.vue'
 import FilterMenu from './FilterMenu.vue'
+import server from '../modules/server.js'
 
 const props = defineProps({
     ClassFormat: Object
@@ -47,6 +48,8 @@ const changeOption = (event, option) => {
     document.removeEventListener('click', clickOut)
     selected.value = option.index
     isOpen.value = false
+    const classFormat = props.ClassFormat.options[selected.value].minuteCount
+    server.checkDate(classFormat)
 }
 function clickOut() {
     document.removeEventListener('click', clickOut)
