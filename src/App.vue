@@ -1,8 +1,5 @@
 <script setup>
 import Header from './components/Header.vue';
-const tab = 'Bookings';
-
-
 </script>
 
 <template>
@@ -10,6 +7,4 @@ const tab = 'Bookings';
   <router-view></router-view>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

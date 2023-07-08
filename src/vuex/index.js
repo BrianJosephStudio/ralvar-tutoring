@@ -1,7 +1,7 @@
 import moment from "moment";
 import { createStore } from "vuex";
 import VuexPersistence from "vuex-persist";
-
+console.log("hola");
 const store = createStore({
   state() {
     return {

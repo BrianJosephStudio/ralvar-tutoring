@@ -6,7 +6,7 @@
                     {{ selectedStartTime }}
                 </h1>
             </div>
-            <HourMenu :Open="startOpen"></HourMenu>
+            <HourMenu :Open="startOpen" :Menu="'start'" :ChangeOption="changeOption"></HourMenu>
         </div>
         <div class="wrapper">
             <div ref="endTime" class="endTime" @click="toggleOpen" data-menu-id="endTime">
@@ -14,7 +14,7 @@
                     {{ selectedEndTime }}
                 </h1>
             </div>
-            <HourMenu :Open="endOpen" style="margin-left: 2px;"></HourMenu>
+            <HourMenu :Open="endOpen" :Menu="'end'" :ChangeOption="changeOption" style="margin-left: 2px;"></HourMenu>
         </div>
     </div>
 </template>
@@ -71,11 +71,17 @@ function toggleOpen(event) {
         document.removeEventListener('click', clickOut)
     }
 }
-const changeOption = (option) => {
-    selected.value = option.index
-    isOpen.value = false
+const changeOption = (event, option, menu) => {
+    event.stopPropagation()
+    if (menu == 'start') {
+        selectedStartTime.value = option
+    } else if (menu == 'end') {
+        selectedEndTime.value = option
+    }
+    document.removeEventListener('click', clickOut)
+    emitter.emit('closeMenus')
 }
-function clickOut(event) {
+function clickOut() {
     document.removeEventListener('click', clickOut)
     emitter.emit('closeMenus', null)
 }
