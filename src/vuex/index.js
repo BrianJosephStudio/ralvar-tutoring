@@ -24,6 +24,14 @@ const store = createStore({
             address: String,
           },
         },
+        availability: {
+            classFormat: {
+              format: 60,
+              title: '60 Minutes'
+            },
+            startTime: '12:00',
+            endTime: '18:30'
+        },
         calendar: {
           currentDate: moment().format("YYYY/MM/DD hh:mm a"),
           currentYear: moment().format("YYYY"),
@@ -101,6 +109,21 @@ const store = createStore({
     setFormat: (state, payload) => {
       state.bookings.booking.classData.classFormat = payload.minuteCount;
     },
+    changeClassFormat: (state,payload) => {
+      state.bookings.availability.classFormat.format = payload.format
+      state.bookings.availability.classFormat.title = payload.title
+    },
+    changeStartTime: (state,payload) => {
+      state.bookings.availability.startTime = payload
+      const startTime = moment(state.bookings.availability.startTime)
+      const endTime = moment(state.bookings.availability.endTime)
+      if(endTime.isBefore(startTime)){
+        state.bookings.availability.startTime = startTime.add(state.bookings.availability.classFormat.format,'minutes').format('HH:mm')
+      }
+    },
+    changeEndTime: (state,payload) => {
+      state.bookings.availability.endTime = payload
+    }
   },
   plugins: [
     new VuexPersistence({

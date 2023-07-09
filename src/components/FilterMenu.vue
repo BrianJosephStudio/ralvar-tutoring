@@ -1,16 +1,23 @@
 <template>
     <div class="menu" v-if="Open">
-        <li class="option" v-for="option of ClassFormat.options" @click="event => ChangeOption(event, option)">
+        <li class="option" v-for="option of classFormats" @click="event => ChangeOption(event, option)">
             <h1>{{ option.title }}</h1>
         </li>
     </div>
 </template>
 <script setup>
+import { useStore } from 'vuex'
+import { classFormats }  from '../modules/static.js'
+
+const store = useStore()
+
 defineProps({
-    ClassFormat: Object,
+    // ClassFormat: Object,
     Open: Boolean,
     ChangeOption: Function
 })
+
+
 </script>
 <style scoped lang="scss">
 .menu {

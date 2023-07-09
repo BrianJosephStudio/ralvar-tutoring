@@ -1,7 +1,7 @@
 <template>
     <div class="tab" ref="filterMenu" data-menu-id="filterMenu">
-        <FilterCard :cardTitle="ClassFormat.options[selected].title" @click="toggleOpen" />
-        <FilterMenu :ClassFormat="ClassFormat" :ChangeOption="changeOption" :Open="isOpen" />
+        <FilterCard :cardTitle="store.state.bookings.availability.classFormat.title" @click="toggleOpen" />
+        <FilterMenu :ChangeOption="changeOption" :Open="isOpen" />
     </div>
 </template>
 
@@ -15,12 +15,11 @@ import FilterMenu from './FilterMenu.vue'
 import server from '../modules/server.js'
 
 const props = defineProps({
-    ClassFormat: Object
 })
 /* Data */
 const store = useStore()
 const router = useRouter();
-const selected = ref(props.ClassFormat.selected)
+// const selected = ref(props.ClassFormat.selected)
 const isOpen = ref(false)
 const filterMenu = ref(null)
 
@@ -46,10 +45,10 @@ function toggleOpen(event) {
 const changeOption = (event, option) => {
     event.stopPropagation()
     document.removeEventListener('click', clickOut)
-    selected.value = option.index
+    store.commit('changeClassFormat',option)
+    // selected.value = option.index
     isOpen.value = false
-    const classFormat = props.ClassFormat.options[selected.value].minuteCount
-    server.checkDate(classFormat)
+    server.checkDate()
 }
 function clickOut() {
     document.removeEventListener('click', clickOut)

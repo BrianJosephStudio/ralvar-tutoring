@@ -5,7 +5,7 @@
         }}</h1>
         <div class="wrapper">
             <div style="display: flex;">
-                <ClassFormat :ClassFormat="classFormat"></ClassFormat>
+                <ClassFormat></ClassFormat>
                 <HourRange></HourRange>
             </div>
             <div style="display:flex;">

@@ -3,7 +3,7 @@
         <div class="wrapper">
             <div ref="startTime" class="startTime" @click="toggleOpen" data-menu-id="startTime">
                 <h1>
-                    {{ selectedStartTime }}
+                    {{ $store.state.bookings.availability.startTime }}
                 </h1>
             </div>
             <HourMenu :Open="startOpen" :Menu="'start'" :ChangeOption="changeOption"></HourMenu>
@@ -11,7 +11,7 @@
         <div class="wrapper">
             <div ref="endTime" class="endTime" @click="toggleOpen" data-menu-id="endTime">
                 <h1>
-                    {{ selectedEndTime }}
+                    {{ $store.state.bookings.availability.endTime }}
                 </h1>
             </div>
             <HourMenu :Open="endOpen" :Menu="'end'" :ChangeOption="changeOption" style="margin-left: 2px;"></HourMenu>
@@ -25,6 +25,9 @@ console.clear()
 
 import { ref, inject } from 'vue'
 import HourMenu from './HourMenu.vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 const startTime = ref(null)
 const endTime = ref(null)
@@ -32,8 +35,8 @@ const endTime = ref(null)
 const startOpen = ref(false)
 const endOpen = ref(false)
 
-const selectedStartTime = ref('12:00')
-const selectedEndTime = ref('18:00')
+// const selectedStartTime = ref('12:00')
+// const selectedEndTime = ref('18:00')
 
 const emitter = inject('emitter')
 emitter.on('closeMenus', exception => {
@@ -74,9 +77,11 @@ function toggleOpen(event) {
 const changeOption = (event, option, menu) => {
     event.stopPropagation()
     if (menu == 'start') {
-        selectedStartTime.value = option
+        store.commit('changeStartTime',option)
+        // selectedStartTime.value = option
     } else if (menu == 'end') {
-        selectedEndTime.value = option
+        store.commit('changeEndTime', option)
+        // selectedEndTime.value = option
     }
     document.removeEventListener('click', clickOut)
     emitter.emit('closeMenus')

@@ -9,24 +9,13 @@
 </template>
 
 <script setup>
-import moment from 'moment'
+import { getHourArray } from '../modules/static.js'
 
 const props = defineProps({
     Menu: String,
     Open: Boolean,
     ChangeOption: Function
 })
-function getHourArray() {
-    let date = moment()
-    let hour = date.startOf('day').add(12, 'hours')
-    let output = []
-    do {
-        let item = hour.format('HH:mm')
-        output.push(item)
-        hour.add(30, 'minutes')
-    } while (hour.format('HH') <= 18)
-    return output
-}
 </script>
 
 <style scoped lang="scss">
