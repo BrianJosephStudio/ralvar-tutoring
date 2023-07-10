@@ -22,14 +22,16 @@ export const classFormats = [
         index: 3
     }
 ]
-export const getHourArray = ()  => {
-    let date = moment()
-    let hour = date.startOf('day').add(12, 'hours')
-    let output = []
+export const getHourArray = (filter,classFormat)  => {
+    const date = moment()
+    const hour = date.startOf('day').add(12, 'hours')
+    const closingTime = '20:00'
+    const maxStartTime = moment(closingTime,'HH:mm').subtract(classFormat,'minutes')
+    const output = []
     do {
         let item = hour.format('HH:mm')
         output.push(item)
         hour.add(30, 'minutes')
-    } while (hour.format('HH') <= 18)
+    } while (hour.isSameOrBefore(filter === 'start' ? maxStartTime:moment(closingTime,'HH:mm')))
     return output
 }

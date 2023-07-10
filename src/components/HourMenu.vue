@@ -1,6 +1,6 @@
 <template>
     <div class="menuBox" v-if="Open">
-        <div class="item" v-for="item of getHourArray()" @click="event => ChangeOption(event, item, Menu)">
+        <div class="item" v-for="item of getHourArray(Menu,$store.state.bookings.availability.classFormat.format)" @click="event => ChangeOption(event, item, Menu)">
             <h1>
                 {{ item }}
             </h1>

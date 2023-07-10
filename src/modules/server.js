@@ -11,11 +11,11 @@ async function checkDate() {
 
   const url = `http://localhost:3000/api/availability${queryStrings}`
 
-  // return await fetch(url)
-  //   .then((res) => res.json())
-  //   .then((message) => {
-  //     console.log(message.message);
-  //   });
+  return await fetch(url)
+    .then((res) => res.json())
+    .then((message) => {
+    console.log(message.message);
+  });
 }
 export default {
   checkDate,

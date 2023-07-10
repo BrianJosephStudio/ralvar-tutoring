@@ -1,7 +1,17 @@
 import moment from "moment";
 import { createStore } from "vuex";
 import VuexPersistence from "vuex-persist";
-console.log("hola");
+
+function regulateHourRange(){
+  const startTime = moment(store.state.bookings.availability.startTime,'HH:mm')
+  const endTime = moment(store.state.bookings.availability.endTime,'HH:mm')
+  const minEndTime = startTime.add(state.bookings.availability.classFormat.format,'minutes')
+
+  console.log('ven y sana mi dolor')
+  console.log(startTime)
+  console.log(endTime)
+}
+
 const store = createStore({
   state() {
     return {
@@ -115,14 +125,21 @@ const store = createStore({
     },
     changeStartTime: (state,payload) => {
       state.bookings.availability.startTime = payload
-      const startTime = moment(state.bookings.availability.startTime)
-      const endTime = moment(state.bookings.availability.endTime)
-      if(endTime.isBefore(startTime)){
-        state.bookings.availability.startTime = startTime.add(state.bookings.availability.classFormat.format,'minutes').format('HH:mm')
+      const startTime = moment(state.bookings.availability.startTime,'HH:mm')
+      const endTime = moment(state.bookings.availability.endTime,'HH:mm')
+      const minEndTime = startTime.add(state.bookings.availability.classFormat.format,'minutes')
+      if(endTime.isBefore(minEndTime)){
+        state.bookings.availability.endTime = minEndTime.format('HH:mm')
       }
     },
     changeEndTime: (state,payload) => {
       state.bookings.availability.endTime = payload
+      const startTime = moment(state.bookings.availability.startTime,'HH:mm')
+      const endTime = moment(state.bookings.availability.endTime,'HH:mm')
+      const minStartTime = endTime.subtract(state.bookings.availability.classFormat.format,'minutes')
+      if(startTime.isAfter(minStartTime)){
+        state.bookings.availability.startTime = minStartTime.format('HH:mm')
+      }
     }
   },
   plugins: [
