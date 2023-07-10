@@ -42,11 +42,10 @@ function toggleOpen(event) {
         document.removeEventListener('click', clickOut)
     }
 }
-const changeOption = (event, option) => {
+const changeOption = (event, classFormat) => {
     event.stopPropagation()
     document.removeEventListener('click', clickOut)
-    store.commit('changeClassFormat',option)
-    // selected.value = option.index
+    store.dispatch('changeClassFormat', classFormat)
     isOpen.value = false
     server.checkDate()
 }

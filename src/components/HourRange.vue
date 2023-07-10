@@ -26,6 +26,7 @@ console.clear()
 import { ref, inject } from 'vue'
 import HourMenu from './HourMenu.vue'
 import { useStore } from 'vuex'
+import server from '../modules/server.js'
 
 const store = useStore()
 
@@ -76,15 +77,10 @@ function toggleOpen(event) {
 }
 const changeOption = (event, option, menu) => {
     event.stopPropagation()
-    if (menu == 'start') {
-        store.commit('changeStartTime',option)
-        // selectedStartTime.value = option
-    } else if (menu == 'end') {
-        store.commit('changeEndTime', option)
-        // selectedEndTime.value = option
-    }
+    store.dispatch('changeTimeFilter', { value: option, filter: menu })
     document.removeEventListener('click', clickOut)
     emitter.emit('closeMenus')
+    server.checkDate()
 }
 function clickOut() {
     document.removeEventListener('click', clickOut)

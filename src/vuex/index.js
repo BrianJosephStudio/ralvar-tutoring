@@ -2,14 +2,20 @@ import moment from "moment";
 import { createStore } from "vuex";
 import VuexPersistence from "vuex-persist";
 
-function regulateHourRange(){
-  const startTime = moment(store.state.bookings.availability.startTime,'HH:mm')
-  const endTime = moment(store.state.bookings.availability.endTime,'HH:mm')
-  const minEndTime = startTime.add(state.bookings.availability.classFormat.format,'minutes')
+function regulateHourRange() {
+  const startTime = moment(
+    store.state.bookings.availability.startTime,
+    "HH:mm"
+  );
+  const endTime = moment(store.state.bookings.availability.endTime, "HH:mm");
+  const minEndTime = startTime.add(
+    state.bookings.availability.classFormat.format,
+    "minutes"
+  );
 
-  console.log('ven y sana mi dolor')
-  console.log(startTime)
-  console.log(endTime)
+  console.log("ven y sana mi dolor");
+  console.log(startTime);
+  console.log(endTime);
 }
 
 const store = createStore({
@@ -35,12 +41,12 @@ const store = createStore({
           },
         },
         availability: {
-            classFormat: {
-              format: 60,
-              title: '60 Minutes'
-            },
-            startTime: '12:00',
-            endTime: '18:30'
+          classFormat: {
+            format: 60,
+            title: "60 Minutes",
+          },
+          startTime: "12:00",
+          endTime: "20:00",
         },
         calendar: {
           currentDate: moment().format("YYYY/MM/DD hh:mm a"),
@@ -119,28 +125,87 @@ const store = createStore({
     setFormat: (state, payload) => {
       state.bookings.booking.classData.classFormat = payload.minuteCount;
     },
-    changeClassFormat: (state,payload) => {
-      state.bookings.availability.classFormat.format = payload.format
-      state.bookings.availability.classFormat.title = payload.title
+    changeClassFormat: (state, payload) => {
+      state.bookings.availability.classFormat.format = payload.format;
+      state.bookings.availability.classFormat.title = payload.title;
     },
-    changeStartTime: (state,payload) => {
-      state.bookings.availability.startTime = payload
-      const startTime = moment(state.bookings.availability.startTime,'HH:mm')
-      const endTime = moment(state.bookings.availability.endTime,'HH:mm')
-      const minEndTime = startTime.add(state.bookings.availability.classFormat.format,'minutes')
-      if(endTime.isBefore(minEndTime)){
-        state.bookings.availability.endTime = minEndTime.format('HH:mm')
+    changeStartTime: (state, payload) => {
+      state.bookings.availability.startTime = payload;
+    },
+    changeEndTime: (state, payload) => {
+      state.bookings.availability.endTime = payload;
+    },
+  },
+  actions: {
+    changeTimeFilter: ({ state, commit }, payload) => {
+      let classFormat = state.bookings.availability.classFormat.format;
+      if (classFormat === 45) {
+        classFormat = 60;
+      }
+      const openingTime = moment("12:00", "HH:mm");
+      const closingTime = moment("20:00", "HH:mm");
+      if (payload.filter == "start") {
+        const startTime = moment(payload.value, "HH:mm");
+        const endTime = moment(state.bookings.availability.endTime, "HH:mm");
+        const minEndTime = startTime.add(classFormat, "minutes");
+
+        if (minEndTime.isAfter(closingTime)) {
+          commit(
+            "changeStartTime",
+            closingTime.subtract(classFormat, "minutes").format("HH:mm")
+          );
+          commit("changeEndTime", closingTime.format("HH:mm"));
+          return;
+        } else if (endTime.isBefore(minEndTime)) {
+          commit("changeEndTime", minEndTime.format("HH:mm"));
+        }
+        commit("changeStartTime", payload.value);
+      } else if (payload.filter == "end") {
+        const startTime = moment(
+          state.bookings.availability.startTime,
+          "HH:mm"
+        );
+        const endTime = moment(payload.value, "HH:mm");
+        const minStartTime = endTime.subtract(classFormat, "minutes");
+
+        if (minStartTime.isBefore(openingTime)) {
+          commit("changeStartTime", openingTime.format("HH:mm"));
+          commit(
+            "changeEndTime",
+            openingTime.add(classFormat, "minutes").format("HH:mm")
+          );
+
+          return;
+        } else if (startTime.isAfter(minStartTime)) {
+          commit("changeStartTime", minStartTime.format("HH:mm"));
+        }
+        commit("changeEndTime", payload.value);
       }
     },
-    changeEndTime: (state,payload) => {
-      state.bookings.availability.endTime = payload
-      const startTime = moment(state.bookings.availability.startTime,'HH:mm')
-      const endTime = moment(state.bookings.availability.endTime,'HH:mm')
-      const minStartTime = endTime.subtract(state.bookings.availability.classFormat.format,'minutes')
-      if(startTime.isAfter(minStartTime)){
-        state.bookings.availability.startTime = minStartTime.format('HH:mm')
+    changeClassFormat: ({ state, commit }, payload) => {
+      commit("changeClassFormat", payload);
+
+      const startTime = moment(state.bookings.availability.startTime, "HH:mm");
+      const endTime = moment(state.bookings.availability.endTime, "HH:mm");
+
+      const closingTime = moment("20:00", "HH:mm");
+      let classFormat = payload.format;
+      if (classFormat === 45) {
+        classFormat = 60;
       }
-    }
+
+      const minEndTime = startTime.add(classFormat, "minutes");
+
+      if (minEndTime.isAfter(closingTime)) {
+        commit("changeEndTime", closingTime.format("HH:mm"));
+        commit(
+          "changeStartTime",
+          closingTime.subtract(classFormat, "minutes").format("HH:mm")
+        );
+      } else if (endTime.isBefore(minEndTime)) {
+        commit("changeEndTime", minEndTime.format("HH:mm"));
+      }
+    },
   },
   plugins: [
     new VuexPersistence({

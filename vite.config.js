@@ -7,4 +7,12 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+  optimizeDeps: {
+    exclude: ["express"],
+  },
+  server: {
+    watch: {
+      usePolling: true,
+    },
+  },
 });
