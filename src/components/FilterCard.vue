@@ -12,7 +12,7 @@ defineProps({
 
 <style scoped>
 h1 {
-    position: absolute;
+    /* position: absolute; */
     transform: translateY(0vh);
     transition: 1s;
     font-size: 1.5vw;
