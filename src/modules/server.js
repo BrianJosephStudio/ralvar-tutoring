@@ -18,11 +18,7 @@ async function checkDate() {
       return res.json();
     })
     .then((res) => {
-      if (res.length) {
-        console.log(res[0].summary);
-      } else {
-        console.log("no classes");
-      }
+      console.log(JSON.stringify(res));
     });
 }
 export default {
