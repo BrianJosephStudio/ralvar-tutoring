@@ -16,8 +16,8 @@ const props = defineProps({
     flex-direction: column;
     place-content: center;
     height: 50px;
-    border-style: ridge;
-    border-width: 1px 0px;
+    // border-style: ridge;
+    // border-width: 1px 0px;
 
     border-color: hsl(0, 0%, 90%);
 
@@ -27,6 +27,7 @@ const props = defineProps({
 
     h2 {
         color: black;
+        font-size: 1.5vw;
     }
 }
 </style>

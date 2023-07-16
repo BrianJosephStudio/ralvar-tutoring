@@ -53,15 +53,18 @@ const store = createStore({
           currentYear: moment().format("YYYY"),
           currentMonth: moment().format("MMMM"),
           monthArray: [],
-          maxDates: 1,
-          selectedDates: [],
+          targetDate: null,
+          dayWindowPos: [0,0]
         },
       },
     };
   },
   mutations: {
-    changeMaxDates: (state, newVal) => {
-      state.bookings.calendar.maxDates = newVal;
+    changeTargetDate: (state, payload) => {
+      state.bookings.calendar.targetDate = payload
+    },
+    reposDayWindow: (state,payload) => {
+      state.bookings.calendar.dayWindowPos = payload
     },
     addDate: (state, payload) => {
       let dateArray = state.bookings.calendar.selectedDates;
@@ -206,6 +209,10 @@ const store = createStore({
         commit("changeEndTime", minEndTime.format("HH:mm"));
       }
     },
+    renderDayWindow: ({state, commit},payload) => {
+      commit('reposDayWindow',payload.position)
+      commit('changeTargetDate',payload.date)
+    }
   },
   plugins: [
     new VuexPersistence({

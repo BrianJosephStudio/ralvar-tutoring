@@ -1,22 +1,15 @@
 <template>
-    <div class="dayWindow">
-        <transition name="fade">
-            <div class="container" v-if="date == null">
-                <h2 class="noDate">No date selected</h2>
-            </div>
-        </transition>
-        <transition name="fade">
-            <div id="dayWindowCont" class="container" v-if="date != null">
+    <transition name="fade">
+    <div class="dayWindow" v-if="store.state.bookings.calendar.targetDate !== null" :style="{left: `${store.state.bookings.calendar.dayWindowPos[0]}px`}">
                 <div class="header">
-                    <h2>{{ moment(date, 'YYYY/MM/DD hh:mm a').format('dddd MMM Do') }}</h2>
+                    <h2>{{ moment(store.state.bookings.calendar.targetDate, 'YYYY/MM/DD hh:mm a').format('dddd MMM Do') }}</h2>
                 </div>
                 <div class="hourList">
-                    <HourItem v-for="hour in getHourArray(date, classFormat)" :hour="hour"></HourItem>
+                    <HourItem v-for="hour in getHourArray()" :hour="hour"></HourItem>
                     <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
                 </div>
             </div>
-        </transition>
-    </div>
+    </transition>
 </template>
 
 <script setup>
@@ -27,15 +20,15 @@ import { ref } from 'vue';
 const store = useStore();
 // Props
 const props = defineProps({
-    date: String,
-    classFormat: Number
 })
 
 // Data
 //Methods
-function getHourArray(input, classFormat) {
-    if (input == undefined) { return }
-    let date = moment(input, 'YYYY/MM/DD hh:mm a')
+function getHourArray() {
+    const targetDate = store.state.bookings.calendar.targetDate
+    const classFormat = store.state.bookings.availability.classFormat.format
+    if (targetDate == null) { return }
+    let date = moment(targetDate, 'YYYY/MM/DD hh:mm a')
     let hour = date.startOf('day').add(11, 'hours')
     let output = []
     let i = 0;
@@ -56,69 +49,54 @@ function getHourArray(input, classFormat) {
 
 <style scoped lang="scss">
 @mixin common {
-    border-radius: 35px;
+    border-radius: 2vw;
 }
 
 .dayWindow {
-    position: relative;
+    position: absolute;
+    top: 120px;
     display: flex;
     flex-direction: column;
     place-content: center;
     margin: 20px;
     @include common;
-    min-width: 150px;
-    width: 450px;
+    min-width: 6vw;
+    width: 14vw;
     border-style: solid;
     border-color: hsl(0, 0%, 93%);
     border-width: 2px;
-    height: 22vw;
-    background-color: hsl(0, 0%, 94%);
+    height: 24vw;
+    background-color: hsla(0, 100%, 94%,0.5);
     overflow: hidden;
+    z-index: 3;
 
-    h2 {
-        color: black;
-    }
-
-    #dayWindowCont {
-        display: flex;
-        height: inherit;
-        min-width: 150px;
-        width: inherit;
-
-    }
-
+    
     .header {
         background-color: hsl(0, 0%, 75%);
-        width: 100%;
-        border-radius: 35px 35px 0px 0px;
+        height: 20%;
         background-color: hsl(260, 40%, 75%);
         width: inherit;
         min-width: 150px;
-
-
+        
+        
         h2 {
             color: black;
             // font-family: Arial, Helvetica, sans-serif;
             font-weight: 300;
+            font-size: 16px;
             color: hsl(0, 0%, 93%);
         }
     }
-
+    
     .hourList {
         background-color: hsl(0, 0%, 93%);
         overflow-y: scroll;
-        border-radius: 0px 0px 35px 35px;
         cursor: pointer;
         min-width: 150px;
         width: inherit;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        min-width: 150px;
-        width: inheri t;
-        position: absolute;
+        h2 {
+            color: black;
+        }
     }
 }
 
@@ -133,7 +111,7 @@ function getHourArray(input, classFormat) {
 
 .fade-enter-from {
     opacity: 0;
-    transform: translateY(60px)
+    transform: translateX(60px)
 }
 
 .fade-leave-to {
@@ -143,19 +121,19 @@ function getHourArray(input, classFormat) {
 
 /* width */
 ::-webkit-scrollbar {
-    width: 35px;
+    width: 2vw;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
     background: hsl(0, 0%, 96%);
-    border-radius: 0px 0px 35px 35px;
+    border-radius: 0px 0px 2vw 0px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: hsl(0, 0%, 87%);
-    border-radius: 35px;
+    border-radius: 0px;
 }
 
 /* Handle on hover */

@@ -4,6 +4,7 @@
             $store.state.bookings.calendar.currentYear
         }}</h1>
         <div class="wrapper">
+            <DayWindow/>
             <div style="display: flex;">
                 <ClassFormat></ClassFormat>
                 <HourRange></HourRange>
@@ -164,6 +165,7 @@ onMounted(() => { renderSelectedDates() })
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 
     .dayWindows {
         background-color: red;

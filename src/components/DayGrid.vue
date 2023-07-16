@@ -1,6 +1,6 @@
 <template>
     <div :id="props.class" :class="props.class" :data-date="dataDate" :data-av="props.available"
-        @click="emitter.emit('selectDate', $event)">
+        @click="event => store.dispatch('renderDayWindow',{date:dataDate,position:getDayGridPosition(event)})">
         <h1 ref="grid">{{ title }}</h1>
     </div>
 </template>
@@ -25,6 +25,14 @@ const store = useStore()
 const emitter = inject('emitter')
 /* Functions */
 
+function getDayGridPosition(event){
+    const target = event.currentTarget
+    const rect = target.getBoundingClientRect()
+    const top = rect.top
+    const left = rect.left + 55
+    return [left,top]
+}
+
 /* Mounted */
 // const grid = ref(null)
 // onUpdated(() => {
@@ -43,6 +51,7 @@ const emitter = inject('emitter')
     width: calc(40vw / 7 - 6px);
     height: calc(25vw / 7 - 6px);
     border-radius: 0.6vw;
+    position: relative;
 }
 
 @mixin dayFontSize {
