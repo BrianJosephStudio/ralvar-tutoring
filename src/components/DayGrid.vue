@@ -1,6 +1,6 @@
 <template>
     <div :id="props.class" :class="props.class" :data-date="dataDate" :data-av="props.available"
-        @click="event => store.dispatch('renderDayWindow',{date:dataDate,position:getDayGridPosition(event)})">
+        @click="event => handleClick(event)">
         <h1 ref="grid">{{ title }}</h1>
     </div>
 </template>
@@ -29,9 +29,20 @@ function getDayGridPosition(event){
     const target = event.currentTarget
     const rect = target.getBoundingClientRect()
     const top = rect.top
-    const left = rect.left + 55
+    const left = rect.left + 5
     return [left,top]
 }
+function clickOut(){
+    document.removeEventListener('click',clickOut)
+    emitter.emit('closeMenus')
+}
+function handleClick(event) {
+    event.stopPropagation()
+    emitter.emit('closeMenus')
+    store.dispatch('renderDayWindow',{date:props.dataDate,position:getDayGridPosition(event)})
+    document.addEventListener('click',clickOut)
+}
+
 
 /* Mounted */
 // const grid = ref(null)

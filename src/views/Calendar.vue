@@ -49,38 +49,16 @@ const props = defineProps({
 const store = useStore()
 store.commit('buildMonth')
 
-const classFormat = {
-    selected: 0,
-    options: [
-        {
-            title: '30 Minutes',
-            minuteCount: 30,
-            index: 0
-        },
-        {
-            title: '45 Minutes',
-            minuteCount: 45,
-            index: 1
-        },
-        {
-            title: '60 Minutes',
-            minuteCount: 60,
-            index: 2
-        },
-        {
-            title: '90 Minutes',
-            minuteCount: 90,
-            index: 3
-        }
-    ]
-}
 /* Calendar Events Handling */
 
 
 const emitter = mitt()
 provide('emitter', emitter)
 
-
+emitter.on('closeMenus', () => {
+    console.log('a ha!')
+    store.commit('changeTargetDate',null)
+})
 emitter.on('monthChange', () => {
     renderSelectedDates()
 })
