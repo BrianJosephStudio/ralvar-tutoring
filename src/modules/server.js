@@ -5,7 +5,7 @@ async function checkDate() {
 
   params.append(
     "classFormat",
-    store.state.bookings.availability.classFormat.format,
+    store.state.bookings.availability.classFormat.format
   );
   params.append("startTime", store.state.bookings.availability.startTime);
   params.append("endTime", store.state.bookings.availability.endTime);
@@ -18,8 +18,7 @@ async function checkDate() {
       return res.json();
     })
     .then((res) => {
-      store.commit("changeUnavailable");
-      console.log(JSON.stringify(res));
+      store.commit("changeUnavailable", res);
     });
 }
 export default {

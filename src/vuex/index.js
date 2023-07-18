@@ -31,7 +31,7 @@ const store = createStore({
           },
           startTime: "12:00",
           endTime: "20:00",
-          unavailable: [],
+          unavailable: "[]",
         },
         calendar: {
           currentDate: moment().format("YYYY/MM/DD hh:mm a"),
@@ -75,7 +75,7 @@ const store = createStore({
     changeMonth: (state, payload) => {
       let currentDate = moment(
         state.bookings.calendar.currentDate,
-        "YYYY/MM/DD hh:mm a",
+        "YYYY/MM/DD hh:mm a"
       );
       currentDate.add(payload.amount, "month");
       state.bookings.calendar.currentDate =
@@ -86,7 +86,7 @@ const store = createStore({
     buildMonth: function (state) {
       let currentDate = moment(
         state.bookings.calendar.currentDate,
-        "YYYY/MM/DD hh:mm a",
+        "YYYY/MM/DD hh:mm a"
       );
       let monthDays = [];
       let firstOfMonth = currentDate.add(currentDate.date() * -1 + 1, "days");
@@ -94,16 +94,13 @@ const store = createStore({
       for (let i = 0; i < 42; i++) {
         if (i == 0) {
           monthDays.push(
-            moment(
-              startDate.format("YYYY/MM/DD hh:mm a"),
-              "YYYY/MM/DD hh:mm a",
-            ),
+            moment(startDate.format("YYYY/MM/DD hh:mm a"), "YYYY/MM/DD hh:mm a")
           );
           continue;
         }
         let date = moment(
           startDate.add(1, "days").format("YYYY/MM/DD hh:mm a"),
-          "YYYY/MM/DD hh:mm a",
+          "YYYY/MM/DD hh:mm a"
         );
         monthDays.push(date);
       }
@@ -127,10 +124,9 @@ const store = createStore({
       state.bookings.availability.endTime = payload;
     },
     changeUnavailable: (state, payload) => {
-      console.log('commit starts')
-      state.bookings.availability.unavailable = payload
-      console.log('commit triggers emitter')
-    }
+      state.bookings.availability.unavailable = JSON.stringify(payload);
+      console.log(state.bookings.availability.unavailable);
+    },
   },
   actions: {
     changeTimeFilter: ({ state, commit }, payload) => {
@@ -148,7 +144,7 @@ const store = createStore({
         if (minEndTime.isAfter(closingTime)) {
           commit(
             "changeStartTime",
-            closingTime.subtract(classFormat, "minutes").format("HH:mm"),
+            closingTime.subtract(classFormat, "minutes").format("HH:mm")
           );
           commit("changeEndTime", closingTime.format("HH:mm"));
           return;
@@ -159,7 +155,7 @@ const store = createStore({
       } else if (payload.filter == "end") {
         const startTime = moment(
           state.bookings.availability.startTime,
-          "HH:mm",
+          "HH:mm"
         );
         const endTime = moment(payload.value, "HH:mm");
         const minStartTime = endTime.subtract(classFormat, "minutes");
@@ -168,7 +164,7 @@ const store = createStore({
           commit("changeStartTime", openingTime.format("HH:mm"));
           commit(
             "changeEndTime",
-            openingTime.add(classFormat, "minutes").format("HH:mm"),
+            openingTime.add(classFormat, "minutes").format("HH:mm")
           );
 
           return;
@@ -196,7 +192,7 @@ const store = createStore({
         commit("changeEndTime", closingTime.format("HH:mm"));
         commit(
           "changeStartTime",
-          closingTime.subtract(classFormat, "minutes").format("HH:mm"),
+          closingTime.subtract(classFormat, "minutes").format("HH:mm")
         );
       } else if (endTime.isBefore(minEndTime)) {
         commit("changeEndTime", minEndTime.format("HH:mm"));

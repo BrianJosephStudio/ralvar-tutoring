@@ -1,13 +1,9 @@
 <template>
   <transition name="fade">
-    <div
-      class="dayWindow"
-      v-if="store.state.bookings.calendar.targetDate !== null"
-      :style="{
-        left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
-        top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
-      }"
-    >
+    <div class="dayWindow" v-if="store.state.bookings.calendar.targetDate !== null" :style="{
+      left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
+      top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
+    }">
       <div class="header">
         <h2>
           {{
@@ -44,17 +40,18 @@ function getHourArray() {
     return;
   }
   let date = moment(targetDate, "YYYY/MM/DD hh:mm a");
-  let hour = date.startOf("day").add(11, "hours");
+  let hour = date.startOf("day").add(12, "hours");
   let output = [];
   let i = 0;
-  do {
+  const finalStart = moment(date).startOf("day").add(20, "hours").subtract(classFormat, "minutes")
+  while (hour.isSameOrBefore(finalStart)) {
     let start = hour.format("HH:mm");
     let end = hour.add(classFormat, "minutes").format("HH:mm");
     let item = `${start} - ${end}`;
     output.push(item);
     hour.add(-(classFormat - 30), "minutes");
     i++;
-  } while (hour.format("HH") <= 20);
+  } //while (hour.format("HH") <= 20 - (classFormat / 60));
   return output;
 }
 </script>
@@ -85,17 +82,21 @@ function getHourArray() {
   // box-shadow: 3px 3px 12px 0px hsl(0, 0%, 75%);
 
   .header {
+    display: flex;
+    flex-direction: column;
+    place-content: center;
     background-color: hsl(0, 0%, 75%);
     height: 20%;
     background-color: hsl(260, 40%, 75%);
     width: inherit;
     min-width: 150px;
+    word-wrap: break-word;
 
     h2 {
       color: black;
       // font-family: Arial, Helvetica, sans-serif;
       font-weight: 300;
-      font-size: 16px;
+      font-size: 1.2vw;
       color: hsl(0, 0%, 93%);
     }
   }
@@ -106,6 +107,7 @@ function getHourArray() {
     cursor: pointer;
     min-width: 150px;
     width: inherit;
+
     h2 {
       color: black;
     }

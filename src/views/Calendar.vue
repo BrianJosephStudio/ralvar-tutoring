@@ -47,6 +47,10 @@ import MonthGrid from "../components/MonthGrid.vue";
 import DayWindow from "../components/DayWindow.vue";
 import { useStore } from "vuex";
 import { provide, onMounted } from "vue";
+import moment from 'moment'
+import { dayGridType } from "../modules/static";
+import server from "../modules/server.js"
+server.checkDate()
 
 /* Props */
 const props = defineProps({
@@ -55,6 +59,8 @@ const props = defineProps({
 /* Data */
 const store = useStore();
 store.commit("buildMonth");
+
+
 
 /* Calendar Events Handling */
 
@@ -108,7 +114,6 @@ emitter.on("selectDate", (event) => {
   //update SelectedDates state
 });
 emitter.on("updateAvailability", (event) => {
-  console.log("emitter triggers");
   updateAvailability();
 });
 
@@ -139,9 +144,26 @@ function renderSelectedDates() {
   }
 }
 function updateAvailability() {
-  console.log("function triggers");
-  const unavailable = store.state.bookings.availability.unavailable;
-  let days = document.getElementById("monthGrid").children;
+  const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
+
+  const days = [...document.getElementById("monthGrid").children];
+  for (const day of days) {
+    if (day.id === "dayName") { continue }
+    const dataDate = day.dataset.date
+    const date = moment(dataDate, 'YYYY/MM/DD hh:mm a')
+
+    const gridType = dayGridType(date)
+
+    day.dataset.av = gridType.available
+    day.className = gridType.class
+
+    if (gridType.available || date.weekday() == 0) {
+      day.removeAttribute('title')
+    } else {
+      day.title = "Fully Booked"
+    }
+  }
+
 }
 
 onMounted(() => {
@@ -155,9 +177,11 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+
   .filterWrapper {
     display: flex;
     flex-direction: column;
+
     h2 {
       color: black;
       margin: 0;
@@ -177,6 +201,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
   }
+
   h1 {
     margin: auto;
   }

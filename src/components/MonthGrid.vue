@@ -13,6 +13,7 @@
 import moment from 'moment'
 import { useStore } from 'vuex'
 import DayGrid from './DayGrid.vue'
+import { dayGridType } from '../modules/static.js'
 
 /* Props */
 const props = defineProps({
@@ -22,20 +23,7 @@ const props = defineProps({
 const store = useStore()
 
 /* Methods */
-/**
- * called during v-for loop to define the class of the v-for isntance
- * @param {Object} day moment.js isntance 
- */
-function dayGridType(day) {
-    let currentMonth = store.state.bookings.calendar.currentMonth;
 
-    if (day.format('MMMM') != currentMonth) {
-        if (day.weekday() == 0) { return { class: 'otherMonthWeekend', available: false } }
-        return { class: 'otherMonth', available: true }
-    }
-    else if (day.weekday() == 0) { return { class: 'weekend', available: false } }
-    return { class: 'dayGrid', available: true }
-}
 
 </script>
 

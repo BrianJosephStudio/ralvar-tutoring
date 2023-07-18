@@ -25,22 +25,23 @@ const store = useStore()
 const emitter = inject('emitter')
 /* Functions */
 
-function getDayGridPosition(event){
+function getDayGridPosition(event) {
     const target = event.currentTarget
     const rect = target.getBoundingClientRect()
     const top = rect.top
     const left = rect.left + ((window.innerWidth * 0.4) / 7)
-    return [left,top]
+    return [left, top]
 }
-function clickOut(){
-    document.removeEventListener('click',clickOut)
+function clickOut() {
+    document.removeEventListener('click', clickOut)
     emitter.emit('closeMenus')
 }
 function handleClick(event) {
     event.stopPropagation()
     emitter.emit('closeMenus')
-    store.dispatch('renderDayWindow',{date:props.dataDate,position:getDayGridPosition(event)})
-    document.addEventListener('click',clickOut)
+    if (event.currentTarget.dataset.av == "false") { return }
+    store.dispatch('renderDayWindow', { date: props.dataDate, position: getDayGridPosition(event) })
+    document.addEventListener('click', clickOut)
 }
 
 
@@ -63,10 +64,19 @@ function handleClick(event) {
     height: calc(25vw / 7 - 6px);
     border-radius: 0.6vw;
     position: relative;
+    background: transparent;
 }
 
 @mixin dayFontSize {
     font-size: 1.5vw;
+}
+
+@mixin availableColor {
+    color: hsl(144, 100%, 62%)
+}
+
+@mixin unavailableColor {
+    color: lightcoral;
 }
 
 @mixin gridHov {
@@ -83,7 +93,6 @@ function handleClick(event) {
 
 .dayGrid {
     @include grid;
-    background: transparent;
     transition: 0.3s;
     cursor: pointer;
 
@@ -93,9 +102,20 @@ function handleClick(event) {
 
     h1 {
         @include dayFontSize;
+        // @include availableColor();
         margin: 0px;
     }
 
+}
+
+.dayGrid_unavailable {
+    @include grid;
+    background: transparent;
+
+    h1 {
+        @include dayFontSize;
+        @include unavailableColor;
+    }
 }
 
 .dayGridActive {
@@ -128,6 +148,17 @@ function handleClick(event) {
 
     h1 {
         @include dayFontSize;
+        // @include availableColor();
+    }
+}
+
+.otherMonth_unavailable {
+    @include grid;
+    opacity: 0.2;
+
+    h1 {
+        @include dayFontSize;
+        @include unavailableColor();
     }
 }
 

@@ -15,7 +15,7 @@ const props = defineProps({
     display: flex;
     flex-direction: column;
     place-content: center;
-    height: 50px;
+    height: 3vw;
     // border-style: ridge;
     // border-width: 1px 0px;
 

@@ -1,4 +1,5 @@
 import moment from "moment";
+import store from "../vuex";
 
 export const classFormats = [
   {
@@ -46,3 +47,47 @@ export const getHourArray = (filter, classFormat) => {
   );
   return output;
 };
+/** Takes a date as an input and returns an object with className and availability
+ * called during v-for loop to define the class of the v-for isntance
+ * @param {Object} day moment.js instance
+ */
+export function dayGridType(day) {
+  const output = { available: true };
+  const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
+
+  const dayDate = day.date();
+  const dayMonth = day.month();
+
+  for (const monthObject of unavailable) {
+    if (dayMonth === monthObject.month) {
+      for (const dayObject of monthObject.items) {
+        if (dayObject.day == dayDate) {
+          if (!dayObject.available) {
+            output.available = false;
+          } else {
+          }
+        }
+      }
+    }
+  }
+
+  let currentMonth = store.state.bookings.calendar.currentMonth;
+  if (day.format("MMMM") != currentMonth) {
+    if (day.weekday() == 0) {
+      output.available = false;
+      output.class = "otherMonthWeekend";
+    } else if (output.available) {
+      output.class = "otherMonth";
+    } else if (!output.available) {
+      output.class = "otherMonth_unavailable";
+    }
+  } else if (day.weekday() == 0) {
+    output.class = "weekend";
+    output.available = false;
+  } else if (output.available) {
+    output.class = "dayGrid";
+  } else if (!output.available) {
+    output.class = "dayGrid_unavailable";
+  }
+  return output;
+}
