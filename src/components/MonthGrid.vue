@@ -27,7 +27,6 @@ const store = useStore()
  * @param {Object} day moment.js isntance 
  */
 function dayGridType(day) {
-
     let currentMonth = store.state.bookings.calendar.currentMonth;
 
     if (day.format('MMMM') != currentMonth) {
@@ -49,7 +48,7 @@ function dayGridType(day) {
     width: 40vw;
     height: calc();
     padding: 12px;
-    border-radius: 1.5vw;
+    border-radius: 0 0 1.5vw 1.5vw;
     /* box-shadow: 10px 30px 50px 0px hsl(133, 0%, 85%); */
 }
 </style>

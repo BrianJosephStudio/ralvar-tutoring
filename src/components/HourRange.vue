@@ -75,12 +75,13 @@ function toggleOpen(event) {
         document.removeEventListener('click', clickOut)
     }
 }
-const changeOption = (event, option, menu) => {
+const changeOption = async (event, option, menu) => {
     event.stopPropagation()
     store.dispatch('changeTimeFilter', { value: option, filter: menu })
     document.removeEventListener('click', clickOut)
     emitter.emit('closeMenus')
-    server.checkDate()
+    await server.checkDate()
+    emitter.emit('updateAvailability')
 }
 function clickOut() {
     document.removeEventListener('click', clickOut)

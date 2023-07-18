@@ -42,12 +42,13 @@ function toggleOpen(event) {
         document.removeEventListener('click', clickOut)
     }
 }
-const changeOption = (event, classFormat) => {
+const changeOption = async (event, classFormat) => {
     event.stopPropagation()
     document.removeEventListener('click', clickOut)
     store.dispatch('changeClassFormat', classFormat)
     isOpen.value = false
-    server.checkDate()
+    await server.checkDate()
+    emitter.emit('updateAvailability')
 }
 function clickOut() {
     document.removeEventListener('click', clickOut)

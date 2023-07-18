@@ -29,7 +29,7 @@ function getDayGridPosition(event){
     const target = event.currentTarget
     const rect = target.getBoundingClientRect()
     const top = rect.top
-    const left = rect.left + 5
+    const left = rect.left + ((window.innerWidth * 0.4) / 7)
     return [left,top]
 }
 function clickOut(){
