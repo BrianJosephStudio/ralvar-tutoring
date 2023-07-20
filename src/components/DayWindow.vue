@@ -15,7 +15,7 @@
         </h2>
       </div>
       <div class="hourList">
-        <HourItem v-for="hour in getHourArray()" :hour="hour"></HourItem>
+        <HourItem v-for="item in getHourArray()" :hour="item.hour"></HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
     </div>
@@ -35,22 +35,43 @@ const props = defineProps({});
 //Methods
 function getHourArray() {
   const targetDate = store.state.bookings.calendar.targetDate;
+  if (targetDate == null) {return}
   const classFormat = store.state.bookings.availability.classFormat.format;
-  if (targetDate == null) {
-    return;
-  }
-  let date = moment(targetDate, "YYYY/MM/DD hh:mm a");
-  let hour = date.startOf("day").add(12, "hours");
-  let output = [];
-  let i = 0;
+  const startTime = moment(store.state.bookings.availability.startTime,"HH:mm")
+  const endTime = moment(store.state.bookings.availability.endTime, "HH:mm")
+  const unavailable = JSON.parse(store.state.bookings.availability.unavailable)
+  
+  const output = [];
+  const date = moment(targetDate, "YYYY/MM/DD hh:mm a");
+  const hour = date.startOf("day").add(12, "hours");
+  const month = date.month()
+  const day = date.date()
   const finalStart = moment(date).startOf("day").add(20, "hours").subtract(classFormat, "minutes")
   while (hour.isSameOrBefore(finalStart)) {
     let start = hour.format("HH:mm");
     let end = hour.add(classFormat, "minutes").format("HH:mm");
-    let item = `${start} - ${end}`;
+    let item = {hour:`${start} - ${end}`,class:undefined};
+
+    unavailable.forEach(monthObject => {
+      if (monthObject.month === month)     {
+        monthObject.items.forEach(dayObject => {
+          if(dayObject.day === day){
+            if(!dayObject.available){
+              item.class = "unavailable"
+            }else{
+              dayObject.items.forEach(hourObject => {
+                if(hourObject.time === start){
+                  
+                }
+              })
+            }
+          }
+        })
+      }
+    });
+
     output.push(item);
     hour.add(-(classFormat - 30), "minutes");
-    i++;
   } //while (hour.format("HH") <= 20 - (classFormat / 60));
   return output;
 }

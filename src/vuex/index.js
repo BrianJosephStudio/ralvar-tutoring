@@ -38,6 +38,7 @@ const store = createStore({
           currentYear: moment().format("YYYY"),
           currentMonth: moment().format("MMMM"),
           monthArray: [],
+          selectedDates: [],
           targetDate: null,
           dayWindowPos: [0, 0],
         },
