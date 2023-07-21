@@ -35,12 +35,12 @@ const props = defineProps({});
 //Methods
 function getHourArray() {
   const targetDate = store.state.bookings.calendar.targetDate;
-  if (targetDate == null) {return}
+  if (targetDate == null) { return }
   const classFormat = store.state.bookings.availability.classFormat.format;
-  const startTime = moment(store.state.bookings.availability.startTime,"HH:mm")
+  const startTime = moment(store.state.bookings.availability.startTime, "HH:mm")
   const endTime = moment(store.state.bookings.availability.endTime, "HH:mm")
   const unavailable = JSON.parse(store.state.bookings.availability.unavailable)
-  
+
   const output = [];
   const date = moment(targetDate, "YYYY/MM/DD hh:mm a");
   const hour = date.startOf("day").add(12, "hours");
@@ -50,18 +50,18 @@ function getHourArray() {
   while (hour.isSameOrBefore(finalStart)) {
     let start = hour.format("HH:mm");
     let end = hour.add(classFormat, "minutes").format("HH:mm");
-    let item = {hour:`${start} - ${end}`,class:undefined};
+    let item = { hour: `${start} - ${end}`, class: undefined };
 
     unavailable.forEach(monthObject => {
-      if (monthObject.month === month)     {
+      if (monthObject.month === month) {
         monthObject.items.forEach(dayObject => {
-          if(dayObject.day === day){
-            if(!dayObject.available){
+          if (dayObject.day === day) {
+            if (!dayObject.available) {
               item.class = "unavailable"
-            }else{
+            } else {
               dayObject.items.forEach(hourObject => {
-                if(hourObject.time === start){
-                  
+                if (hourObject.time === start) {
+
                 }
               })
             }
