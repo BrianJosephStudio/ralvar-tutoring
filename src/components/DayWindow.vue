@@ -1,21 +1,29 @@
 <template>
   <transition name="fade">
-    <div class="dayWindow" v-if="store.state.bookings.calendar.targetDate !== null" :style="{
-      left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
-      top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
-    }">
+    <div
+      class="dayWindow"
+      v-if="store.state.bookings.calendar.targetDate !== null"
+      :style="{
+        left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
+        top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
+      }"
+    >
       <div class="header">
         <h2>
           {{
             moment(
               store.state.bookings.calendar.targetDate,
-              "YYYY/MM/DD hh:mm a",
+              "YYYY/MM/DD hh:mm a"
             ).format("dddd MMM Do")
           }}
         </h2>
       </div>
       <div class="hourList">
-        <HourItem v-for="item in getHourArray()" :hour="item.hour"></HourItem>
+        <HourItem
+          v-for="item in getHourArray()"
+          :hour="item.hour"
+          :className="item.class"
+        ></HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
     </div>
@@ -35,38 +43,75 @@ const props = defineProps({});
 //Methods
 function getHourArray() {
   const targetDate = store.state.bookings.calendar.targetDate;
-  if (targetDate == null) { return }
+  if (targetDate == null) {
+    return;
+  }
+  const date = moment(targetDate, "YYYY/MM/DD hh:mm a");
+
   const classFormat = store.state.bookings.availability.classFormat.format;
   const startTime = moment(store.state.bookings.availability.startTime, "HH:mm")
+    .set("month", date.month())
+    .set("date", date.date());
   const endTime = moment(store.state.bookings.availability.endTime, "HH:mm")
-  const unavailable = JSON.parse(store.state.bookings.availability.unavailable)
+    .set("month", date.month())
+    .set("date", date.date());
+  const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 
   const output = [];
-  const date = moment(targetDate, "YYYY/MM/DD hh:mm a");
   const hour = date.startOf("day").add(12, "hours");
-  const month = date.month()
-  const day = date.date()
-  const finalStart = moment(date).startOf("day").add(20, "hours").subtract(classFormat, "minutes")
+  const month = date.month();
+  const day = date.date();
+  const finalStart = moment(date)
+    .startOf("day")
+    .add(20, "hours")
+    .subtract(classFormat, "minutes");
   while (hour.isSameOrBefore(finalStart)) {
     let start = hour.format("HH:mm");
     let end = hour.add(classFormat, "minutes").format("HH:mm");
-    let item = { hour: `${start} - ${end}`, class: undefined };
+    let item = { hour: `${start} - ${end}`, class: "available" };
 
-    unavailable.forEach(monthObject => {
+    if (day < moment().day()) {
+      item.class = "unavailable";
+    }
+
+    unavailable.forEach((monthObject) => {
       if (monthObject.month === month) {
-        monthObject.items.forEach(dayObject => {
-          if (dayObject.day === day) {
-            if (!dayObject.available) {
-              item.class = "unavailable"
-            } else {
-              dayObject.items.forEach(hourObject => {
-                if (hourObject.time === start) {
-
-                }
-              })
-            }
+        if (
+          monthObject.items.every((dayObject) => {
+            return dayObject.day !== day;
+          })
+        ) {
+          console.log("made it in");
+          let startDate = moment(date)
+            .set("hour", moment(start, "HH:mm").hour())
+            .set("minute", moment(start, "HH:mm").minute());
+          let endDate = moment(date)
+            .set("hour", moment(end, "HH:mm").hour())
+            .set("minute", moment(end, "HH:mm").minute());
+          if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
+            item.class = "unavailable";
           }
-        })
+        } else {
+          monthObject.items.forEach((dayObject) => {
+            if (dayObject.day === day) {
+              if (!dayObject.available) {
+                item.class = "unavailable";
+              } else {
+                dayObject.items.forEach((hourObject) => {
+                  if (moment(hourObject.time, "HH:mm").set("month",date.month()).set("date",date.date()).isBefore(moment())) {
+                    item.class = "unavailable";
+                  } else if (hourObject.time === start) {
+                    if (hourObject.available) {
+                      item.class = "partiallyAvailable";
+                    } else {
+                      item.class = "unavailable";
+                    }
+                  }
+                });
+              }
+            }
+          });
+        }
       }
     });
 
@@ -125,7 +170,7 @@ function getHourArray() {
   .hourList {
     background-color: hsl(0, 0%, 93%);
     overflow-y: scroll;
-    cursor: pointer;
+    // cursor: pointer;
     min-width: 150px;
     width: inherit;
 

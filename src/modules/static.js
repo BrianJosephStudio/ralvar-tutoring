@@ -59,7 +59,9 @@ export function dayGridType(day) {
   const dayMonth = day.month();
 
   for (const monthObject of unavailable) {
-    if (dayMonth === monthObject.month) {
+    if (day.isBefore(moment())) {
+      output.available = false;
+    } else if (dayMonth === monthObject.month) {
       for (const dayObject of monthObject.items) {
         if (dayObject.day == dayDate) {
           if (!dayObject.available) {

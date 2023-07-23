@@ -125,7 +125,7 @@ const store = createStore({
       state.bookings.availability.endTime = payload;
     },
     changeUnavailable: (state, payload) => {
-      state.bookings.availability.unavailable = JSON.stringify(payload);
+      state.bookings.availability.unavailable = JSON.stringify(payload,null,2);
       console.log(state.bookings.availability.unavailable);
     },
   },
