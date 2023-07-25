@@ -52,36 +52,50 @@ export const getHourArray = (filter, classFormat) => {
  * @param {Object} day moment.js instance
  */
 export function dayGridType(day) {
-  const output = { available: true };
+  day = moment(day, "YYYY/MM/DD hh:mm a");
+  const output = { available: true, class: undefined };
   const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 
   const dayDate = day.date();
   const dayMonth = day.month();
 
+  if (day.isBefore(moment()) && day.weekday() !== 0) {
+    output.available = false;
+    if (dayMonth < moment().month()) {
+      output.class = "pastMonth";
+    } else {
+      output.class = "pastDate";
+    }
+    return output;
+  }
   for (const monthObject of unavailable) {
-    if (day.isBefore(moment())) {
-      output.available = false;
-    } else if (dayMonth === monthObject.month) {
+    if (dayMonth === monthObject.month) {
       for (const dayObject of monthObject.items) {
         if (dayObject.day == dayDate) {
-          if (!dayObject.available)  {
+          if (!dayObject.available && dayObject.partialAvailability) {
             output.available = false;
-          } else {
+            output.partialAvailability = true;
+          } else if (!dayObject.available && !dayObject.partialAvailability) {
+            output.available = false;
+            output.partialAvailability = false;
           }
         }
       }
     }
   }
-
   let currentMonth = store.state.bookings.calendar.currentMonth;
   if (day.format("MMMM") != currentMonth) {
     if (day.weekday() == 0) {
       output.available = false;
-      output.class = "pastMonthWeekend";
+      output.class = "otherMonthWeekend";
     } else if (output.available) {
-      output.class = "otherMonth";
+      output.class = "otherMonth_available";
     } else if (!output.available) {
-      output.class = "otherMonth_unavailable";
+      if (output.partialAvailability) {
+        output.class = "otherMonth_partial";
+      } else {
+        output.class = "otherMonth_unavailable";
+      }
     }
   } else if (day.weekday() == 0) {
     output.class = "weekend";
@@ -89,7 +103,11 @@ export function dayGridType(day) {
   } else if (output.available) {
     output.class = "dayGrid";
   } else if (!output.available) {
-    output.class = "dayGrid_unavailable";
+    if (output.partialAvailability) {
+      output.class = "dayGrid_partial";
+    } else {
+      output.class = "dayGrid_unavailable";
+    }
   }
   return output;
 }

@@ -1,13 +1,9 @@
 <template>
   <transition name="fade">
-    <div
-      class="dayWindow"
-      v-if="store.state.bookings.calendar.targetDate !== null"
-      :style="{
-        left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
-        top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
-      }"
-    >
+    <div class="dayWindow" v-if="store.state.bookings.calendar.targetDate !== null" :style="{
+      left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
+      top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
+    }">
       <div class="header">
         <h2>
           {{
@@ -19,11 +15,7 @@
         </h2>
       </div>
       <div class="hourList">
-        <HourItem
-          v-for="item in getHourArray()"
-          :hour="item.hour"
-          :className="item.class"
-        ></HourItem>
+        <HourItem v-for="item in getHourArray()" :hour="item.hour" :className="item.class"></HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
     </div>
@@ -94,11 +86,11 @@ function getHourArray() {
         } else {
           monthObject.items.forEach((dayObject) => {
             if (dayObject.day === day) {
-              if (!dayObject.available) {
+              if (!dayObject.available && !dayObject.partialAvailability) {
                 item.class = "unavailable";
               } else {
                 dayObject.items.forEach((hourObject) => {
-                  if (moment(hourObject.time, "HH:mm").set("month",date.month()).set("date",date.date()).isBefore(moment())) {
+                  if (moment(hourObject.time, "HH:mm").set("month", date.month()).set("date", date.date()).isBefore(moment())) {
                     item.class = "unavailable";
                   } else if (hourObject.time === start) {
                     if (hourObject.available) {

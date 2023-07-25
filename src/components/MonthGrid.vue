@@ -3,8 +3,9 @@
         <DayGrid v-for="day in moment.weekdaysShort()" :title="day" :class="'dayName'" />
 
         <DayGrid v-for="day in monthArray" :day="day" :class="dayGridType(day).class"
-            :available="dayGridType(day).available" :title="day.format('Do').slice(0, -2)"
-            :data-date="day.format('YYYY/MM/DD hh:mm a')" :id="monthArray.indexOf(day)" />
+            :available="dayGridType(day).available" :partial="dayGridType(day).partialAvailability"
+            :title="day.format('Do').slice(0, -2)" :data-date="day.format('YYYY/MM/DD hh:mm a')"
+            :id="monthArray.indexOf(day)" />
     </div>
 </template>
 

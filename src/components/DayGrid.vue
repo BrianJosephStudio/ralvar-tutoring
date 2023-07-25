@@ -1,11 +1,6 @@
 <template>
-  <div
-    :id="props.class"
-    :class="props.class"
-    :data-date="dataDate"
-    :data-av="props.available"
-    @click="(event) => handleClick(event)"
-  >
+  <div :id="props.class" :class="props.class" :data-date="dataDate" :data-av="props.available"
+    :data-partial="props.partial" @click="(event) => handleClick(event)">
     <h1 ref="grid">{{ title }}</h1>
   </div>
 </template>
@@ -17,6 +12,7 @@ import { useStore } from "vuex";
 /* Props */
 const props = defineProps({
   available: Boolean,
+  partial: Boolean,
   day: Object,
   title: String,
   class: String,
@@ -47,7 +43,8 @@ function clickOut() {
 function handleClick(event) {
   event.stopPropagation();
   emitter.emit("closeMenus");
-  if (event.currentTarget.dataset.av == "false") {
+  const target = event.currentTarget
+  if (target.dataset.av === "false" && target.dataset.partial === "false") {
     return;
   }
   store.dispatch("renderDayWindow", {
@@ -86,15 +83,32 @@ function handleClick(event) {
   color: hsl(144, 70%, 40%);
 }
 
-@mixin otherMonthAvailableColor {
+@mixin otherMonth_availableColor {
   color: hsl(144, 35%, 75%);
 }
 
 @mixin unavailableColor {
-  color: hsl(0, 0%, 60%);
+  color: hsl(0, 78%, 72%);
 }
-@mixin otherMonthUnavailableColor {
-  color: hsl(0, 0%, 80%);
+
+@mixin otherMonth_unavailableColor {
+  color: hsl(0, 78%, 90%);
+}
+
+@mixin partialColor {
+  color: hsl(51, 69%, 70%);
+}
+
+@mixin otherMonth_partialColor {
+  color: hsl(51, 69%, 58%);
+}
+
+@mixin pastDateColor {
+  color: hsl(0, 0%, 75%)
+}
+
+@mixin pastMonthColor {
+  color: hsl(0, 0%, 85%)
 }
 
 @mixin gridHov {
@@ -135,6 +149,23 @@ function handleClick(event) {
   }
 }
 
+.dayGrid_partial {
+  @include grid;
+  background: transparent;
+  transition: 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    @include gridHov;
+  }
+
+  h1 {
+    @include dayFontSize;
+    @include partialColor;
+  }
+
+}
+
 .dayGridActive {
   cursor: pointer;
   background-color: hsl(260, 40%, 75%);
@@ -148,13 +179,32 @@ function handleClick(event) {
   @include grid;
 
   h1 {
-    color: hsl(0, 78%, 72%);
+    @include unavailableColor;
     @include dayFontSize;
     margin: 0px;
   }
 }
 
-.otherMonth {
+.pastDate {
+  @include grid;
+
+  h1 {
+    @include dayFontSize;
+    @include pastDateColor;
+  }
+}
+
+.pastMonth {
+  @include grid;
+  // opacity: 0.2;
+
+  h1 {
+    @include dayFontSize;
+    @include pastMonthColor;
+  }
+}
+
+.otherMonth_available {
   @include grid;
   cursor: pointer;
   // opacity: 0.2;
@@ -165,7 +215,7 @@ function handleClick(event) {
 
   h1 {
     @include dayFontSize;
-    @include otherMonthAvailableColor;
+    @include otherMonth_availableColor;
   }
 }
 
@@ -175,7 +225,16 @@ function handleClick(event) {
 
   h1 {
     @include dayFontSize;
-    @include otherMonthUnavailableColor();
+    @include otherMonth_unavailableColor;
+  }
+}
+
+.otherMonth_partial {
+  @include grid;
+
+  h1 {
+    @include dayFontSize;
+    @include otherMonth_partialColor;
   }
 }
 
@@ -184,7 +243,7 @@ function handleClick(event) {
   // opacity: 0.2;
 
   h1 {
-    color: hsl(0, 78%, 90%);
+    @include otherMonth_unavailableColor;
     @include dayFontSize;
     margin: 0px;
   }

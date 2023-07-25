@@ -90,8 +90,8 @@ const store = createStore({
         "YYYY/MM/DD hh:mm a"
       );
       let monthDays = [];
-      let firstOfMonth = currentDate.add(currentDate.date() * -1 + 1, "days");
-      let startDate = firstOfMonth.add(firstOfMonth.day() * -1, "days");
+      let firstOfMonth = currentDate.startOf("month").subtract(1, "day");
+      let startDate = firstOfMonth.subtract(firstOfMonth.day(), "days");
       for (let i = 0; i < 42; i++) {
         if (i == 0) {
           monthDays.push(
@@ -125,8 +125,12 @@ const store = createStore({
       state.bookings.availability.endTime = payload;
     },
     changeUnavailable: (state, payload) => {
-      state.bookings.availability.unavailable = JSON.stringify(payload,null,2);
-      // console.log(state.bookings.availability.unavailable);
+      state.bookings.availability.unavailable = JSON.stringify(
+        payload,
+        null,
+        2
+      );
+      console.log(state.bookings.availability.unavailable);
     },
   },
   actions: {

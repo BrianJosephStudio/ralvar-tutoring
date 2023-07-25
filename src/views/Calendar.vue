@@ -50,7 +50,6 @@ import { provide, onMounted } from "vue";
 import moment from 'moment'
 import { dayGridType } from "../modules/static";
 import server from "../modules/server.js"
-server.checkDate()
 
 /* Props */
 const props = defineProps({
@@ -144,7 +143,7 @@ function renderSelectedDates() {
   }
 }
 function updateAvailability() {
-  const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
+  // const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 
   const days = [...document.getElementById("monthGrid").children];
   for (const day of days) {
@@ -157,16 +156,22 @@ function updateAvailability() {
     day.dataset.av = gridType.available
     day.className = gridType.class
 
-    if (gridType.available || date.weekday() == 0) {
-      day.removeAttribute('title')
-    } else {
+    if (date.weekday() == 0 || date.isBefore(moment())) {
+      day.removeAttribute("title")
+    } else if (gridType.available) {
+      day.title = "availability"
+    } else if (!gridType.partialAvailability) {
       day.title = "Fully Booked"
+    } else if (gridType.partialAvailability) {
+      day.title = "Availability for different class length or time range"
     }
   }
 
 }
 
 onMounted(() => {
+  server.checkDate()
+  updateAvailability()
   renderSelectedDates();
 });
 </script>
