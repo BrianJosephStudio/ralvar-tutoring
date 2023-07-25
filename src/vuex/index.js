@@ -126,7 +126,7 @@ const store = createStore({
     },
     changeUnavailable: (state, payload) => {
       state.bookings.availability.unavailable = JSON.stringify(payload,null,2);
-      console.log(state.bookings.availability.unavailable);
+      // console.log(state.bookings.availability.unavailable);
     },
   },
   actions: {

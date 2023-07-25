@@ -64,7 +64,7 @@ export function dayGridType(day) {
     } else if (dayMonth === monthObject.month) {
       for (const dayObject of monthObject.items) {
         if (dayObject.day == dayDate) {
-          if (!dayObject.available) {
+          if (!dayObject.available)  {
             output.available = false;
           } else {
           }
@@ -77,7 +77,7 @@ export function dayGridType(day) {
   if (day.format("MMMM") != currentMonth) {
     if (day.weekday() == 0) {
       output.available = false;
-      output.class = "otherMonthWeekend";
+      output.class = "pastMonthWeekend";
     } else if (output.available) {
       output.class = "otherMonth";
     } else if (!output.available) {

@@ -89,7 +89,7 @@ function getHourArray() {
             .set("hour", moment(end, "HH:mm").hour())
             .set("minute", moment(end, "HH:mm").minute());
           if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
-            item.class = "unavailable";
+            item.class = "partiallyAvailable";
           }
         } else {
           monthObject.items.forEach((dayObject) => {

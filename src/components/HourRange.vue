@@ -21,7 +21,6 @@
 
 
 <script setup>
-console.clear()
 
 import { ref, inject } from 'vue'
 import HourMenu from './HourMenu.vue'

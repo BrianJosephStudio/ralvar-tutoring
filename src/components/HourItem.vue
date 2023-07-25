@@ -37,11 +37,11 @@ const props = defineProps({
 }
 .unavailable {
   @include lisItem;
-  text-decoration: line-through;
-  text-decoration-color: hsl(0, 0%, 50%);
-  text-decoration-thickness: 1px;
-  user-select: none;
+  // text-decoration: line-through;
+  // text-decoration-color: hsl(0, 0%, 50%);
+  // text-decoration-thickness: 1px;
   h2 {
+    user-select: none;
     color: hsl(0, 0%, 75%);
   }
 }
