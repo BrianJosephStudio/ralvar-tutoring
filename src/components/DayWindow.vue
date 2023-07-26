@@ -15,7 +15,9 @@
         </h2>
       </div>
       <div class="hourList">
-        <HourItem v-for="item in getHourArray()" :hour="item.hour" :className="item.class"></HourItem>
+        <HourItem v-for="item in getHourArray()" :hour="item.hour" :className="item.class" :Title="item.title"
+          @click="setActiveDay()">
+        </HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
     </div>
@@ -33,8 +35,19 @@ const props = defineProps({});
 
 // Data
 //Methods
+function setActiveDay() {
+  const targetDate = store.state.bookings.calendar.targetDate
+  try {
+    const activeDayGrid = document.querySelector(`[data-date="${targetDate}"]`)
+
+    activeDayGrid.classList.add("dayGridActive")
+  } catch (e) {
+    console.log("something went wrong")
+  }
+}
 function getHourArray() {
   const targetDate = store.state.bookings.calendar.targetDate;
+  console.log(targetDate)
   if (targetDate == null) {
     return;
   }
@@ -60,12 +73,25 @@ function getHourArray() {
   while (hour.isSameOrBefore(finalStart)) {
     let start = hour.format("HH:mm");
     let end = hour.add(classFormat, "minutes").format("HH:mm");
-    let item = { hour: `${start} - ${end}`, class: "available" };
+    let item = { hour: `${start} - ${end}`, class: "available", title: "This time is available" };
 
-    if (day < moment().day()) {
-      item.class = "unavailable";
+    if (day < moment().date() && month < moment().month()) {
+      continue
     }
-
+    let startDate = moment(date)
+      .set("hour", moment(start, "HH:mm").hour())
+      .set("minute", moment(start, "HH:mm").minute());
+    let endDate = moment(date)
+      .set("hour", moment(end, "HH:mm").hour())
+      .set("minute", moment(end, "HH:mm").minute());
+    if (unavailable.every((monthObject) => {
+      return monthObject.month !== month
+    })) {
+      if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
+        item.class = "partiallyAvailable";
+        item.title = "Time is available but it's outside of your hour range."
+      }
+    }
     unavailable.forEach((monthObject) => {
       if (monthObject.month === month) {
         if (
@@ -73,30 +99,35 @@ function getHourArray() {
             return dayObject.day !== day;
           })
         ) {
-          console.log("made it in");
-          let startDate = moment(date)
-            .set("hour", moment(start, "HH:mm").hour())
-            .set("minute", moment(start, "HH:mm").minute());
-          let endDate = moment(date)
-            .set("hour", moment(end, "HH:mm").hour())
-            .set("minute", moment(end, "HH:mm").minute());
+          console.log(`${date.month()} ${date.date()} has no calendar events`);
           if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
             item.class = "partiallyAvailable";
+            item.title = "Time is available but it's outside of your hour range."
           }
         } else {
           monthObject.items.forEach((dayObject) => {
+            console.log("Target date has calendar events")
             if (dayObject.day === day) {
               if (!dayObject.available && !dayObject.partialAvailability) {
                 item.class = "unavailable";
+                item.title = "This time is not available"
               } else {
                 dayObject.items.forEach((hourObject) => {
                   if (moment(hourObject.time, "HH:mm").set("month", date.month()).set("date", date.date()).isBefore(moment())) {
                     item.class = "unavailable";
+                    item.title = "This time already passed"
                   } else if (hourObject.time === start) {
                     if (hourObject.available) {
-                      item.class = "partiallyAvailable";
+                      if (moment(hourObject.time, "HH:mm").set("month", date.month()).set("date", date.date()).isBefore(startTime)) {
+                        item.class = "partiallyAvailable";
+                        item.title = "Time is available but it's outside of your hour range."
+                      } else {
+                        item.class = "partiallyAvailable";
+                        item.title = "This time is available for a shorter class."
+                      }
                     } else {
                       item.class = "unavailable";
+                      item.title = "This time is not available"
                     }
                   }
                 });
@@ -132,11 +163,11 @@ function getHourArray() {
   border-color: hsl(0, 0%, 93%);
   border-width: 2px;
   height: 24vw;
-  background-color: hsla(0, 100%, 94%, 1);
+  background-color: rgb(255, 255, 255);
   overflow: hidden;
   z-index: 3;
   transition: 0.3s ease-out;
-  box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
+  box-shadow: -10px 8px 15px 0px hsl(0, 0%, 80%);
   // box-shadow: 3px 3px 12px 0px hsl(0, 0%, 75%);
 
   .header {

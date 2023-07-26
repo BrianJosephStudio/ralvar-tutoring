@@ -44,7 +44,7 @@ function handleClick(event) {
   event.stopPropagation();
   emitter.emit("closeMenus");
   const target = event.currentTarget
-  if (target.dataset.av === "false" && target.dataset.partial === "false") {
+  if (!eval(target.dataset.av) && !eval(target.dataset.partial)) {
     return;
   }
   store.dispatch("renderDayWindow", {
@@ -170,8 +170,8 @@ function handleClick(event) {
   cursor: pointer;
   background-color: hsl(260, 40%, 75%);
 
-  &:hover {
-    background-color: hsl(260, 40%, 75%);
+  h1 {
+    color: white;
   }
 }
 

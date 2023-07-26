@@ -61,10 +61,22 @@ export function dayGridType(day) {
 
   if (day.isBefore(moment()) && day.weekday() !== 0) {
     output.available = false;
-    if (dayMonth < moment().month()) {
+    if (
+      dayMonth ===
+      moment(store.state.bookings.calendar.currentMonth, "MMMM").month()
+    ) {
+      output.class = "pastDate";
+    } else if (
+      dayMonth <
+      moment(store.state.bookings.calendar.currentMonth, "MMMM").month()
+    ) {
       output.class = "pastMonth";
     } else {
-      output.class = "pastDate";
+      if (day.isBefore(moment())) {
+        output.class = "pastMonth";
+      } else {
+        output.class = "otherMonth_available"; //This should never trigger since only past days should be here
+      }
     }
     return output;
   }

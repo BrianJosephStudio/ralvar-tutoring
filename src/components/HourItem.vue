@@ -1,13 +1,15 @@
 <template>
-  <div :class="className">
+  <div :class="ClassName" :title="Title">
     <h2>{{ hour }}</h2>
   </div>
 </template>
 
 <script setup>
+import { ref } from "vue"
 const props = defineProps({
   hour: String,
-  className: String,
+  ClassName: String,
+  Title: String
 });
 </script>
 
@@ -17,10 +19,12 @@ const props = defineProps({
   flex-direction: column;
   place-content: center;
   height: 3vw;
+
   h2 {
     font-size: 1.5vw;
   }
 }
+
 .available {
   @include lisItem;
   cursor: pointer;
@@ -35,8 +39,10 @@ const props = defineProps({
     color: hsl(128, 50%, 45%);
   }
 }
+
 .unavailable {
   @include lisItem;
+
   // text-decoration: line-through;
   // text-decoration-color: hsl(0, 0%, 50%);
   // text-decoration-thickness: 1px;
@@ -45,8 +51,10 @@ const props = defineProps({
     color: hsl(0, 0%, 75%);
   }
 }
+
 .partiallyAvailable {
   @include lisItem;
+
   h2 {
     color: hsl(51, 69%, 58%);
   }
