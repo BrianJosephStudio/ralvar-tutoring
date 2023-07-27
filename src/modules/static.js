@@ -88,7 +88,6 @@ export function dayGridType(day) {
             output.available = false;
             output.partialAvailability = true;
           } else if (!dayObject.available && !dayObject.partialAvailability) {
-            console.log(dayObject.day);
             output.available = false;
             output.partialAvailability = false;
           }

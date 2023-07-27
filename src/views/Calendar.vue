@@ -59,7 +59,7 @@ const props = defineProps({
 const store = useStore();
 store.commit("buildMonth");
 
-
+store.commit("resetDates")
 
 /* Calendar Events Handling */
 

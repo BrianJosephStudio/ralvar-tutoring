@@ -49,6 +49,12 @@ const store = createStore({
     changeTargetDate: (state, payload) => {
       state.bookings.calendar.targetDate = payload;
     },
+    addSelectedDate: (state, payload) => {
+      state.bookings.calendar.selectedDates.push(payload.date);
+    },
+    removeSelectedDate: (state, payload) => {
+      state.bookings.calendar.selectedDates.splice(payload.index, 1);
+    },
     reposDayWindow: (state, payload) => {
       state.bookings.calendar.dayWindowPos = payload;
     },
@@ -134,6 +140,15 @@ const store = createStore({
     },
   },
   actions: {
+    toggleSelectedDate: ({ state, commit }, payload) => {
+      const i = state.bookings.calendar.selectedDates.findIndex(date => date === payload.date)
+      if(i === -1){
+        commit("addSelectedDate",payload)
+      }else{
+        commit("removeSelectedDate",{index: i})
+      }
+      console.log(JSON.stringify(state.bookings.calendar.selectedDates))
+    },
     changeTimeFilter: ({ state, commit }, payload) => {
       let classFormat = state.bookings.availability.classFormat.format;
       if (classFormat === 45) {

@@ -16,7 +16,7 @@
       </div>
       <div class="hourList">
         <HourItem v-for="item in getHourArray()" :hour="item.hour" :className="item.class" :Title="item.title"
-          @click="setActiveDay()">
+          @click="setActiveDay(item.hour)">
         </HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
@@ -35,8 +35,12 @@ const props = defineProps({});
 
 // Data
 //Methods
-function setActiveDay() {
+function setActiveDay(hourString) {
+  let hour = moment(hourString,"HH:mm")
   const targetDate = store.state.bookings.calendar.targetDate
+  const targetDateMoment = moment(store.state.bookings.calendar.targetDate,"YYYY/MM/DD hh:mm a")
+  targetDateMoment.set("hour",hour.hour()).set("minute",hour.minute())
+  store.dispatch("toggleSelectedDate",{date : targetDateMoment.format("YYYY/MM/DD hh:mm a")})
   try {
     const activeDayGrid = document.querySelector(`[data-date="${targetDate}"]`)
 
@@ -47,7 +51,6 @@ function setActiveDay() {
 }
 function getHourArray() {
   const targetDate = store.state.bookings.calendar.targetDate;
-  console.log(targetDate)
   if (targetDate == null) {
     return;
   }
@@ -99,14 +102,12 @@ function getHourArray() {
             return dayObject.day !== day;
           })
         ) {
-          console.log(`${date.month()} ${date.date()} has no calendar events`);
           if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
             item.class = "partiallyAvailable";
             item.title = "Time is available but it's outside of your hour range."
           }
         } else {
           monthObject.items.forEach((dayObject) => {
-            console.log("Target date has calendar events")
             if (dayObject.day === day) {
               if (!dayObject.available && !dayObject.partialAvailability) {
                 item.class = "unavailable";
