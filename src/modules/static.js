@@ -52,8 +52,18 @@ export const getHourArray = (filter, classFormat) => {
  * @param {Object} day moment.js instance
  */
 export function dayGridType(day) {
-  day = moment(day, "YYYY/MM/DD hh:mm a");
-  const output = { available: true, class: undefined };
+  const selectedDates = store.state.bookings.calendar.selectedDates;
+  const output = { available: true, class: undefined, active: "" };
+
+  if(selectedDates.find(date => {
+    date = moment(date,"YYYY/MM/DD hh:mm a")
+    
+    return date.format("YYYY/MM/DD") === day.format("YYYY/MM/DD")
+
+  })){
+    output.active = "dayGridActive"
+  }
+
   const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 
   const dayDate = day.date();

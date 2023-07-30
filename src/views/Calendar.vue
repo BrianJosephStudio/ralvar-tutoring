@@ -47,9 +47,9 @@ import MonthGrid from "../components/MonthGrid.vue";
 import DayWindow from "../components/DayWindow.vue";
 import { useStore } from "vuex";
 import { provide, onMounted } from "vue";
-import moment from 'moment'
+import moment from "moment";
 import { dayGridType } from "../modules/static";
-import server from "../modules/server.js"
+import server from "../modules/server.js";
 
 /* Props */
 const props = defineProps({
@@ -59,7 +59,7 @@ const props = defineProps({
 const store = useStore();
 store.commit("buildMonth");
 
-store.commit("resetDates")
+store.commit("resetDates");
 
 /* Calendar Events Handling */
 
@@ -72,45 +72,8 @@ emitter.on("closeMenus", () => {
 emitter.on("monthChange", () => {
   renderSelectedDates();
 });
-emitter.on("selectDate", (event) => {
-  let available = event.currentTarget.getAttribute("data-av");
-  if (available == "false") {
-    return;
-  }
-  // get dayArray
-  let date = event.currentTarget.getAttribute("data-date");
-  // if date was already selected, remove selection
-  if (event.currentTarget.classList.contains("dayGridActive")) {
-    store.commit("removeDate", { date: date });
-    event.currentTarget.className = event.currentTarget.getAttribute("id");
-  }
-  // else
-  else {
-    //event.currentTarget.className = event.currentTarget.getAttribute('id')
-    store.commit("addDate", { bookingType: "bundle", date: date });
-  }
-
-  let days = document.getElementById("monthGrid").children;
-  let selectedDates = store.state.bookings.calendar.selectedDates;
-
-  for (let i = 7; i < days.length; i++) {
-    let day = days[i];
-
-    // deselect all days but currentTarget
-    day.className = day.getAttribute("id");
-    for (let j = 0; j < selectedDates.length; j++) {
-      if (selectedDates[j] === days.item(i).getAttribute("data-date")) {
-        days.item(i).className = "dayGrid";
-        days.item(i).classList.add("dayGridActive");
-      }
-    }
-  }
-  //Make sure only available days are selectable
-
-  // set up select/de-select
-  // event.currentTarget.classList.toggle('dayGridActive')
-
-  //update SelectedDates state
+emitter.on("selectDate", () => {
+  // renderSelectedDates();
 });
 emitter.on("updateAvailability", (event) => {
   updateAvailability();
@@ -120,7 +83,7 @@ emitter.on("updateAvailability", (event) => {
 function changeMonth(n) {
   store.commit("changeMonth", { amount: n });
   store.commit("buildMonth");
-  emitter.emit("monthChange");
+  // emitter.emit("monthChange");
 }
 function renderSelectedDates() {
   //create div array
@@ -133,7 +96,7 @@ function renderSelectedDates() {
     setTimeout(() => {
       for (let j = 0; j < selectedDates.length; j++) {
         if (selectedDates[j] === days.item(i).getAttribute("data-date")) {
-          days.item(i).className = "dayGrid";
+          days.item(i).className = "dayGridd";
           days.item(i).classList.add("dayGridActive");
 
           break;
@@ -147,31 +110,32 @@ function updateAvailability() {
 
   const days = [...document.getElementById("monthGrid").children];
   for (const day of days) {
-    if (day.id === "dayName") { continue }
-    const dataDate = day.dataset.date
-    const date = moment(dataDate, 'YYYY/MM/DD hh:mm a')
+    if (day.id === "dayName") {
+      continue;
+    }
+    const dataDate = day.dataset.date;
+    const date = moment(dataDate, "YYYY/MM/DD hh:mm a");
 
-    const gridType = dayGridType(date)
+    const gridType = dayGridType(date);
 
-    day.dataset.av = gridType.available
-    day.className = gridType.class
+    day.dataset.av = gridType.available;
+    day.className = gridType.class;
 
     if (date.weekday() == 0 || date.isBefore(moment())) {
-      day.removeAttribute("title")
+      day.removeAttribute("title");
     } else if (gridType.available) {
-      day.title = "availability"
+      day.title = "availability";
     } else if (!gridType.partialAvailability) {
-      day.title = "Fully Booked"
+      day.title = "Fully Booked";
     } else if (gridType.partialAvailability) {
-      day.title = "Availability for different class length or time range"
+      day.title = "Availability for different class length or time range";
     }
   }
-
 }
 
 onMounted(() => {
-  server.checkDate()
-  updateAvailability()
+  server.checkDate();
+  updateAvailability();
   renderSelectedDates();
 });
 </script>

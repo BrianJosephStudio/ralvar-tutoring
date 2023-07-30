@@ -1,9 +1,13 @@
 <template>
   <transition name="fade">
-    <div class="dayWindow" v-if="store.state.bookings.calendar.targetDate !== null" :style="{
-      left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
-      top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
-    }">
+    <div
+      class="dayWindow"
+      v-if="store.state.bookings.calendar.targetDate !== null"
+      :style="{
+        left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
+        top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
+      }"
+    >
       <div class="header">
         <h2>
           {{
@@ -15,8 +19,13 @@
         </h2>
       </div>
       <div class="hourList">
-        <HourItem v-for="item in getHourArray()" :hour="item.hour" :className="item.class" :Title="item.title"
-          @click="setActiveDay(item.hour)">
+        <HourItem
+          v-for="item in getHourArray()"
+          :hour="item.hour"
+          :className="item.class"
+          :Title="item.title"
+          @click="setActiveDay(item.hour)"
+        >
         </HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
@@ -28,26 +37,26 @@
 import HourItem from "./HourItem.vue";
 import { useStore } from "vuex";
 import moment from "moment";
-import { ref } from "vue";
-const store = useStore();
-// Props
-const props = defineProps({});
+import { ref, inject } from "vue";
 
 // Data
+const store = useStore();
+const props = defineProps({});
+const emitter = inject("emitter")
+
 //Methods
 function setActiveDay(hourString) {
-  let hour = moment(hourString,"HH:mm")
-  const targetDate = store.state.bookings.calendar.targetDate
-  const targetDateMoment = moment(store.state.bookings.calendar.targetDate,"YYYY/MM/DD hh:mm a")
-  targetDateMoment.set("hour",hour.hour()).set("minute",hour.minute())
-  store.dispatch("toggleSelectedDate",{date : targetDateMoment.format("YYYY/MM/DD hh:mm a")})
-  try {
-    const activeDayGrid = document.querySelector(`[data-date="${targetDate}"]`)
-
-    activeDayGrid.classList.add("dayGridActive")
-  } catch (e) {
-    console.log("something went wrong")
-  }
+  let hour = moment(hourString, "HH:mm");
+  const targetDate = store.state.bookings.calendar.targetDate;
+  const targetDateMoment = moment(
+    store.state.bookings.calendar.targetDate,
+    "YYYY/MM/DD hh:mm a"
+  );
+  targetDateMoment.set("hour", hour.hour()).set("minute", hour.minute());
+  store.dispatch("toggleSelectedDate", {
+    date: targetDateMoment.format("YYYY/MM/DD hh:mm a"),
+  });
+  store.commit("buildMonth");
 }
 function getHourArray() {
   const targetDate = store.state.bookings.calendar.targetDate;
@@ -76,10 +85,14 @@ function getHourArray() {
   while (hour.isSameOrBefore(finalStart)) {
     let start = hour.format("HH:mm");
     let end = hour.add(classFormat, "minutes").format("HH:mm");
-    let item = { hour: `${start} - ${end}`, class: "available", title: "This time is available" };
+    let item = {
+      hour: `${start} - ${end}`,
+      class: "available",
+      title: "This time is available",
+    };
 
     if (day < moment().date() && month < moment().month()) {
-      continue
+      continue;
     }
     let startDate = moment(date)
       .set("hour", moment(start, "HH:mm").hour())
@@ -87,12 +100,14 @@ function getHourArray() {
     let endDate = moment(date)
       .set("hour", moment(end, "HH:mm").hour())
       .set("minute", moment(end, "HH:mm").minute());
-    if (unavailable.every((monthObject) => {
-      return monthObject.month !== month
-    })) {
+    if (
+      unavailable.every((monthObject) => {
+        return monthObject.month !== month;
+      })
+    ) {
       if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
         item.class = "partiallyAvailable";
-        item.title = "Time is available but it's outside of your hour range."
+        item.title = "Time is available but it's outside of your hour range.";
       }
     }
     unavailable.forEach((monthObject) => {
@@ -104,31 +119,44 @@ function getHourArray() {
         ) {
           if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
             item.class = "partiallyAvailable";
-            item.title = "Time is available but it's outside of your hour range."
+            item.title =
+              "Time is available but it's outside of your hour range.";
           }
         } else {
           monthObject.items.forEach((dayObject) => {
             if (dayObject.day === day) {
               if (!dayObject.available && !dayObject.partialAvailability) {
                 item.class = "unavailable";
-                item.title = "This time is not available"
+                item.title = "This time is not available";
               } else {
                 dayObject.items.forEach((hourObject) => {
-                  if (moment(hourObject.time, "HH:mm").set("month", date.month()).set("date", date.date()).isBefore(moment())) {
+                  if (
+                    moment(hourObject.time, "HH:mm")
+                      .set("month", date.month())
+                      .set("date", date.date())
+                      .isBefore(moment())
+                  ) {
                     item.class = "unavailable";
-                    item.title = "This time already passed"
+                    item.title = "This time already passed";
                   } else if (hourObject.time === start) {
                     if (hourObject.available) {
-                      if (moment(hourObject.time, "HH:mm").set("month", date.month()).set("date", date.date()).isBefore(startTime)) {
+                      if (
+                        moment(hourObject.time, "HH:mm")
+                          .set("month", date.month())
+                          .set("date", date.date())
+                          .isBefore(startTime)
+                      ) {
                         item.class = "partiallyAvailable";
-                        item.title = "Time is available but it's outside of your hour range."
+                        item.title =
+                          "Time is available but it's outside of your hour range.";
                       } else {
                         item.class = "partiallyAvailable";
-                        item.title = "This time is available for a shorter class."
+                        item.title =
+                          "This time is available for a shorter class.";
                       }
                     } else {
                       item.class = "unavailable";
-                      item.title = "This time is not available"
+                      item.title = "This time is not available";
                     }
                   }
                 });

@@ -1,6 +1,7 @@
 import moment from "moment";
 import { createStore } from "vuex";
 import VuexPersistence from "vuex-persist";
+import { dayGridType } from "../modules/static.js";
 
 const store = createStore({
   state() {
@@ -95,21 +96,19 @@ const store = createStore({
         state.bookings.calendar.currentDate,
         "YYYY/MM/DD hh:mm a"
       );
-      let monthDays = [];
+      const monthDays = [];
       let firstOfMonth = currentDate.startOf("month").subtract(1, "day");
       let startDate = firstOfMonth.subtract(firstOfMonth.day(), "days");
       for (let i = 0; i < 42; i++) {
-        if (i == 0) {
-          monthDays.push(
-            moment(startDate.format("YYYY/MM/DD hh:mm a"), "YYYY/MM/DD hh:mm a")
-          );
-          continue;
+        if (i !== 0) {
+          startDate.add(1,"days")
         }
-        let date = moment(
-          startDate.add(1, "days").format("YYYY/MM/DD hh:mm a"),
-          "YYYY/MM/DD hh:mm a"
-        );
-        monthDays.push(date);
+          const date = {date:moment(startDate)};
+          const dayGrid = dayGridType(date.date);
+          const monthDay = Object.assign({},date,dayGrid);
+          // monthDay : {date,available,partialAvailability,class,active}
+          
+          monthDays.push(monthDay);
       }
       state.bookings.calendar.monthArray = monthDays;
     },
@@ -141,13 +140,15 @@ const store = createStore({
   },
   actions: {
     toggleSelectedDate: ({ state, commit }, payload) => {
-      const i = state.bookings.calendar.selectedDates.findIndex(date => date === payload.date)
-      if(i === -1){
-        commit("addSelectedDate",payload)
-      }else{
-        commit("removeSelectedDate",{index: i})
+      const i = state.bookings.calendar.selectedDates.findIndex(
+        (date) => date === payload.date
+      );
+      if (i === -1) {
+        commit("addSelectedDate", payload);
+      } else {
+        commit("removeSelectedDate", { index: i });
       }
-      console.log(JSON.stringify(state.bookings.calendar.selectedDates))
+      console.log(JSON.stringify(state.bookings.calendar.selectedDates));
     },
     changeTimeFilter: ({ state, commit }, payload) => {
       let classFormat = state.bookings.availability.classFormat.format;

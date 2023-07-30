@@ -1,19 +1,20 @@
 <template>
-  <div :id="props.class" :class="props.class" :data-date="dataDate" :data-av="props.available"
+  <div ref="dayGrid" :id="props.class" :class="props.class" :data-date="dataDate" :data-av="props.available"
     :data-partial="props.partial" @click="(event) => handleClick(event)">
-    <h1 ref="grid">{{ title }}</h1>
+    <h1>{{ title }}</h1>
   </div>
 </template>
 
 <script setup>
 /* Imports */
-import { ref, onUpdated, inject } from "vue";
+import { ref, onUpdated, onMounted, inject } from "vue";
 import { useStore } from "vuex";
 /* Props */
 const props = defineProps({
   available: Boolean,
   partial: Boolean,
   day: Object,
+  Active:Boolean,
   title: String,
   class: String,
   type: String,
@@ -25,6 +26,9 @@ const props = defineProps({
 const store = useStore();
 const emitter = inject("emitter");
 /* Functions */
+const dayGrid = ref(null)
+
+
 
 function getDayGridPosition(event) {
   const target = event.currentTarget;
@@ -55,10 +59,7 @@ function handleClick(event) {
 }
 
 /* Mounted */
-// const grid = ref(null)
-// onUpdated(() => {
-//     grid.value.parentElement.classList.remove('dayGridActive')
-// })
+
 </script>
 
 <style scoped lang="scss">
