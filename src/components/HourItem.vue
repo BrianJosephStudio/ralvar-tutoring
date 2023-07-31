@@ -1,5 +1,5 @@
 <template>
-  <div :class="ClassName" :title="Title">
+  <div :class="ClassName" :title="Title" :data-clickable="Clickable">
     <h2>{{ hour }}</h2>
   </div>
 </template>
@@ -9,7 +9,8 @@ import { ref } from "vue"
 const props = defineProps({
   hour: String,
   ClassName: String,
-  Title: String
+  Title: String,
+  Clickable: Boolean,
 });
 </script>
 
@@ -57,6 +58,16 @@ const props = defineProps({
 
   h2 {
     color: hsl(51, 69%, 58%);
+  }
+}
+
+.active {
+  @include lisItem;
+  background-color: hsl(260, 40%, 75%);
+  cursor: pointer;
+
+  h1 {
+    color: white;
   }
 }
 </style>

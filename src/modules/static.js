@@ -55,13 +55,14 @@ export function dayGridType(day) {
   const selectedDates = store.state.bookings.calendar.selectedDates;
   const output = { available: true, class: undefined, active: "" };
 
-  if(selectedDates.find(date => {
-    date = moment(date,"YYYY/MM/DD hh:mm a")
-    
-    return date.format("YYYY/MM/DD") === day.format("YYYY/MM/DD")
+  if (
+    selectedDates.find((date) => {
+      date = moment(date.date, "YYYY/MM/DD hh:mm a");
 
-  })){
-    output.active = "dayGridActive"
+      return date.format("YYYY/MM/DD") === day.format("YYYY/MM/DD");
+    })
+  ) {
+    output.active = "dayGridActive";
   }
 
   const unavailable = JSON.parse(store.state.bookings.availability.unavailable);

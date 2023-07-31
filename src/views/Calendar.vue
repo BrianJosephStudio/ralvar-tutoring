@@ -95,7 +95,7 @@ function renderSelectedDates() {
 
     setTimeout(() => {
       for (let j = 0; j < selectedDates.length; j++) {
-        if (selectedDates[j] === days.item(i).getAttribute("data-date")) {
+        if (selectedDates[j].date === days.item(i).getAttribute("data-date")) {
           days.item(i).className = "dayGridd";
           days.item(i).classList.add("dayGridActive");
 

@@ -51,31 +51,17 @@ const store = createStore({
       state.bookings.calendar.targetDate = payload;
     },
     addSelectedDate: (state, payload) => {
-      state.bookings.calendar.selectedDates.push(payload.date);
+      const classFormat = state.bookings.availability.classFormat.format;
+      state.bookings.calendar.selectedDates.push({
+        date: payload.date,
+        classFormat: classFormat,
+      });
     },
     removeSelectedDate: (state, payload) => {
       state.bookings.calendar.selectedDates.splice(payload.index, 1);
     },
     reposDayWindow: (state, payload) => {
       state.bookings.calendar.dayWindowPos = payload;
-    },
-    addDate: (state, payload) => {
-      let dateArray = state.bookings.calendar.selectedDates;
-      let maxDates = 1;
-      if (payload.bookingType == "bundle") {
-        maxDates = state.bookings.calendar.maxDates;
-      }
-      dateArray.push(payload.date);
-      // if(dateArray.length > maxDates){dateArray.splice(0,1)}
-    },
-    removeDate: (state, payload) => {
-      let dateArray = state.bookings.calendar.selectedDates;
-      for (let i = 0; i < dateArray.length; i++) {
-        if (payload.date === dateArray[i]) {
-          state.bookings.calendar.selectedDates.splice(i, 1);
-          break;
-        }
-      }
     },
     resetDates: (state) => {
       state.bookings.calendar.selectedDates = [];
@@ -101,14 +87,14 @@ const store = createStore({
       let startDate = firstOfMonth.subtract(firstOfMonth.day(), "days");
       for (let i = 0; i < 42; i++) {
         if (i !== 0) {
-          startDate.add(1,"days")
+          startDate.add(1, "days");
         }
-          const date = {date:moment(startDate)};
-          const dayGrid = dayGridType(date.date);
-          const monthDay = Object.assign({},date,dayGrid);
-          // monthDay : {date,available,partialAvailability,class,active}
-          
-          monthDays.push(monthDay);
+        const date = { date: moment(startDate) };
+        const dayGrid = dayGridType(date.date);
+        const monthDay = Object.assign({}, date, dayGrid);
+        // monthDay : {date,available,partialAvailability,class,active}
+
+        monthDays.push(monthDay);
       }
       state.bookings.calendar.monthArray = monthDays;
     },
@@ -135,14 +121,30 @@ const store = createStore({
         null,
         2
       );
-      console.log(state.bookings.availability.unavailable);
+      // console.log(state.bookings.availability.unavailable);
     },
   },
   actions: {
     toggleSelectedDate: ({ state, commit }, payload) => {
-      const i = state.bookings.calendar.selectedDates.findIndex(
-        (date) => date === payload.date
-      );
+      const m = moment(payload.date, "YYYY/MM/DD hh:mm a");
+      const selectedDates = state.bookings.calendar.selectedDates;
+
+      const exists = selectedDates.findIndex((selDate) => {
+        selDate = moment(selDate.date, "YYYY/MM/DD hh:mm a");
+        if (
+          selDate.year() === m.year() &&
+          selDate.month() === m.month() &&
+          selDate.date() === m.date()
+        ) {
+          return true;
+        }
+      });
+      console.log(exists);
+      if (exists !== -1) {
+        selectedDates.splice(exists, 1);
+      }
+
+      const i = selectedDates.findIndex((date) => date.date === payload.date);
       if (i === -1) {
         commit("addSelectedDate", payload);
       } else {
@@ -151,6 +153,7 @@ const store = createStore({
       console.log(JSON.stringify(state.bookings.calendar.selectedDates));
     },
     changeTimeFilter: ({ state, commit }, payload) => {
+      commit("resetDates");
       let classFormat = state.bookings.availability.classFormat.format;
       if (classFormat === 45) {
         classFormat = 60;
@@ -197,7 +200,7 @@ const store = createStore({
     },
     changeClassFormat: ({ state, commit }, payload) => {
       commit("changeClassFormat", payload);
-
+      commit("resetDates");
       const startTime = moment(state.bookings.availability.startTime, "HH:mm");
       const endTime = moment(state.bookings.availability.endTime, "HH:mm");
 
