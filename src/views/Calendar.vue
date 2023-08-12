@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <DayWindow />
+    <SidePanel />
     <div style="display: flex">
       <div class="filterWrapper">
         <h2>Class Duration</h2>
@@ -45,6 +46,7 @@ import ClassFormat from "../components/ClassFormat.vue";
 import HourRange from "../components/HourRange.vue";
 import MonthGrid from "../components/MonthGrid.vue";
 import DayWindow from "../components/DayWindow.vue";
+import SidePanel from "../components/SidePanel.vue";
 import { useStore } from "vuex";
 import { provide, onMounted } from "vue";
 import moment from "moment";
@@ -70,7 +72,7 @@ emitter.on("closeMenus", () => {
   store.commit("changeTargetDate", null);
 });
 emitter.on("monthChange", () => {
-  renderSelectedDates();
+  // renderSelectedDates();
 });
 emitter.on("selectDate", () => {
   // renderSelectedDates();
@@ -136,12 +138,13 @@ function updateAvailability() {
 onMounted(() => {
   server.checkDate();
   updateAvailability();
-  renderSelectedDates();
+  // renderSelectedDates();
 });
 </script>
 
 <style scoped lang="scss">
 .wrapper {
+  position: relative;
   margin-top: 2vw;
   display: flex;
   flex-direction: column;

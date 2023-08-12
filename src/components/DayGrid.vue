@@ -73,7 +73,7 @@ function handleClick(event) {
   height: calc(25vw / 7 - 6px);
   border-radius: 0.6vw;
   position: relative;
-  background: transparent;
+  // background: transparent;
 }
 
 @mixin dayFontSize {
@@ -172,7 +172,7 @@ function handleClick(event) {
   background-color: hsl(260, 40%, 75%);
 
   h1 {
-    color: white;
+    color: hsl(0, 0%, 100%);
   }
 }
 

@@ -7,6 +7,12 @@ const store = createStore({
   state() {
     return {
       bookings: {
+        classPrices: {
+          30: 10,
+          45: 16,
+          60: 18,
+          90: 26,
+        },
         booking: {
           classData: {
             classCount: null,
@@ -23,6 +29,9 @@ const store = createStore({
             email: String,
             birthDate: String,
             address: String,
+          },
+          paymentData: {
+            checkoutPrice: 0,
           },
         },
         availability: {
@@ -52,10 +61,27 @@ const store = createStore({
     },
     addSelectedDate: (state, payload) => {
       const classFormat = state.bookings.availability.classFormat.format;
-      state.bookings.calendar.selectedDates.push({
+      const selDates = [...state.bookings.calendar.selectedDates];
+      selDates.push({
         date: payload.date,
         classFormat: classFormat,
       });
+      selDates.sort((a, b) => {
+        const aMoment = moment(a.date, "YYYY/MM/DD hh:mm a");
+        console.log(aMoment);
+        const bMoment = moment(b.date, "YYYY/MM/DD hh:mm a");
+        console.log(bMoment);
+        console.log(aMoment.isBefore(bMoment));
+        console.log(aMoment.isAfter(bMoment));
+        if (aMoment.isBefore(bMoment)) {
+          return -1;
+        } else if (aMoment.isAfter(bMoment)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      state.bookings.calendar.selectedDates = selDates;
     },
     removeSelectedDate: (state, payload) => {
       state.bookings.calendar.selectedDates.splice(payload.index, 1);
@@ -123,33 +149,47 @@ const store = createStore({
       );
       // console.log(state.bookings.availability.unavailable);
     },
+    recalculateCheckoutPrice: (state) => {
+      const classAmount = state.bookings.calendar.selectedDates.length;
+      const classFormat = state.bookings.availability.classFormat.format
+      const classPrice = state.bookings.classPrices[classFormat]
+      state.bookings.booking.paymentData.checkoutPrice = classPrice * classAmount;
+    },
   },
   actions: {
     toggleSelectedDate: ({ state, commit }, payload) => {
-      const m = moment(payload.date, "YYYY/MM/DD hh:mm a");
+      const targetDate = moment(payload.date, "YYYY/MM/DD hh:mm a");
       const selectedDates = state.bookings.calendar.selectedDates;
-
-      const exists = selectedDates.findIndex((selDate) => {
+      let i;
+      i = selectedDates.findIndex((selDate) => {
         selDate = moment(selDate.date, "YYYY/MM/DD hh:mm a");
         if (
-          selDate.year() === m.year() &&
-          selDate.month() === m.month() &&
-          selDate.date() === m.date()
+          selDate.year() === targetDate.year() &&
+          selDate.month() === targetDate.month() &&
+          selDate.date() === targetDate.date() &&
+          (selDate.hour() !== targetDate.hour() ||
+            selDate.minute() !== targetDate.minute())
         ) {
           return true;
         }
       });
-      console.log(exists);
-      if (exists !== -1) {
-        selectedDates.splice(exists, 1);
+      if (i !== -1) {
+        commit("removeSelectedDate", { index: i });
       }
 
-      const i = selectedDates.findIndex((date) => date.date === payload.date);
+      i = selectedDates.findIndex((selDate) => {
+        console.log(payload.date);
+        console.log(selDate.date);
+        return selDate.date === payload.date;
+      });
       if (i === -1) {
         commit("addSelectedDate", payload);
       } else {
+        console.log("removes");
         commit("removeSelectedDate", { index: i });
       }
+      commit("recalculateCheckoutPrice")
+      commit("buildMonth");
       console.log(JSON.stringify(state.bookings.calendar.selectedDates));
     },
     changeTimeFilter: ({ state, commit }, payload) => {
@@ -197,6 +237,7 @@ const store = createStore({
         }
         commit("changeEndTime", payload.value);
       }
+      commit("buildMonth");
     },
     changeClassFormat: ({ state, commit }, payload) => {
       commit("changeClassFormat", payload);
@@ -221,6 +262,7 @@ const store = createStore({
       } else if (endTime.isBefore(minEndTime)) {
         commit("changeEndTime", minEndTime.format("HH:mm"));
       }
+      commit("buildMonth");
     },
     renderDayWindow: ({ state, commit }, payload) => {
       commit("reposDayWindow", payload.position);
