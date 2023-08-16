@@ -42,13 +42,14 @@
 <script setup>
 /* Imports */
 import mitt from "mitt";
+import { useRouter } from "vue-router"
 import ClassFormat from "../components/ClassFormat.vue";
 import HourRange from "../components/HourRange.vue";
 import MonthGrid from "../components/MonthGrid.vue";
 import DayWindow from "../components/DayWindow.vue";
 import SidePanel from "../components/SidePanel.vue";
 import { useStore } from "vuex";
-import { provide, onMounted } from "vue";
+import { provide, onMounted, onUpdated } from "vue";
 import moment from "moment";
 import { dayGridType } from "../modules/static";
 import server from "../modules/server.js";
@@ -59,9 +60,22 @@ const props = defineProps({
 });
 /* Data */
 const store = useStore();
-store.commit("buildMonth");
+const router = useRouter();
+store.dispatch("buildMonth");
 
-store.commit("resetDates");
+router.beforeEach((to, from) => {
+  console.log("aqui")
+  if (store.state.bookings.booking.classData.dates.length < 1) {
+    console.log("no me digas que")
+    store.commit("resetDates");
+  }
+  console.log("y alla")
+  store.commit("recalculateCheckoutPrice");
+  console.log("coño")
+  store.dispatch("buildMonth");
+  console.log("coñoooo")
+})
+// store.dispatch("resetClassData")
 
 /* Calendar Events Handling */
 
@@ -84,7 +98,7 @@ emitter.on("updateAvailability", (event) => {
 /* Methods */
 function changeMonth(n) {
   store.commit("changeMonth", { amount: n });
-  store.commit("buildMonth");
+  store.dispatch("buildMonth");
   // emitter.emit("monthChange");
 }
 function renderSelectedDates() {

@@ -1,18 +1,18 @@
 <template>
   <div class="sidePanel" :style="togglePos()">
     <div>
-      <h1>{{store.state.bookings.calendar.selectedDates.length}} {{ store.state.bookings.calendar.selectedDates.length > 1 ? "classes" : "class" }}</h1>
+      <h1>{{ store.state.bookings.calendar.selectedDates.length }} {{ store.state.bookings.calendar.selectedDates.length >
+        1
+        ? "classes" : "class" }}</h1>
     </div>
     <div class="itemsBox">
-      <CartItem
-        v-for="selectedDate of store.state.bookings.calendar.selectedDates"
-        :Title="getItemName(selectedDate)" :selectedDate="selectedDate.date"
-      ></CartItem>
+      <CartItem v-for="selectedDate of store.state.bookings.calendar.selectedDates" :Title="getItemName(selectedDate)"
+        :selectedDate="selectedDate.date"></CartItem>
     </div>
     <div class="footer">
       <h1>{{ store.state.bookings.booking.paymentData.checkoutPrice }}€</h1>
       <div class="continueButton">
-        <h1>Continue</h1>
+        <h1 @click="consolidateClassSelection">Continue</h1>
       </div>
     </div>
   </div>
@@ -20,20 +20,33 @@
 
 <script setup>
 import { useStore } from "vuex";
-import { inject, ref } from "vue";
+import { inject, ref, onMounted } from "vue";
 import CartItem from "./CartItem.vue";
 import moment from "moment";
+import { useRouter } from 'vue-router'
+
 
 const props = defineProps({});
 const store = useStore();
 const emitter = inject("emitter");
+const router = useRouter();
 
+onMounted(() => {
+  store.commit("recalculateCheckoutPrice")
+})
+router.beforeEach(() => {
+  store.commit("recalculateCheckoutPrice")
+})
+function consolidateClassSelection() {
+  console.log(store.state.bookings.booking.classData.dates.length)
+  router.replace("/client-data")
+}
 function togglePos() {
   const selDates = store.state.bookings.calendar.selectedDates;
-  return selDates.length ? { right: "0vw" } : { right: "-25vw" };
+  return selDates.length ? { right: "0vw", opacity: 1 } : { right: "-25vw", opacity: 0 };
 }
 function getItemName(selectedDate) {
-  const date = moment(selectedDate.date,"YYYY/MM/DD hh:mm a");
+  const date = moment(selectedDate.date, "YYYY/MM/DD hh:mm a");
   const { classFormat } = selectedDate || null;
 
   const start = date.format("HH:mm");
@@ -63,20 +76,21 @@ function getItemName(selectedDate) {
   .itemsBox {
     display: flex;
     flex-direction: column;
-    background-color: purple;
+    background-color: hsl(260, 40%, 75%);
   }
 
-  .footer{
+  .footer {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     padding: 12px;
     margin-top: auto;
-    .continueButton{
+
+    .continueButton {
       width: 80%;
       border-radius: 24px;
-      background-color: purple;
+      background-color: hsl(260, 40%, 75%);
       cursor: pointer;
     }
   }

@@ -15,12 +15,8 @@ const store = createStore({
         },
         booking: {
           classData: {
-            classCount: null,
-            classFormat: null,
-            desiredHourRange: [
-              moment("11:00", "HH:mm"),
-              moment("20:30", "HH:mm"),
-            ],
+            count: null,
+            format: null,
             dates: [],
           },
           clientData: {
@@ -56,9 +52,43 @@ const store = createStore({
     };
   },
   mutations: {
+    //General Calendar Logic
+    changeMonth: (state, payload) => {
+      let currentDate = moment(
+        state.bookings.calendar.currentDate,
+        "YYYY/MM/DD hh:mm a"
+      );
+      currentDate.add(payload.amount, "month");
+      state.bookings.calendar.currentDate =
+        currentDate.format("YYYY/MM/DD hh:mm a");
+      state.bookings.calendar.currentMonth = currentDate.format("MMMM");
+      state.bookings.calendar.currentYear = currentDate.format("YYYY");
+    },
     changeTargetDate: (state, payload) => {
       state.bookings.calendar.targetDate = payload;
     },
+    changeClassFormat: (state, payload) => {
+      state.bookings.availability.classFormat.format = payload.format;
+      state.bookings.availability.classFormat.title = payload.title;
+    },
+    changeStartTime: (state, payload) => {
+      state.bookings.availability.startTime = payload;
+    },
+    changeEndTime: (state, payload) => {
+      state.bookings.availability.endTime = payload;
+    },
+    changeUnavailable: (state, payload) => {
+      state.bookings.availability.unavailable = JSON.stringify(
+        payload,
+        null,
+        2
+      );
+      // console.log(state.bookings.availability.unavailable);
+    },
+    reposDayWindow: (state, payload) => {
+      state.bookings.calendar.dayWindowPos = payload;
+    },
+    //Calendar Selection
     addSelectedDate: (state, payload) => {
       const classFormat = state.bookings.availability.classFormat.format;
       const selDates = [...state.bookings.calendar.selectedDates];
@@ -86,24 +116,30 @@ const store = createStore({
     removeSelectedDate: (state, payload) => {
       state.bookings.calendar.selectedDates.splice(payload.index, 1);
     },
-    reposDayWindow: (state, payload) => {
-      state.bookings.calendar.dayWindowPos = payload;
-    },
     resetDates: (state) => {
       state.bookings.calendar.selectedDates = [];
     },
-    changeMonth: (state, payload) => {
-      let currentDate = moment(
-        state.bookings.calendar.currentDate,
-        "YYYY/MM/DD hh:mm a"
-      );
-      currentDate.add(payload.amount, "month");
-      state.bookings.calendar.currentDate =
-        currentDate.format("YYYY/MM/DD hh:mm a");
-      state.bookings.calendar.currentMonth = currentDate.format("MMMM");
-      state.bookings.calendar.currentYear = currentDate.format("YYYY");
+    //Side Panel
+    recalculateCheckoutPrice: (state) => {
+      const classAmount = state.bookings.calendar.selectedDates.length;
+      const classFormat = state.bookings.availability.classFormat.format;
+      const classPrice = state.bookings.classPrices[classFormat];
+      state.bookings.booking.paymentData.checkoutPrice =
+        classPrice * classAmount;
     },
-    buildMonth: function (state) {
+    //Class data(Once selection has been confirmed)
+    setClassCount: (state, payload) => {
+      state.bookings.booking.classData.count = payload;
+    },
+    setClassFormat: (state, payload) => {
+      state.bookings.booking.classData.format = payload;
+    },
+    setClassDates: (state, payload) => {
+      state.bookings.booking.classData.dates = payload;
+    },
+  },
+  actions: {
+    buildMonth: ({ state }) => {
       let currentDate = moment(
         state.bookings.calendar.currentDate,
         "YYYY/MM/DD hh:mm a"
@@ -119,45 +155,12 @@ const store = createStore({
         const dayGrid = dayGridType(date.date);
         const monthDay = Object.assign({}, date, dayGrid);
         // monthDay : {date,available,partialAvailability,class,active}
-
         monthDays.push(monthDay);
       }
+      console.log("termina");
       state.bookings.calendar.monthArray = monthDays;
     },
-    setClassCount: (state, payload) => {
-      state.bookings.booking.classData.classCount = payload.classCount;
-      state.bookings.calendar.maxDates = payload.classCount;
-    },
-    setFormat: (state, payload) => {
-      state.bookings.booking.classData.classFormat = payload.minuteCount;
-    },
-    changeClassFormat: (state, payload) => {
-      state.bookings.availability.classFormat.format = payload.format;
-      state.bookings.availability.classFormat.title = payload.title;
-    },
-    changeStartTime: (state, payload) => {
-      state.bookings.availability.startTime = payload;
-    },
-    changeEndTime: (state, payload) => {
-      state.bookings.availability.endTime = payload;
-    },
-    changeUnavailable: (state, payload) => {
-      state.bookings.availability.unavailable = JSON.stringify(
-        payload,
-        null,
-        2
-      );
-      // console.log(state.bookings.availability.unavailable);
-    },
-    recalculateCheckoutPrice: (state) => {
-      const classAmount = state.bookings.calendar.selectedDates.length;
-      const classFormat = state.bookings.availability.classFormat.format
-      const classPrice = state.bookings.classPrices[classFormat]
-      state.bookings.booking.paymentData.checkoutPrice = classPrice * classAmount;
-    },
-  },
-  actions: {
-    toggleSelectedDate: ({ state, commit }, payload) => {
+    toggleSelectedDate: ({ state, commit, dispatch }, payload) => {
       const targetDate = moment(payload.date, "YYYY/MM/DD hh:mm a");
       const selectedDates = state.bookings.calendar.selectedDates;
       let i;
@@ -185,14 +188,12 @@ const store = createStore({
       if (i === -1) {
         commit("addSelectedDate", payload);
       } else {
-        console.log("removes");
         commit("removeSelectedDate", { index: i });
       }
-      commit("recalculateCheckoutPrice")
-      commit("buildMonth");
-      console.log(JSON.stringify(state.bookings.calendar.selectedDates));
+      commit("recalculateCheckoutPrice");
+      dispatch("buildMonth");
     },
-    changeTimeFilter: ({ state, commit }, payload) => {
+    changeTimeFilter: ({ state, commit, dispatch }, payload) => {
       commit("resetDates");
       let classFormat = state.bookings.availability.classFormat.format;
       if (classFormat === 45) {
@@ -237,9 +238,9 @@ const store = createStore({
         }
         commit("changeEndTime", payload.value);
       }
-      commit("buildMonth");
+      dispatch("buildMonth");
     },
-    changeClassFormat: ({ state, commit }, payload) => {
+    changeClassFormat: ({ state, commit, dispatch }, payload) => {
       commit("changeClassFormat", payload);
       commit("resetDates");
       const startTime = moment(state.bookings.availability.startTime, "HH:mm");
@@ -262,11 +263,21 @@ const store = createStore({
       } else if (endTime.isBefore(minEndTime)) {
         commit("changeEndTime", minEndTime.format("HH:mm"));
       }
-      commit("buildMonth");
+      dispatch("buildMonth");
     },
     renderDayWindow: ({ state, commit }, payload) => {
       commit("reposDayWindow", payload.position);
       commit("changeTargetDate", payload.date);
+    },
+    setClassData: ({ state, commit }) => {
+      commit("setClassCount", state.bookings.calendar.selectedDates.length);
+      commit("setClassFormat", state.bookings.availability.classFormat.format);
+      commit("setClassDates", state.bookings.calendar.selectedDates);
+    },
+    resetClassData: ({ state, commit }) => {
+      commit("setClassCount", null);
+      commit("setClassFormat", null);
+      commit("setClassDates", []);
     },
   },
   plugins: [
@@ -276,15 +287,12 @@ const store = createStore({
         bookings: {
           booking: {
             classData: {
-              classCount: state.bookings.booking.classData.classCount,
-              classFormat: state.bookings.booking.classData.classFormat,
-              desiredHourRange:
-                state.bookings.booking.classData.desiredHourRange,
+              count: state.bookings.booking.classData.count,
+              format: state.bookings.booking.classData.format,
               dates: state.bookings.booking.classData.dates,
             },
           },
           calendar: {
-            maxDates: state.bookings.calendar.maxDates,
             selectedDates: state.bookings.calendar.selectedDates,
           },
         },

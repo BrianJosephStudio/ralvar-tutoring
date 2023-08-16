@@ -53,7 +53,7 @@ function setActiveDay(event, hourString) {
   store.dispatch("toggleSelectedDate", {
     date: targetDateMoment.format("YYYY/MM/DD hh:mm a")
   });
-  // store.commit("buildMonth");
+  // store.dispatch("buildMonth");
 }
 function getHourArray() {
   const targetDate = store.state.bookings.calendar.targetDate;
