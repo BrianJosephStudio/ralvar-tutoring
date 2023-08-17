@@ -44,7 +44,7 @@
                 <input type="text" id="city" name="city" placeholder="e.g. Madrid">
             </div>
 
-            <button type="submit">Submit</button>
+            <button @click="submitBookingData">Submit</button>
         </form>
     </div>
 </template>
@@ -53,11 +53,11 @@
 import { onMounted } from "vue"
 import { useStore } from "vuex";
 import { useRouter } from 'vue-router'
+improt 
 
 const store = useStore();
 const router = useRouter();
-
-if (store.state.bookings.booking.classData.dates.length == 0) {
+if (store.state.bookings.booking.classData.dates.length === 0) {
     router.replace("/bookings")
 }
 onMounted(() => {
@@ -70,7 +70,9 @@ onMounted(() => {
         })
     })
 })
-
+const submitBookingData = () => {
+    
+}
 </script>
 
 <style scoped lang="scss">
