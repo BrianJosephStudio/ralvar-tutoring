@@ -132,5 +132,5 @@ export function dayGridType(day) {
       output.class = "dayGrid_unavailable";
     }
   }
-  return output;
+    return output;
 }

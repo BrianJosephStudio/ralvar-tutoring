@@ -1,5 +1,5 @@
 <template>
-  <div ref="dayGrid" :id="props.class" :class="props.class" :data-date="dataDate" :data-av="props.available"
+  <div ref="dayGrid" :id="props.class" :class="props.classname" :data-date="dataDate" :data-av="props.available"
     :data-partial="props.partial" @click="(event) => handleClick(event)">
     <h1>{{ title }}</h1>
   </div>
@@ -16,7 +16,7 @@ const props = defineProps({
   day: Object,
   Active:Boolean,
   title: String,
-  class: String,
+  classname: String,
   type: String,
   selectableDates: Number,
   dataDate: String,
@@ -45,6 +45,7 @@ function clickOut() {
   emitter.emit("closeMenus");
 }
 function handleClick(event) {
+console.log(store.state.bookings.availability.unavailable)
   event.stopPropagation();
   emitter.emit("closeMenus");
   const target = event.currentTarget

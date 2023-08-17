@@ -1,9 +1,13 @@
 <template>
   <transition name="fade">
-    <div class="dayWindow" v-if="store.state.bookings.calendar.targetDate !== null" :style="{
-      left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
-      top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
-    }">
+    <div
+      class="dayWindow"
+      v-if="store.state.bookings.calendar.targetDate !== null"
+      :style="{
+        left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
+        top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
+      }"
+    >
       <div class="header">
         <h2>
           {{
@@ -15,8 +19,14 @@
         </h2>
       </div>
       <div class="hourList">
-        <HourItem v-for="item in getHourArray()" :hour="item.hour" :className="item.class" :Title="item.title"
-          :Clickable="item.clickable" @click="event => setActiveDay(event, item.hour)">
+        <HourItem
+          v-for="item in getHourArray()"
+          :hour="item.hour"
+          :className="item.class"
+          :Title="item.title"
+          :Clickable="item.clickable"
+          @click="(event) => setActiveDay(event, item.hour)"
+        >
         </HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
@@ -33,25 +43,24 @@ import { ref, inject } from "vue";
 // Data
 const store = useStore();
 const props = defineProps({
-  Date: String
+  Date: String,
 });
-const emitter = inject("emitter")
+const emitter = inject("emitter");
 
 //Methods
 function setActiveDay(event, hourString) {
-  event.stopPropagation()
+  event.stopPropagation();
   const target = event.currentTarget;
-  if (!eval(target.dataset.clickable)) { return }
+  if (!eval(target.dataset.clickable)) {
+    return;
+  }
   const hour = moment(hourString, "HH:mm");
   const targetDate = store.state.bookings.calendar.targetDate;
-  const targetDateMoment = moment(
-    targetDate,
-    "YYYY/MM/DD hh:mm a"
-  );
+  const targetDateMoment = moment(targetDate, "YYYY/MM/DD hh:mm a");
   targetDateMoment.set("hour", hour.hour()).set("minute", hour.minute());
 
   store.dispatch("toggleSelectedDate", {
-    date: targetDateMoment.format("YYYY/MM/DD hh:mm a")
+    date: targetDateMoment.format("YYYY/MM/DD hh:mm a"),
   });
   // store.dispatch("buildMonth");
 }
@@ -69,6 +78,7 @@ function getHourArray() {
   const endTime = moment(store.state.bookings.availability.endTime, "HH:mm")
     .set("month", date.month())
     .set("date", date.date());
+  console.log(store.state.bookings.availability.unavailable);
   const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 
   const output = [];
@@ -92,24 +102,26 @@ function getHourArray() {
     const selectedDates = store.state.bookings.calendar.selectedDates;
 
     let found = false;
-    selectedDates.forEach(selDate => {
-      selDate = moment(selDate.date, "YYYY/MM/DD hh:mm a")
+    selectedDates.forEach((selDate) => {
+      selDate = moment(selDate.date, "YYYY/MM/DD hh:mm a");
       if (
         date.year() === selDate.year() &&
         date.month() === selDate.month() &&
         date.date() === selDate.date()
       ) {
         if (selDate.format("HH:mm") === start) {
-          item.class = "active"
-          item.title = "You have selected this time"
-          found = true
+          item.class = "active";
+          item.title = "You have selected this time";
+          found = true;
           output.push(item);
           hour.add(-(classFormat - 30), "minutes");
-          return
+          return;
         }
       }
-    })
-    if (found) { continue }
+    });
+    if (found) {
+      continue;
+    }
 
     if (day < moment().date() && month < moment().month()) {
       continue;
@@ -128,7 +140,7 @@ function getHourArray() {
       if (startDate.isBefore(startTime) || endDate.isAfter(endTime)) {
         item.class = "partiallyAvailable";
         item.title = "Time is available but it's outside of your hour range.";
-        item.clickable = false
+        item.clickable = false;
       }
     }
     unavailable.forEach((monthObject) => {
@@ -142,7 +154,7 @@ function getHourArray() {
             item.class = "partiallyAvailable";
             item.title =
               "Time is available but it's outside of your hour range.";
-            item.clickable = false
+            item.clickable = false;
           }
         } else {
           monthObject.items.forEach((dayObject) => {
@@ -150,7 +162,7 @@ function getHourArray() {
               if (!dayObject.available && !dayObject.partialAvailability) {
                 item.class = "unavailable";
                 item.title = "This time is not available";
-                item.clickable = false
+                item.clickable = false;
               } else {
                 dayObject.items.forEach((hourObject) => {
                   if (
@@ -161,11 +173,11 @@ function getHourArray() {
                   ) {
                     item.class = "unavailable";
                     item.title = "This time already passed";
-                    item.clickable = false
+                    item.clickable = false;
                   } else if (hourObject.time === start) {
                     if (hourObject.available) {
                       item.class = "partiallyAvailable";
-                      item.clickable = false
+                      item.clickable = false;
                       if (
                         moment(hourObject.time, "HH:mm")
                           .set("month", date.month())
@@ -181,7 +193,7 @@ function getHourArray() {
                     } else {
                       item.class = "unavailable";
                       item.title = "This time is not available";
-                      item.clickable = false
+                      item.clickable = false;
                     }
                   }
                 });

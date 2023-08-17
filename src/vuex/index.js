@@ -60,9 +60,12 @@ const store = createStore({
       );
       currentDate.add(payload.amount, "month");
       state.bookings.calendar.currentDate =
-        currentDate.format("YYYY/MM/DD hh:mm a");
+      currentDate.format("YYYY/MM/DD hh:mm a");
       state.bookings.calendar.currentMonth = currentDate.format("MMMM");
       state.bookings.calendar.currentYear = currentDate.format("YYYY");
+    },
+    changeMonthArray: (state, payload) => {
+      state.bookings.calendar.monthArray = payload;
     },
     changeTargetDate: (state, payload) => {
       state.bookings.calendar.targetDate = payload;
@@ -136,10 +139,11 @@ const store = createStore({
     },
     setClassDates: (state, payload) => {
       state.bookings.booking.classData.dates = payload;
+      console.log(state.bookings.booking.classData.dates);
     },
   },
   actions: {
-    buildMonth: ({ state }) => {
+    buildMonth: ({ state, commit }) => {
       let currentDate = moment(
         state.bookings.calendar.currentDate,
         "YYYY/MM/DD hh:mm a"
@@ -157,8 +161,8 @@ const store = createStore({
         // monthDay : {date,available,partialAvailability,class,active}
         monthDays.push(monthDay);
       }
-      console.log("termina");
-      state.bookings.calendar.monthArray = monthDays;
+      // console.log(monthDays)
+      commit("changeMonthArray",monthDays);
     },
     toggleSelectedDate: ({ state, commit, dispatch }, payload) => {
       const targetDate = moment(payload.date, "YYYY/MM/DD hh:mm a");

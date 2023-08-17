@@ -32,24 +32,25 @@
           </svg>
         </div>
       </div>
+
       <!-- <div class="dayWindows">
-                    <DayWindow v-for="date in this.$store.state.bookings.calendar.selectedDates" :date="date"
-                        :classFormat="this.$store.state.bookings.booking.classData.classFormat" />
-                </div> -->
+        <DayWindow v-for="date in this.$store.state.bookings.calendar.selectedDates" :date="date"
+        :classFormat="this.$store.state.bookings.booking.classData.classFormat" />
+      </div> -->
     </div>
   </div>
 </template>
 <script setup>
 /* Imports */
 import mitt from "mitt";
-import { useRouter } from "vue-router"
+import { useRouter } from "vue-router";
 import ClassFormat from "../components/ClassFormat.vue";
 import HourRange from "../components/HourRange.vue";
 import MonthGrid from "../components/MonthGrid.vue";
 import DayWindow from "../components/DayWindow.vue";
 import SidePanel from "../components/SidePanel.vue";
 import { useStore } from "vuex";
-import { provide, onMounted, onUpdated } from "vue";
+import { provide, onMounted, onUpdated, ref } from "vue";
 import moment from "moment";
 import { dayGridType } from "../modules/static";
 import server from "../modules/server.js";
@@ -61,22 +62,17 @@ const props = defineProps({
 /* Data */
 const store = useStore();
 const router = useRouter();
-store.dispatch("buildMonth");
 
-router.beforeEach((to, from) => {
-  console.log("aqui")
-  if (store.state.bookings.booking.classData.dates.length < 1) {
-    console.log("no me digas que")
-    store.commit("resetDates");
-  }
-  console.log("y alla")
-  store.commit("recalculateCheckoutPrice");
-  console.log("coño")
+console.log(store.state.bookings.availability.unavailable)
+onMounted(() => {
   store.dispatch("buildMonth");
-  console.log("coñoooo")
-})
+});
+onUpdated(() => {
+  console.log("onUpdated");
+  // store.dispatch("buildMonth");
+  renderSelectedDates();
+});
 // store.dispatch("resetClassData")
-
 /* Calendar Events Handling */
 
 const emitter = mitt();
@@ -102,25 +98,24 @@ function changeMonth(n) {
   // emitter.emit("monthChange");
 }
 function renderSelectedDates() {
-  //create div array
   let selectedDates = store.state.bookings.calendar.selectedDates;
-  let days = document.getElementById("monthGrid").children;
+  let days = [...document.getElementById("monthGrid").children];
 
-  for (let i = 0; i < days.length; i++) {
-    days.item(i).classList.remove("dayGridActive");
+  days.forEach((item) => {
+    item.classList.remove("dayGridActive");
+    const itemDate = moment(item.getAttribute("data-date"),"YYYY/MM/DD hh:mm a")
+    
+    selectedDates.forEach((sItem) => {
+      const sItemDate = moment(sItem.date,"YYYY/MM/DD hh:mm a")
 
-    setTimeout(() => {
-      for (let j = 0; j < selectedDates.length; j++) {
-        if (selectedDates[j].date === days.item(i).getAttribute("data-date")) {
-          days.item(i).className = "dayGridd";
-          days.item(i).classList.add("dayGridActive");
-
-          break;
-        }
+      if (itemDate.format("YYYY/MM/DD") === sItemDate.format("YYYY/MM/DD")) {
+        item.className = "dayGrid";
+        item.classList.add("dayGridActive");
       }
-    }, 0);
-  }
+    });
+  });
 }
+
 function updateAvailability() {
   // const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 

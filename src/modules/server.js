@@ -1,6 +1,8 @@
 import store from "../vuex";
 
 async function checkDate() {
+  console.log(store.state.bookings.availability.unavailable);
+
   const params = new URLSearchParams();
 
   params.append(
@@ -12,15 +14,26 @@ async function checkDate() {
   const queryStrings = params.toString();
 
   const url = `http://localhost:3000/api/availability?${queryStrings}`;
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    store.commit("changeUnavailable", json);
+  } catch (e) {
+    console.error(e);
+  }
+console.log(store.state.bookings.availability.unavailable)
+}
+async function submitBookingData(data){
+  const url = `http://localhost:3000/api/submitBookingData`;
+  const response = await fetch(url,{
 
-  return await fetch(url)
-    .then((res) => {
-      return res.json();
-    })
-    .then((res) => {
-      store.commit("changeUnavailable", res);
-    });
+  })
+  if(response.ok){
+    const data = await response.json()
+  }
+  //do something with json
 }
 export default {
   checkDate,
+  submitBookingData,
 };

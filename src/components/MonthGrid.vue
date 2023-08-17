@@ -5,11 +5,11 @@
       :title="day"
       :class="'dayName'"
     />
-
+    
     <DayGrid
       v-for="day in monthArray"
       :day="day.date"
-      :class="`${day.class} ${day.active}`"
+      :classname="`${day.class} ${day.active}`"
       :available="day.available"
       :partial="day.partialAvailability"
       :title="day.date.format('Do').slice(0, -2)"
