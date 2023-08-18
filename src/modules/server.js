@@ -1,6 +1,6 @@
 import store from "../vuex";
 
-async function checkDate() {
+export async function checkDate() {
   console.log(store.state.bookings.availability.unavailable);
 
   const params = new URLSearchParams();
@@ -21,19 +21,20 @@ async function checkDate() {
   } catch (e) {
     console.error(e);
   }
-console.log(store.state.bookings.availability.unavailable)
+  console.log(store.state.bookings.availability.unavailable);
 }
-async function submitBookingData(data){
+export async function submitBookingData(booking) {
   const url = `http://localhost:3000/api/submitBookingData`;
-  const response = await fetch(url,{
-
-  })
-  if(response.ok){
-    const data = await response.json()
+  const options = {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(booking),
+  };
+  const response = fetch(url, options);
+  if (response.ok) {
+    const data = await response.json();
   }
   //do something with json
 }
-export default {
-  checkDate,
-  submitBookingData,
-};

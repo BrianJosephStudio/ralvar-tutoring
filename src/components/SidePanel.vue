@@ -5,22 +5,19 @@
         {{ store.state.bookings.calendar.selectedDates.length }}
         {{
           store.state.bookings.calendar.selectedDates.length > 1
-            ? "classes"
-            : "class"
+          ? "classes"
+          : "class"
         }}
       </h1>
     </div>
     <div class="itemsBox">
-      <CartItem
-        v-for="selectedDate of store.state.bookings.calendar.selectedDates"
-        :Title="getItemName(selectedDate)"
-        :selectedDate="selectedDate.date"
-      ></CartItem>
+      <CartItem v-for="selectedDate of store.state.bookings.calendar.selectedDates" :Title="getItemName(selectedDate)"
+        :selectedDate="selectedDate.date"></CartItem>
     </div>
     <div class="footer">
       <h1>{{ store.state.bookings.booking.paymentData.checkoutPrice }}€</h1>
       <div class="continueButton" @click="consolidateClassSelection">
-        <h1 >Continue</h1>
+        <h1>Continue</h1>
       </div>
     </div>
   </div>
@@ -45,7 +42,7 @@ onMounted(() => {
 //   store.commit("recalculateCheckoutPrice");
 // });
 function consolidateClassSelection() {
-  store.commit("setClassDates",store.state.bookings.calendar.selectedDates);
+  store.dispatch("setClassData");
   router.replace("/client-data");
 }
 function togglePos() {

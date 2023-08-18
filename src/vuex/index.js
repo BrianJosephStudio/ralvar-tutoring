@@ -23,8 +23,9 @@ const store = createStore({
             name: String,
             lastName: String,
             email: String,
-            birthDate: String,
-            address: String,
+            phone: String,
+            birthday: String,
+            city: String,
           },
           paymentData: {
             checkoutPrice: 0,
@@ -60,7 +61,7 @@ const store = createStore({
       );
       currentDate.add(payload.amount, "month");
       state.bookings.calendar.currentDate =
-      currentDate.format("YYYY/MM/DD hh:mm a");
+        currentDate.format("YYYY/MM/DD hh:mm a");
       state.bookings.calendar.currentMonth = currentDate.format("MMMM");
       state.bookings.calendar.currentYear = currentDate.format("YYYY");
     },
@@ -86,7 +87,6 @@ const store = createStore({
         null,
         2
       );
-      // console.log(state.bookings.availability.unavailable);
     },
     reposDayWindow: (state, payload) => {
       state.bookings.calendar.dayWindowPos = payload;
@@ -141,6 +141,15 @@ const store = createStore({
       state.bookings.booking.classData.dates = payload;
       console.log(state.bookings.booking.classData.dates);
     },
+    //Client Data
+    setClientData: (state, payload) => {
+      state.bookings.booking.clientData.name = payload.name;
+      state.bookings.booking.clientData.lastName = payload.lastName;
+      state.bookings.booking.clientData.email = payload.email;
+      state.bookings.booking.clientData.phone = payload.phone;
+      state.bookings.booking.clientData.birthday = payload.birthday;
+      state.bookings.booking.clientData.city = payload.city;
+    },
   },
   actions: {
     buildMonth: ({ state, commit }) => {
@@ -162,7 +171,7 @@ const store = createStore({
         monthDays.push(monthDay);
       }
       // console.log(monthDays)
-      commit("changeMonthArray",monthDays);
+      commit("changeMonthArray", monthDays);
     },
     toggleSelectedDate: ({ state, commit, dispatch }, payload) => {
       const targetDate = moment(payload.date, "YYYY/MM/DD hh:mm a");

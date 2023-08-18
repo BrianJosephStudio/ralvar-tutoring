@@ -25,7 +25,7 @@
 import { ref, inject } from 'vue'
 import HourMenu from './HourMenu.vue'
 import { useStore } from 'vuex'
-import server from '../modules/server.js'
+import { checkDate } from '../modules/server.js'
 
 const store = useStore()
 
@@ -79,7 +79,7 @@ const changeOption = async (event, option, menu) => {
     store.dispatch('changeTimeFilter', { value: option, filter: menu })
     document.removeEventListener('click', clickOut)
     emitter.emit('closeMenus')
-    await server.checkDate()
+    await checkDate()
     emitter.emit('updateAvailability')
 }
 function clickOut() {

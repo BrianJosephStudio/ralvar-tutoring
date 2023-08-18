@@ -53,7 +53,7 @@ import { useStore } from "vuex";
 import { provide, onMounted, onUpdated, ref } from "vue";
 import moment from "moment";
 import { dayGridType } from "../modules/static";
-import server from "../modules/server.js";
+import { checkDate } from "../modules/server.js";
 
 /* Props */
 const props = defineProps({
@@ -63,10 +63,6 @@ const props = defineProps({
 const store = useStore();
 const router = useRouter();
 
-console.log(store.state.bookings.availability.unavailable)
-onMounted(() => {
-  store.dispatch("buildMonth");
-});
 onUpdated(() => {
   console.log("onUpdated");
   // store.dispatch("buildMonth");
@@ -103,10 +99,10 @@ function renderSelectedDates() {
 
   days.forEach((item) => {
     item.classList.remove("dayGridActive");
-    const itemDate = moment(item.getAttribute("data-date"),"YYYY/MM/DD hh:mm a")
-    
+    const itemDate = moment(item.getAttribute("data-date"), "YYYY/MM/DD hh:mm a")
+
     selectedDates.forEach((sItem) => {
-      const sItemDate = moment(sItem.date,"YYYY/MM/DD hh:mm a")
+      const sItemDate = moment(sItem.date, "YYYY/MM/DD hh:mm a")
 
       if (itemDate.format("YYYY/MM/DD") === sItemDate.format("YYYY/MM/DD")) {
         item.className = "dayGrid";
@@ -145,7 +141,8 @@ function updateAvailability() {
 }
 
 onMounted(() => {
-  server.checkDate();
+  store.dispatch("buildMonth");
+  checkDate();
   updateAvailability();
   // renderSelectedDates();
 });

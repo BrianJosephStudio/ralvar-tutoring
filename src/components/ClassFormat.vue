@@ -12,7 +12,7 @@ import { useRouter } from 'vue-router'
 import { inject, ref } from 'vue'
 import FilterCard from './FilterCard.vue'
 import FilterMenu from './FilterMenu.vue'
-import server from '../modules/server.js'
+import { checkDate } from '../modules/server.js'
 
 const props = defineProps({
 })
@@ -47,7 +47,7 @@ const changeOption = async (event, classFormat) => {
     document.removeEventListener('click', clickOut)
     store.dispatch('changeClassFormat', classFormat)
     isOpen.value = false
-    await server.checkDate()
+    await checkDate()
     emitter.emit('updateAvailability')
 }
 function clickOut() {

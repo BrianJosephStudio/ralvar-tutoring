@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
 
-        <form action="/submit" method="post">
+        <form>
             <div class="row">
                 <label for="first-name">First Name:</label>
                 <input type="text" id="first-name" name="first-name" required>
@@ -27,7 +27,7 @@
                 <input type="date" id="birthday" name="birthday">
             </div>
 
-            <label>Gender:</label>
+            <!-- <label>Gender:</label>
             <div class="row">
                 <input type="radio" id="male" name="gender" value="male">
                 <label for="male">Male</label>
@@ -37,14 +37,14 @@
                 <label for="other">Other</label>
             </div>
             <input type="text" id="other-gender" name="other-gender" placeholder="Specify your gender"
-                style="opacity: 0;transition: 0.5s;">
+                style="opacity: 0;transition: 0.5s;"> -->
 
             <div class="row">
                 <label for="city">City:</label>
                 <input type="text" id="city" name="city" placeholder="e.g. Madrid">
             </div>
 
-            <button @click="submitBookingData">Submit</button>
+            <button @click="event => proceedToPayment(event)">Submit</button>
         </form>
     </div>
 </template>
@@ -53,7 +53,7 @@
 import { onMounted } from "vue"
 import { useStore } from "vuex";
 import { useRouter } from 'vue-router'
-improt 
+import { submitBookingData } from "../modules/server.js"
 
 const store = useStore();
 const router = useRouter();
@@ -70,8 +70,22 @@ onMounted(() => {
         })
     })
 })
-const submitBookingData = () => {
-    
+const proceedToPayment = (event) => {
+    event.preventDefault()
+    console.log("goes in")
+    const formData = {
+        name: document.getElementById('first-name').value,
+        lastName: document.getElementById('last-name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        birthday: document.getElementById('birthday').value,
+        city: document.getElementById('city').value
+    };
+    store.commit("setClientData", formData)
+    submitBookingData(store.state.bookings.booking)
+    router.push("/payment")
+    console.log(store.state.bookings.booking)
+
 }
 </script>
 

@@ -14,7 +14,7 @@ const props = defineProps({
   available: Boolean,
   partial: Boolean,
   day: Object,
-  Active:Boolean,
+  Active: Boolean,
   title: String,
   classname: String,
   type: String,
@@ -45,7 +45,7 @@ function clickOut() {
   emitter.emit("closeMenus");
 }
 function handleClick(event) {
-console.log(store.state.bookings.availability.unavailable)
+  console.log(store.state.bookings.availability.unavailable)
   event.stopPropagation();
   emitter.emit("closeMenus");
   const target = event.currentTarget
