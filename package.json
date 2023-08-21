@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^2.1.0",
     "install": "^0.13.0",
     "mitt": "^3.0.0",
     "moment": "^2.29.4",
