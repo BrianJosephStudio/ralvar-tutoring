@@ -29,6 +29,8 @@ const store = createStore({
           },
           paymentData: {
             checkoutPrice: 0,
+            clientSecret: null,
+            confirmed: false,
           },
         },
         availability: {
@@ -53,7 +55,7 @@ const store = createStore({
     };
   },
   mutations: {
-    //General Calendar Logic
+    // * General Calendar Logic
     changeMonth: (state, payload) => {
       let currentDate = moment(
         state.bookings.calendar.currentDate,
@@ -91,7 +93,7 @@ const store = createStore({
     reposDayWindow: (state, payload) => {
       state.bookings.calendar.dayWindowPos = payload;
     },
-    //Calendar Selection
+    // * Calendar Selection
     addSelectedDate: (state, payload) => {
       const classFormat = state.bookings.availability.classFormat.format;
       const selDates = [...state.bookings.calendar.selectedDates];
@@ -122,7 +124,7 @@ const store = createStore({
     resetDates: (state) => {
       state.bookings.calendar.selectedDates = [];
     },
-    //Side Panel
+    // * Side Panel
     recalculateCheckoutPrice: (state) => {
       const classAmount = state.bookings.calendar.selectedDates.length;
       const classFormat = state.bookings.availability.classFormat.format;
@@ -130,7 +132,7 @@ const store = createStore({
       state.bookings.booking.paymentData.checkoutPrice =
         classPrice * classAmount;
     },
-    //Class data(Once selection has been confirmed)
+    // * Class data(Once selection has been confirmed)
     setClassCount: (state, payload) => {
       state.bookings.booking.classData.count = payload;
     },
@@ -141,7 +143,7 @@ const store = createStore({
       state.bookings.booking.classData.dates = payload;
       console.log(state.bookings.booking.classData.dates);
     },
-    //Client Data
+    // * Client Data
     setClientData: (state, payload) => {
       state.bookings.booking.clientData.name = payload.name;
       state.bookings.booking.clientData.lastName = payload.lastName;
@@ -149,6 +151,27 @@ const store = createStore({
       state.bookings.booking.clientData.phone = payload.phone;
       state.bookings.booking.clientData.birthday = payload.birthday;
       state.bookings.booking.clientData.city = payload.city;
+    },
+    resetClientData: (state) => {
+      state.bookings.booking.clientData.name = "";
+      state.bookings.booking.clientData.lastName = "";
+      state.bookings.booking.clientData.email = "";
+      state.bookings.booking.clientData.phone = "";
+      state.bookings.booking.clientData.birthday = "";
+      state.bookings.booking.clientData.city = "";
+    },
+    // * Payments Data
+    setClientSecret: (state, payload) => {
+      state.bookings.booking.paymentData.clientSecret = payload;
+    },
+    removeClientSecret: (state) => {
+      state.bookings.booking.paymentData.clientSecret = null;
+    },
+    confirmBooking: (state) => {
+      state.bookings.booking.paymentData.confirmed = true;
+    },
+    resetBookingConfirm: (state) => {
+      state.bookings.booking.paymentData.confirmed = false;
     },
   },
   actions: {
@@ -278,6 +301,33 @@ const store = createStore({
       }
       dispatch("buildMonth");
     },
+    renderSelectedDates: ({ state }) => {
+      const selectedDates = state.bookings.calendar.selectedDates;
+      const monthGrid = document.getElementById("monthGrid");
+      if (!monthGrid) {
+        return;
+      }
+      const days = [...monthGrid.children];
+
+      days.forEach((item) => {
+        item.classList.remove("dayGridActive");
+        const itemDate = moment(
+          item.getAttribute("data-date"),
+          "YYYY/MM/DD hh:mm a"
+        );
+
+        selectedDates.forEach((sItem) => {
+          const sItemDate = moment(sItem.date, "YYYY/MM/DD hh:mm a");
+
+          if (
+            itemDate.format("YYYY/MM/DD") === sItemDate.format("YYYY/MM/DD")
+          ) {
+            item.className = "dayGrid";
+            item.classList.add("dayGridActive");
+          }
+        });
+      });
+    },
     renderDayWindow: ({ state, commit }, payload) => {
       commit("reposDayWindow", payload.position);
       commit("changeTargetDate", payload.date);
@@ -292,7 +342,24 @@ const store = createStore({
       commit("setClassFormat", null);
       commit("setClassDates", []);
     },
+    checkClientSecret: ({ state }) => {
+      if (state.bookings.booking.paymentData.clientSecret) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    resetAllState: ({ commit, dispatch }) => {
+      commit("resetDates");
+      commit("recalculateCheckoutPrice");
+      dispatch("resetClassData");
+      commit("resetClientData");
+      commit("removeClientSecret");
+      commit("resetBookingConfirm");
+      dispatch("renderSelectedDates");
+    },
   },
+  /*
   plugins: [
     new VuexPersistence({
       storage: window.localStorage,
@@ -311,6 +378,6 @@ const store = createStore({
         },
       }),
     }).plugin,
-  ],
+  ],*/
 });
 export default store;

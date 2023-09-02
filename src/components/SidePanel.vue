@@ -16,8 +16,11 @@
     </div>
     <div class="footer">
       <h1>{{ store.state.bookings.booking.paymentData.checkoutPrice }}€</h1>
-      <div class="continueButton" @click="consolidateClassSelection">
+      <div class="panelButton" @click="consolidateClassSelection">
         <h1>Continue</h1>
+      </div>
+      <div class="panelButton" @click="() => store.dispatch('resetAllState')">
+        <h1>Start Over</h1>
       </div>
     </div>
   </div>
@@ -93,7 +96,7 @@ function getItemName(selectedDate) {
     padding: 12px;
     margin-top: auto;
 
-    .continueButton {
+    .panelButton {
       width: 80%;
       border-radius: 24px;
       background-color: hsl(260, 40%, 75%);

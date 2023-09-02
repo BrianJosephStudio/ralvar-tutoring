@@ -70,9 +70,8 @@ onMounted(() => {
         })
     })
 })
-const proceedToPayment = (event) => {
+const proceedToPayment = async (event) => {
     event.preventDefault()
-    console.log("goes in")
     const formData = {
         name: document.getElementById('first-name').value,
         lastName: document.getElementById('last-name').value,
@@ -81,11 +80,25 @@ const proceedToPayment = (event) => {
         birthday: document.getElementById('birthday').value,
         city: document.getElementById('city').value
     };
+    /**
+     * todo: PERFORM FORMDATA VALIDATION
+     */
     store.commit("setClientData", formData)
+    /**
+     * ! THIS SHOULD ONLY HAPPEN IF VALIDATION IS PASSED
+     */
     submitBookingData(store.state.bookings.booking)
-    router.push("/payment")
-    console.log(store.state.bookings.booking)
+        .then(response => {
+            console.log(response.message)
+            console.log(response.clientSecret)
+            store.commit("setClientSecret", response.clientSecret)
+            router.push("/payment")
 
+        })
+        .catch(e => {
+            console.error(e);
+            console.log("Something has gone wrong, please try again.")
+        })
 }
 </script>
 

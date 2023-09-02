@@ -1,7 +1,8 @@
 import store from "../vuex";
+const api = "http://localhost:3000/api";
 
 export async function checkDate() {
-  console.log(store.state.bookings.availability.unavailable);
+  // console.log(store.state.bookings.availability.unavailable);
 
   const params = new URLSearchParams();
 
@@ -13,7 +14,7 @@ export async function checkDate() {
   params.append("endTime", store.state.bookings.availability.endTime);
   const queryStrings = params.toString();
 
-  const url = `http://localhost:3000/api/availability?${queryStrings}`;
+  const url = `${api}/availability/fetchAvailableDates?${queryStrings}`;
   try {
     const res = await fetch(url);
     const json = await res.json();
@@ -21,10 +22,10 @@ export async function checkDate() {
   } catch (e) {
     console.error(e);
   }
-  console.log(store.state.bookings.availability.unavailable);
+  // console.log(store.state.bookings.availability.unavailable);
 }
 export async function submitBookingData(booking) {
-  const url = `http://localhost:3000/api/submitBookingData`;
+  const url = `${api}/bookings/submitBookingData`;
   const options = {
     method: "post",
     headers: {
@@ -32,9 +33,53 @@ export async function submitBookingData(booking) {
     },
     body: JSON.stringify(booking),
   };
-  const response = fetch(url, options);
+  const response = await fetch(url, options);
   if (response.ok) {
-    const data = await response.json();
+    return await response.json();
+  } else {
+    throw await response.text();
   }
-  //do something with json
+}
+export async function createPaymentIntent() {
+  return await fetch(`${api}/payments/paymentIntent`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      amount: store.state.bookings.booking.paymentData.checkoutPrice,
+    }),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+      const { clientSecret } = await response.json();
+      return clientSecret;
+    })
+    .catch((e) => console.error(e));
+}
+export async function abortBooking() {
+  console.log(
+    "client secret is : ",
+    store.state.bookings.booking.paymentData.clientSecret
+  );
+  const clientSecret = store.state.bookings.booking.paymentData.clientSecret;
+  return await fetch(`${api}/bookings/abortBooking`, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      clientSecret: clientSecret,
+    }),
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+    })
+    .then((response) => {
+      console.log(response.message);
+    })
+    .catch((e) => console.console.error(e));
 }

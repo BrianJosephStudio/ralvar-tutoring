@@ -1,13 +1,9 @@
 <template>
   <transition name="fade">
-    <div
-      class="dayWindow"
-      v-if="store.state.bookings.calendar.targetDate !== null"
-      :style="{
-        left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
-        top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
-      }"
-    >
+    <div class="dayWindow" v-if="store.state.bookings.calendar.targetDate !== null" :style="{
+      left: `${store.state.bookings.calendar.dayWindowPos[0]}px`,
+      top: `${store.state.bookings.calendar.dayWindowPos[1]}px`,
+    }">
       <div class="header">
         <h2>
           {{
@@ -19,14 +15,8 @@
         </h2>
       </div>
       <div class="hourList">
-        <HourItem
-          v-for="item in getHourArray()"
-          :hour="item.hour"
-          :className="item.class"
-          :Title="item.title"
-          :Clickable="item.clickable"
-          @click="(event) => setActiveDay(event, item.hour)"
-        >
+        <HourItem v-for="item in getHourArray()" :hour="item.hour" :className="item.class" :Title="item.title"
+          :Clickable="item.clickable" @click="(event) => setActiveDay(event, item.hour)">
         </HourItem>
         <!-- v-for="hour in getHourArray(date)" :hour="hour" -->
       </div>
@@ -78,7 +68,7 @@ function getHourArray() {
   const endTime = moment(store.state.bookings.availability.endTime, "HH:mm")
     .set("month", date.month())
     .set("date", date.date());
-  console.log(store.state.bookings.availability.unavailable);
+  // console.log(store.state.bookings.availability.unavailable);
   const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 
   const output = [];

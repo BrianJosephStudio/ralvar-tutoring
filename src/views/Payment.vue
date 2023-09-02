@@ -1,5 +1,11 @@
 <template>
     <div class="payment">
+        <div ref="timeoutWarning" class="timeoutWarning">
+            <div class="warningFrame">
+                <h1 ref="warningCountdown">60</h1>
+                <h1>Seems a little quiet in here... are you still there?</h1>
+            </div>
+        </div>
         <form id="payment-form" class="form">
             <div id="link-authentication-element">
                 <!--Stripe.js injects the Link Authentication Element-->
@@ -17,36 +23,34 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue"
+import { onMounted, ref } from "vue"
 import { useStore } from "vuex";
-import { useRouter } from 'vue-router'
-import { loadStripe } from "@stripe/stripe-js"
+import { useRouter, onBeforeRouteLeave } from 'vue-router'
+import { loadStripe } from "@stripe/stripe-js";
+import { createPaymentIntent } from "../modules/server";
+import { abortBooking } from "../modules/server";
+const API_KEY = `pk_test_51NgmsQICkqKXp7Quz3Pg96iYp2kMrCDzTv2haJP322fpyrJOQJBWL8WrZexBzfeNnNSQgfqoMqKl8tS9TT1Yv1ip00ZMzwmQzu`
 
 
 const store = useStore();
 const router = useRouter();
+const timeoutWarning = ref(null)
+const warningCountdown = ref(null)
+let idleTimeOut;
+let idleWarning
+let idleCountdown
 
 onMounted(async () => {
-    const stripe = await loadStripe(`pk_test_51NgmsQICkqKXp7Quz3Pg96iYp2kMrCDzTv2haJP322fpyrJOQJBWL8WrZexBzfeNnNSQgfqoMqKl8tS9TT1Yv1ip00ZMzwmQzu`)
+    startIdleTimeOut()
+    document.addEventListener("mousemove", resetIdleTimeOut)
+    document.addEventListener("keydown", resetIdleTimeOut)
+    return
+    const stripe = await loadStripe(API_KEY)
+    const clientSecret = await createPaymentIntent()
     let elements
-    const response = await fetch("http://localhost:3000/api/paymentIntent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            amount: store.state.bookings.booking.paymentData.checkoutPrice
-        })
-    })
-    if (!response.ok) {
-        console.log(await response.json())
-        return
-    }
-    const { clientSecret } = await response.json()
-    console.log("aqui")
-    console.log(clientSecret)
     const appearance = {
         theme: "stripe",
     }
-
     elements = stripe.elements({ appearance, clientSecret })
     let emailAddress = ""
     const linkAuthenticationElement = elements.create("linkAuthentication");
@@ -66,6 +70,55 @@ onMounted(async () => {
 
 
 })
+onBeforeRouteLeave((to, from) => {
+    if (!store.state.bookings.booking.paymentData.confirmed) {
+        const leave = window.confirm("If you leave now you will lose all your progress.")
+        if (leave) {
+            clearTimeout(idleTimeOut)
+            clearInterval(idleWarning)
+            document.removeEventListener("mousemove", resetIdleTimeOut)
+            document.removeEventListener("keydown", resetIdleTimeOut)
+            abortBooking()
+            store.dispatch("resetAllState")
+            return true
+        } else {
+            return false
+        }
+    }
+    clearTimeout(idleTimeOut)
+    clearInterval(idleWarning)
+
+})
+function startIdleTimeOut() {
+    idleTimeOut = setTimeout(() => {
+        showTimeOutWarning()
+    }, 1000 * 60 * 4);
+}
+function resetIdleTimeOut() {
+    clearTimeout(idleTimeOut)
+    startIdleTimeOut()
+    hideTimeOutWarning()
+}
+function showTimeOutWarning() {
+    timeoutWarning.value.style.opacity = "1"
+    idleCountdown = 60
+    idleWarning = setInterval(() => {
+        if (idleCountdown === 0) {
+            hideTimeOutWarning()
+            /**
+             * todo: cancel payment
+             */
+        } else {
+            console.log(warningCountdown)
+            warningCountdown.value.textContent = String(idleCountdown)
+        }
+        idleCountdown--
+    }, 1000);
+}
+function hideTimeOutWarning() {
+    timeoutWarning.value.style.opacity = "0"
+    clearInterval(idleWarning)
+}
 
 
 </script>
@@ -96,6 +149,39 @@ onMounted(async () => {
         .input {
             width: 500px;
             height: 30px;
+        }
+    }
+
+    .timeoutWarning {
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100vw;
+        height: 100vh;
+        background-color: hsla(0, 0%, 0%, 0.2);
+        backdrop-filter: blur(12px);
+        display: flex;
+        flex-direction: column;
+        place-content: center;
+
+        .warningFrame {
+            background-color: hsl(0, 0%, 90%);
+            width: 48rem;
+            height: 24rem;
+            display: flex;
+            flex-direction: column;
+            place-content: center;
+
+            h1 {
+                color: red;
+                font-size: 4rem;
+            }
+
+            h2 {
+                color: black;
+            }
         }
     }
 

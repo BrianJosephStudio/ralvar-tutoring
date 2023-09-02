@@ -64,11 +64,9 @@ const store = useStore();
 const router = useRouter();
 
 onUpdated(() => {
-  console.log("onUpdated");
-  // store.dispatch("buildMonth");
-  renderSelectedDates();
+  store.dispatch("renderSelectedDates");
 });
-// store.dispatch("resetClassData")
+
 /* Calendar Events Handling */
 
 const emitter = mitt();
@@ -93,6 +91,7 @@ function changeMonth(n) {
   store.dispatch("buildMonth");
   // emitter.emit("monthChange");
 }
+/*
 function renderSelectedDates() {
   let selectedDates = store.state.bookings.calendar.selectedDates;
   let days = [...document.getElementById("monthGrid").children];
@@ -111,6 +110,7 @@ function renderSelectedDates() {
     });
   });
 }
+*/
 
 function updateAvailability() {
   // const unavailable = JSON.parse(store.state.bookings.availability.unavailable);

@@ -1,5 +1,26 @@
 <script setup>
 import Header from './components/Header.vue';
+import { useRouter } from "vue-router"
+import { abortBooking } from "./modules/server.js"
+import store from './vuex';
+
+const router = useRouter()
+/**
+ * todo - CREATE NAVIGATION GUARD TO CHECK CLIENT SECRET IN VUEX BEFORE ALLOWING NAVIGATION INTO PAYMENTS.VUE
+ */
+router.beforeEach((to, from, next) => {
+  if (to.name === "Payment") {
+    const access = store.dispatch("checkClientSecret");
+    if (!access) {
+      next(false)
+      console.log("'Before Resolve' guard is forbidding this navigation")
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
 </script>
 
 <template>
