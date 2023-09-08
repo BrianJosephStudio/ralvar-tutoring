@@ -7,16 +7,10 @@
             </div>
         </div>
         <form id="payment-form" class="form">
-            <div id="link-authentication-element">
-                <!--Stripe.js injects the Link Authentication Element-->
-            </div>
             <div id="payment-element">
                 <!--Stripe.js injects the Payment Element-->
             </div>
-            <button id="submit">
-                <div class="spinner hidden" id="spinner"></div>
-                <span id="button-text">Pay now</span>
-            </button>
+            <button id="submit" @click="event => pay(event)">Pay now</button>
             <div id="payment-message" class="hidden"></div>
         </form>
     </div>
@@ -25,7 +19,7 @@
 <script setup>
 import { onMounted, ref } from "vue"
 import { useStore } from "vuex";
-import { useRouter, onBeforeRouteLeave } from 'vue-router'
+import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 import { loadStripe } from "@stripe/stripe-js";
 import { createPaymentIntent } from "../modules/server";
 import { abortBooking } from "../modules/server";
@@ -34,6 +28,8 @@ const API_KEY = `pk_test_51NgmsQICkqKXp7Quz3Pg96iYp2kMrCDzTv2haJP322fpyrJOQJBWL8
 
 const store = useStore();
 const router = useRouter();
+let stripe
+let elements
 const timeoutWarning = ref(null)
 const warningCountdown = ref(null)
 let idleTimeOut;
@@ -44,24 +40,20 @@ onMounted(async () => {
     startIdleTimeOut()
     document.addEventListener("mousemove", resetIdleTimeOut)
     document.addEventListener("keydown", resetIdleTimeOut)
-    return
-    const stripe = await loadStripe(API_KEY)
-    const clientSecret = await createPaymentIntent()
-    let elements
+    //
+    stripe = await loadStripe(API_KEY)
+    const clientSecret = store.state.bookings.booking.paymentData.clientSecret
     const appearance = {
-        theme: "stripe",
+        theme: "flat",
+        variables: {
+            colorPrimary: "hsl(260, 40%, 75%)",
+            colorBackground: "hsl(0, 0%, 96%)",
+        }
     }
     elements = stripe.elements({ appearance, clientSecret })
-    let emailAddress = ""
-    const linkAuthenticationElement = elements.create("linkAuthentication");
-    // linkAuthenticationElement.mount("#link-authentication-element");
-
-    // linkAuthenticationElement.on('change', (event) => {
-    //     emailAddress = event.value.email;
-    // });
 
     const paymentElementOptions = {
-        layout: "accordion",
+        layout: "tabs",
     };
 
     const paymentElement = elements.create("payment", paymentElementOptions);
@@ -89,6 +81,21 @@ onBeforeRouteLeave((to, from) => {
     clearInterval(idleWarning)
 
 })
+
+async function pay(event) {
+    event.preventDefault()
+
+
+    const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+            return_url: "http://localhost:3000/payment_processing",
+            receipt_email: store.state.bookings.booking.clientData.email
+        }
+    })
+
+}
+
 function startIdleTimeOut() {
     idleTimeOut = setTimeout(() => {
         showTimeOutWarning()
@@ -129,8 +136,9 @@ function hideTimeOutWarning() {
     width: 100vw;
     display: flex;
     flex-direction: column;
-    // place-items: center;
-    justify-content: center;
+    padding-top: 6rem;
+    justify-content: flex-start;
+    align-items: center;
 
     h1 {
         margin: 0;
@@ -140,15 +148,20 @@ function hideTimeOutWarning() {
 
     .form {
         display: flex;
-        // flex-direction: "column";
-        justify-content: center;
+        // justify-content: center;
+        // width: 24rem;
+        border-radius: 2rem;
+        padding: 2rem;
+        background-color: hsl(0, 0%, 99%);
+        box-shadow: 1rem 1rem 12px hsl(0, 0%, 94%);
         // width: 100%;
         // height: 50vh;
 
 
-        .input {
-            width: 500px;
-            height: 30px;
+        button {
+            font-family: 'Raleway';
+            background-color: hsl(260, 40%, 75%);
+            margin-left: 1rem;
         }
     }
 

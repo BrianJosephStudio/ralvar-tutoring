@@ -7,7 +7,7 @@
 
 <script setup>
 /* Imports */
-import { ref, onUpdated, onMounted, inject } from "vue";
+import { ref, onUpdated, onMounted, inject, nextTick } from "vue";
 import { useStore } from "vuex";
 /* Props */
 const props = defineProps({
@@ -31,12 +31,26 @@ const dayGrid = ref(null)
 
 
 function getDayGridPosition(event) {
-  const target = event.currentTarget;
-  const rect = target.getBoundingClientRect();
+  const offset = document.querySelector(".navBar").getBoundingClientRect().height
+  const dayGrid = event.currentTarget;
+  const dayRect = dayGrid.getBoundingClientRect();
   const innerHeight = window.innerHeight;
-  const DayWindowHeight = window.innerWidth * 0.24;
-  const top = Math.min(rect.top, innerHeight - DayWindowHeight - 6);
-  const left = rect.left + (window.innerWidth * 0.4) / 7;
+  const dayWindow = document.querySelector(".dayWindow")
+  const dayWindowHeight = parseInt(getComputedStyle(dayWindow).getPropertyValue("height"))
+  const dayWindowWidth = parseInt(getComputedStyle(dayWindow).getPropertyValue("width"))
+  const monthGrid = document.querySelector(".monthGrid")
+  const monthRect = monthGrid.getBoundingClientRect()
+
+  const margin = 12;
+
+  const top = Math.min(dayRect.top - offset, innerHeight - dayWindowHeight - offset - margin);
+  // const left = dayRect.right + margin;
+  let left
+  if (dayRect.right + dayWindowWidth > monthRect.right) {
+    left = dayRect.left - dayWindowWidth - margin
+  } else {
+    left = dayRect.right + margin
+  }
 
   return [left, top];
 }
@@ -52,10 +66,15 @@ function handleClick(event) {
   if (!eval(target.dataset.av) && !eval(target.dataset.partial)) {
     return;
   }
-  store.dispatch("renderDayWindow", {
-    date: props.dataDate,
-    position: getDayGridPosition(event),
-  });
+
+  store.commit("changeTargetDate", props.dataDate);
+  this.nextTick(() => {
+    store.commit("reposDayWindow", getDayGridPosition(event));
+  })
+  // store.dispatch("renderDayWindow", {
+  //   date: props.dataDate,
+  //   position: getDayGridPosition(event),
+  // });
   document.addEventListener("click", clickOut);
 }
 
@@ -69,32 +88,45 @@ function handleClick(event) {
   flex-direction: column;
   place-content: center;
   padding: 0px;
-  margin: 1px;
-  width: calc(40vw / 7 - 6px);
-  height: calc(25vw / 7 - 6px);
-  border-radius: 0.6vw;
+  // margin: 1px;
+  width: 7rem;
+  height: 4rem;
+  border-radius: 0.6rem;
   position: relative;
+
   // background: transparent;
+  h1 {
+    margin: 0px;
+
+  }
 }
 
 @mixin dayFontSize {
-  font-size: 1.5vw;
+  font-size: 1.8rem;
 }
 
 @mixin availableColor {
-  color: hsl(144, 70%, 40%);
+  color: hsl(144, 0%, 16%);
+  font-weight: 400;
 }
 
 @mixin otherMonth_availableColor {
-  color: hsl(144, 35%, 75%);
+  color: hsl(144, 0%, 50%);
+  font-weight: 200;
 }
 
 @mixin unavailableColor {
-  color: hsl(0, 78%, 72%);
+  color: hsl(0, 0%, 16%);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  font-weight: 200;
 }
 
 @mixin otherMonth_unavailableColor {
-  color: hsl(0, 78%, 90%);
+  color: hsl(0, 0%, 80%);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  font-weight: 200;
 }
 
 @mixin partialColor {
@@ -106,11 +138,17 @@ function handleClick(event) {
 }
 
 @mixin pastDateColor {
-  color: hsl(0, 0%, 75%)
+  color: hsl(0, 0%, 75%);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  font-weight: 200;
 }
 
 @mixin pastMonthColor {
-  color: hsl(0, 0%, 85%)
+  color: hsl(0, 0%, 85%);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  font-weight: 200;
 }
 
 @mixin gridHov {
@@ -118,10 +156,11 @@ function handleClick(event) {
 }
 
 .dayName {
-  @include grid;
+  // @include grid;
 
   h1 {
-    font-size: 1.1vw;
+    font-size: 1.5rem;
+    color: black
   }
 }
 
@@ -173,7 +212,7 @@ function handleClick(event) {
   background-color: hsl(260, 40%, 75%);
 
   h1 {
-    color: hsl(0, 0%, 100%);
+    color: hsl(0, 0%, 100%) !important;
   }
 }
 
@@ -247,7 +286,6 @@ function handleClick(event) {
   h1 {
     @include otherMonth_unavailableColor;
     @include dayFontSize;
-    margin: 0px;
   }
 }
 </style>

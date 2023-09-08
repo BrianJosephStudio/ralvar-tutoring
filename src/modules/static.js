@@ -57,7 +57,7 @@ export function dayGridType(day) {
   //if input day is in selectedDates, add active property to output.
   if (
     selectedDates.find((date) => {
-      date = moment(date.date, "YYYY/MM/DD hh:mm a");
+      date = moment(date.date);
 
       return date.format("YYYY/MM/DD") === day.format("YYYY/MM/DD");
     })

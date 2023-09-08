@@ -1,5 +1,5 @@
 <template>
-    <div class="tab" ref="filterMenu" data-menu-id="filterMenu">
+    <div class="tab" id="classFormatMenu" data-menu-id="filterMenu">
         <FilterCard :cardTitle="store.state.bookings.availability.classFormat.title" @click="toggleOpen" />
         <FilterMenu :ChangeOption="changeOption" :Open="isOpen" />
     </div>
@@ -21,20 +21,21 @@ const store = useStore()
 const router = useRouter();
 // const selected = ref(props.ClassFormat.selected)
 const isOpen = ref(false)
-const filterMenu = ref(null)
 
 const emitter = inject('emitter')
 /* Methods */
 
 emitter.on('closeMenus', exception => {
-    if (exception !== filterMenu.value.dataset.menuId) {
+    const filterMenu = document.getElementById("classFormatMenu")
+    if (exception !== filterMenu.dataset.menuId) {
         isOpen.value = false
     }
 })
 
 function toggleOpen(event) {
+    const filterMenu = document.getElementById("classFormatMenu")
     event.stopPropagation()
-    emitter.emit('closeMenus', filterMenu.value.dataset.menuId)
+    emitter.emit('closeMenus', filterMenu.dataset.menuId)
     isOpen.value = !isOpen.value
     if (isOpen.value) {
         document.addEventListener('click', clickOut)
@@ -58,10 +59,10 @@ function clickOut() {
 
 <style scoped>
 .tab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: auto;
     position: relative;
+    display: flex;
+    /* flex-direction: column; */
+    /* justify-items: center; */
+    /* width: auto; */
 }
 </style>

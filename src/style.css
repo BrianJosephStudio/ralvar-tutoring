@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Raleway', Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
@@ -37,9 +37,10 @@ body {
   margin: 0;
   display: flex;
 
-  place-items: top;
-  min-width: 320px;
+  /* place-items: top; */
+  min-width: 100vw;
   min-height: 100vh;
+  overflow: hidden;
 }
 p{
   color: black;
@@ -52,6 +53,7 @@ h1 {
   color: #1a1a1a;
   font-size: 2vw;
   line-height: 1.1;
+  font-weight: 400;
 }
 h2{
   font-family: 'Raleway', sans-serif;
@@ -62,35 +64,17 @@ h3{
   font-size: 20px;
   margin: 20px;
 }
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
+button{
+        border: none;
 }
 
 #app {
-  /*max-width: 1280px;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0 auto;
-  /*padding: 2rem;*/
   text-align: center;
+  overflow: hidden;
 }
 
 @media (prefers-color-scheme: light) {

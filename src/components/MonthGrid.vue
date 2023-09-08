@@ -1,10 +1,10 @@
 <template>
   <div id="monthGrid" class="monthGrid">
-    <DayGrid v-for="day in moment.weekdaysShort()" :title="day" :class="'dayName'" />
+    <DayGrid v-for="day in moment.weekdaysShort()" :title="day" classname="dayName" />
 
     <DayGrid v-for="day in monthArray" :day="day.date" :classname="`${day.class} ${day.active}`"
       :available="day.available" :partial="day.partialAvailability" :title="day.date.format('Do').slice(0, -2)"
-      :data-date="day.date.format('YYYY/MM/DD hh:mm a')" :id="monthArray.indexOf(day)" />
+      :data-date="day.date.toISOString()" :id="monthArray.indexOf(day)" />
   </div>
 </template>
 
@@ -29,11 +29,12 @@ const store = useStore();
 .monthGrid {
   display: grid;
   grid-template-columns: repeat(7, auto);
+  grid-gap: 0.3rem;
   /* place-content: center; */
   background-color: hsl(0, 0%, 94%);
-  width: 40vw;
-  padding: 12px;
-  border-radius: 0 0 1.5vw 1.5vw;
+  /* width: 60rem; */
+  padding: 0 0.6rem 1rem 0.6rem;
+  border-radius: 0 0 0 2rem;
   /* box-shadow: 10px 30px 50px 0px hsl(133, 0%, 85%); */
 }
 </style>

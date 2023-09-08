@@ -92,55 +92,43 @@ function clickOut() {
 <style scoped lang="scss">
 .container {
     display: flex;
-    // flex-direction: row;
-    margin: 0.5vw;
-    width: 20vw;
-    height: 3vw;
     overflow: visible;
+    gap: 0.3rem;
     cursor: pointer;
 
     .wrapper {
         position: relative;
-        display: flex;
-        place-content: center;
-        flex-direction: column;
-        overflow: visible;
+        flex-grow: 1;
 
         h1 {
-            align-self: center;
-            // position: absolute;
-            transform: translateY(0vh);
             transition: 1s;
-            font-size: 1.5vw;
+            font-size: 1.8rem;
+            margin: 0.3rem 0;
+        }
+
+        @mixin timeFrame {
+            display: flex;
+            place-content: center;
+            background-color: hsl(260, 40%, 75%);
+            transition: all 0.5s ease;
+
+            h1 {
+                color: white;
+            }
+
+            &:hover {
+                box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
+            }
         }
 
         .startTime {
-            display: flex;
-            place-content: center;
-            background-color: hsl(0, 0%, 92%);
-            border-radius: 35px 0px 0px 35px;
-            height: 3vw;
-            width: calc(10vw - 1px);
-            transition: all 0.5s ease;
-
-            &:hover {
-                box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
-            }
+            @include timeFrame;
+            border-radius: 2rem 0 0 2rem;
         }
 
         .endTime {
-            display: flex;
-            place-content: center;
-            margin-left: 2px;
-            background-color: hsl(0, 0%, 92%);
-            border-radius: 0px 35px 35px 0px;
-            height: 3vw;
-            width: calc(10vw - 1px);
-            transition: all 0.5s ease;
-
-            &:hover {
-                box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
-            }
+            @include timeFrame;
+            border-radius: 0 2rem 2rem 0;
         }
     }
 }

@@ -8,8 +8,7 @@
         <h2>
           {{
             moment(
-              store.state.bookings.calendar.targetDate,
-              "YYYY/MM/DD hh:mm a"
+              store.state.bookings.calendar.targetDate
             ).format("dddd MMM Do")
           }}
         </h2>
@@ -46,11 +45,11 @@ function setActiveDay(event, hourString) {
   }
   const hour = moment(hourString, "HH:mm");
   const targetDate = store.state.bookings.calendar.targetDate;
-  const targetDateMoment = moment(targetDate, "YYYY/MM/DD hh:mm a");
+  const targetDateMoment = moment(targetDate);
   targetDateMoment.set("hour", hour.hour()).set("minute", hour.minute());
 
   store.dispatch("toggleSelectedDate", {
-    date: targetDateMoment.format("YYYY/MM/DD hh:mm a"),
+    date: targetDateMoment.toISOString(),
   });
   // store.dispatch("buildMonth");
 }
@@ -59,7 +58,7 @@ function getHourArray() {
   if (targetDate == null) {
     return;
   }
-  const date = moment(targetDate, "YYYY/MM/DD hh:mm a");
+  const date = moment(targetDate);
 
   const classFormat = store.state.bookings.availability.classFormat.format;
   const startTime = moment(store.state.bookings.availability.startTime, "HH:mm")
@@ -93,7 +92,7 @@ function getHourArray() {
 
     let found = false;
     selectedDates.forEach((selDate) => {
-      selDate = moment(selDate.date, "YYYY/MM/DD hh:mm a");
+      selDate = moment(selDate.date);
       if (
         date.year() === selDate.year() &&
         date.month() === selDate.month() &&
@@ -203,22 +202,24 @@ function getHourArray() {
 
 <style scoped lang="scss">
 @mixin common {
-  border-radius: 2vw;
+  border-radius: 2rem;
 }
 
 .dayWindow {
+  @include common;
   position: absolute;
   display: flex;
   flex-direction: column;
-  place-content: center;
+  top: 500px;
+  left: 50vw;
+  // place-content: center;
   // margin: 20px;
-  @include common;
-  min-width: 6vw;
-  width: 14vw;
+  // min-width: 6vw;
+  height: 36rem;
+  width: 20rem;
   border-style: solid;
   border-color: hsl(0, 0%, 93%);
-  border-width: 2px;
-  height: 24vw;
+  border-width: 0 2px 2px 0;
   background-color: rgb(255, 255, 255);
   overflow: hidden;
   z-index: 3;
@@ -228,40 +229,33 @@ function getHourArray() {
 
   .header {
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
     place-content: center;
-    background-color: hsl(0, 0%, 75%);
-    height: 20%;
+    // background-color: hsl(0, 0%, 75%);
+    // height: 20%;
     background-color: hsl(260, 40%, 75%);
-    width: inherit;
-    min-width: 150px;
+    // width: inherit;
+    // min-width: 150px;
     word-wrap: break-word;
 
     h2 {
-      color: black;
+      // color: black;
       // font-family: Arial, Helvetica, sans-serif;
-      font-weight: 300;
-      font-size: 1.2vw;
+      // font-weight: 300;
       color: hsl(0, 0%, 93%);
+      font-size: 1.6rem;
     }
   }
 
   .hourList {
     background-color: hsl(0, 0%, 93%);
     overflow-y: scroll;
-    // cursor: pointer;
-    min-width: 150px;
-    width: inherit;
-
-    h2 {
-      color: black;
-    }
   }
 }
 
 .fade-enter-active {
   transition: 0.3s ease-out;
-  transition-delay: 0.15s;
+  // transition-delay: 0.15s;
 }
 
 .fade-leave-active {
@@ -271,18 +265,16 @@ function getHourArray() {
 .fade-enter-from {
   opacity: 0;
   scale: 0;
-  // transform: translateX(-120px)
 }
 
 .fade-leave-to {
   opacity: 0;
   scale: 0;
-  // transform: translateX(-120px)
 }
 
 /* width */
 ::-webkit-scrollbar {
-  width: 2vw;
+  width: 2rem;
 }
 
 /* Track */

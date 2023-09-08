@@ -1,4 +1,5 @@
 import store from "../vuex";
+
 const api = "http://localhost:3000/api";
 
 export async function checkDate() {
@@ -59,10 +60,6 @@ export async function createPaymentIntent() {
     .catch((e) => console.error(e));
 }
 export async function abortBooking() {
-  console.log(
-    "client secret is : ",
-    store.state.bookings.booking.paymentData.clientSecret
-  );
   const clientSecret = store.state.bookings.booking.paymentData.clientSecret;
   return await fetch(`${api}/bookings/abortBooking`, {
     method: "post",
@@ -82,4 +79,16 @@ export async function abortBooking() {
       console.log(response.message);
     })
     .catch((e) => console.console.error(e));
+}
+export async function checkPaymentStatus() {
+  try {
+    const res = await fetch(`${api}/payments/payment_status`);
+    if (!res.ok) {
+      throw new Error("Server did not respond successfully");
+    }
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    throw e;
+  }
 }

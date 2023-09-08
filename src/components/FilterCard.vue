@@ -10,28 +10,31 @@ defineProps({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 h1 {
     /* position: absolute; */
-    transform: translateY(0vh);
     transition: 1s;
-    font-size: 1.5vw;
+    margin: 0.3rem 0;
+    font-size: 1.8rem;
 }
 
 .frame {
     /* position: relative; */
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     place-content: center;
-    align-items: center;
-    margin: 0.5vw;
-    background-color: hsl(0, 0%, 92%);
-    width: 20vw;
-    height: 3vw;
-    /* opacity: 50%; */
+    /* align-items: center; */
+    /* justify-self: stretch; */
+    border-radius: 2rem;
+    /* background-color: hsl(0, 0%, 92%); */
+    background-color: hsl(260, 40%, 75%);
     cursor: pointer;
+    flex-grow: 1;
     transition: all 0.5s ease;
-    border-radius: 35px;
+
+    h1 {
+        color: white;
+    }
 }
 
 .frame:hover {

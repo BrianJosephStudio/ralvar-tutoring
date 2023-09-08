@@ -1,7 +1,12 @@
 <template>
-  <div class="header">
-    <h1>{{ Title }}</h1>
-    <div class="removeButton" @click="store.dispatch('toggleSelectedDate', { date: selectedDate })"></div>
+  <div class="itemContainer">
+
+    <div class="header">
+      <h1>{{ Title }}</h1>
+    </div>
+    <div class="removeButton" @click="store.dispatch('toggleSelectedDate', { date: selectedDate })">
+      <h1>x</h1>
+    </div>
   </div>
 </template>
 
@@ -23,24 +28,53 @@ function removeSelectedDate(selectedDate) {
 }
 </script>
 <style scoped lang="scss">
-.header {
+.itemContainer {
   display: flex;
-  background-color: beige;
-  justify-content: space-between;
-  // align-items: center;
-  // justify-content: center;
+  // background-color: hsl(0, 0%, 98%);
 
-  h1 {
-    // margin: 0;
-    margin: 12px auto;
-    cursor: default;
+
+  .header {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    flex-grow: 1;
+    border: solid hsl(0, 0%, 86%);
+    border-width: 0 0 1px 0;
+
+    h1 {
+      // margin: 0;
+      margin: 0;
+      font-size: 1.6rem;
+      cursor: default;
+      font-weight: 400;
+    }
+
   }
 
   .removeButton {
-    height: 100%;
-    width: 32px;
-    background-color: hsl(49, 94%, 87%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2rem;
+    // background-color: hsl(260, 40%, 75%);
+    // border-radius: 2rem;
     cursor: pointer;
+
+    h1 {
+      font-weight: 200;
+      font-size: 1rem;
+      color: hsl(0, 0%, 8%);
+    }
+
+    &:hover {
+      background-color: hsl(354, 100%, 69%);
+
+      h1 {
+        font-size: 1rem;
+        color: hsl(0, 0%, 100%);
+      }
+
+    }
   }
 }
 </style>

@@ -23,8 +23,7 @@ const store = createStore({
             name: String,
             lastName: String,
             email: String,
-            phone: String,
-            birthday: String,
+            birthdate: String,
             city: String,
           },
           paymentData: {
@@ -43,13 +42,13 @@ const store = createStore({
           unavailable: "[]",
         },
         calendar: {
-          currentDate: moment().format("YYYY/MM/DD hh:mm a"),
+          currentDate: moment().toISOString(),
           currentYear: moment().format("YYYY"),
           currentMonth: moment().format("MMMM"),
           monthArray: [],
           selectedDates: [],
           targetDate: null,
-          dayWindowPos: [0, 0],
+          dayWindowPos: ["50vh", "50vw"],
         },
       },
     };
@@ -57,13 +56,9 @@ const store = createStore({
   mutations: {
     // * General Calendar Logic
     changeMonth: (state, payload) => {
-      let currentDate = moment(
-        state.bookings.calendar.currentDate,
-        "YYYY/MM/DD hh:mm a"
-      );
+      let currentDate = moment(state.bookings.calendar.currentDate);
       currentDate.add(payload.amount, "month");
-      state.bookings.calendar.currentDate =
-        currentDate.format("YYYY/MM/DD hh:mm a");
+      state.bookings.calendar.currentDate = currentDate.toISOString();
       state.bookings.calendar.currentMonth = currentDate.format("MMMM");
       state.bookings.calendar.currentYear = currentDate.format("YYYY");
     },
@@ -102,12 +97,8 @@ const store = createStore({
         classFormat: classFormat,
       });
       selDates.sort((a, b) => {
-        const aMoment = moment(a.date, "YYYY/MM/DD hh:mm a");
-        console.log(aMoment);
-        const bMoment = moment(b.date, "YYYY/MM/DD hh:mm a");
-        console.log(bMoment);
-        console.log(aMoment.isBefore(bMoment));
-        console.log(aMoment.isAfter(bMoment));
+        const aMoment = moment(a.date);
+        const bMoment = moment(b.date);
         if (aMoment.isBefore(bMoment)) {
           return -1;
         } else if (aMoment.isAfter(bMoment)) {
@@ -148,16 +139,14 @@ const store = createStore({
       state.bookings.booking.clientData.name = payload.name;
       state.bookings.booking.clientData.lastName = payload.lastName;
       state.bookings.booking.clientData.email = payload.email;
-      state.bookings.booking.clientData.phone = payload.phone;
-      state.bookings.booking.clientData.birthday = payload.birthday;
+      state.bookings.booking.clientData.birthdate = payload.birthdate;
       state.bookings.booking.clientData.city = payload.city;
     },
     resetClientData: (state) => {
       state.bookings.booking.clientData.name = "";
       state.bookings.booking.clientData.lastName = "";
       state.bookings.booking.clientData.email = "";
-      state.bookings.booking.clientData.phone = "";
-      state.bookings.booking.clientData.birthday = "";
+      state.bookings.booking.clientData.birthdate = "";
       state.bookings.booking.clientData.city = "";
     },
     // * Payments Data
@@ -176,10 +165,7 @@ const store = createStore({
   },
   actions: {
     buildMonth: ({ state, commit }) => {
-      let currentDate = moment(
-        state.bookings.calendar.currentDate,
-        "YYYY/MM/DD hh:mm a"
-      );
+      let currentDate = moment(state.bookings.calendar.currentDate);
       const monthDays = [];
       let firstOfMonth = currentDate.startOf("month").subtract(1, "day");
       let startDate = firstOfMonth.subtract(firstOfMonth.day(), "days");
@@ -197,11 +183,11 @@ const store = createStore({
       commit("changeMonthArray", monthDays);
     },
     toggleSelectedDate: ({ state, commit, dispatch }, payload) => {
-      const targetDate = moment(payload.date, "YYYY/MM/DD hh:mm a");
+      const targetDate = moment(payload.date);
       const selectedDates = state.bookings.calendar.selectedDates;
       let i;
       i = selectedDates.findIndex((selDate) => {
-        selDate = moment(selDate.date, "YYYY/MM/DD hh:mm a");
+        selDate = moment(selDate.date);
         if (
           selDate.year() === targetDate.year() &&
           selDate.month() === targetDate.month() &&
@@ -308,16 +294,17 @@ const store = createStore({
         return;
       }
       const days = [...monthGrid.children];
+      console.log(days);
 
-      days.forEach((item) => {
+      days.forEach((item, index) => {
+        if (index < 7) {
+          return;
+        }
         item.classList.remove("dayGridActive");
-        const itemDate = moment(
-          item.getAttribute("data-date"),
-          "YYYY/MM/DD hh:mm a"
-        );
+        const itemDate = moment(item.getAttribute("data-date"));
 
         selectedDates.forEach((sItem) => {
-          const sItemDate = moment(sItem.date, "YYYY/MM/DD hh:mm a");
+          const sItemDate = moment(sItem.date);
 
           if (
             itemDate.format("YYYY/MM/DD") === sItemDate.format("YYYY/MM/DD")
@@ -329,8 +316,8 @@ const store = createStore({
       });
     },
     renderDayWindow: ({ state, commit }, payload) => {
-      commit("reposDayWindow", payload.position);
       commit("changeTargetDate", payload.date);
+      commit("reposDayWindow", payload.position);
     },
     setClassData: ({ state, commit }) => {
       commit("setClassCount", state.bookings.calendar.selectedDates.length);
@@ -359,10 +346,9 @@ const store = createStore({
       dispatch("renderSelectedDates");
     },
   },
-  /*
   plugins: [
     new VuexPersistence({
-      storage: window.localStorage,
+      storage: window.sessionStorage,
       reducer: (state) => ({
         bookings: {
           booking: {
@@ -371,6 +357,18 @@ const store = createStore({
               format: state.bookings.booking.classData.format,
               dates: state.bookings.booking.classData.dates,
             },
+            clientData: {
+              name: state.bookings.booking.clientData.name,
+              lastName: state.bookings.booking.clientData.lastName,
+              email: state.bookings.booking.clientData.email,
+              birthday: state.bookings.booking.clientData.birthday,
+              city: state.bookings.booking.clientData.city,
+            },
+            paymentData: {
+              checkoutPrice: state.bookings.booking.paymentData.checkoutPrice,
+              clientSecret: state.bookings.booking.paymentData.clientSecret,
+              confirmed: state.bookings.booking.paymentData.confirmed,
+            },
           },
           calendar: {
             selectedDates: state.bookings.calendar.selectedDates,
@@ -378,6 +376,6 @@ const store = createStore({
         },
       }),
     }).plugin,
-  ],*/
+  ],
 });
 export default store;

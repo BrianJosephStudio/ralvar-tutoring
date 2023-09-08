@@ -17,12 +17,16 @@ const props = defineProps({
 <style scoped lang="scss">
 @mixin lisItem {
   display: flex;
-  flex-direction: column;
-  place-content: center;
-  height: 3vw;
+  // flex-direction: column;
+  justify-content: center;
+  // height: 4rem;
+  padding: 1.5rem 0;
+
 
   h2 {
-    font-size: 1.5vw;
+    color: white;
+    margin: 0;
+    font-size: 1.8rem;
   }
 }
 
@@ -37,7 +41,8 @@ const props = defineProps({
   }
 
   h2 {
-    color: hsl(128, 50%, 45%);
+    color: hsl(128, 0%, 30%);
+    font-weight: 400
   }
 }
 
@@ -50,14 +55,17 @@ const props = defineProps({
   h2 {
     user-select: none;
     color: hsl(0, 0%, 75%);
+    text-decoration: line-through
   }
 }
 
 .partiallyAvailable {
   @include lisItem;
+  cursor: default;
 
   h2 {
-    color: hsl(51, 69%, 58%);
+    color: hsl(0, 0%, 75%);
+    // color: hsl(51, 69%, 58%);
   }
 }
 

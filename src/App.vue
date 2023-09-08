@@ -1,28 +1,3 @@
-<script setup>
-import Header from './components/Header.vue';
-import { useRouter } from "vue-router"
-import { abortBooking } from "./modules/server.js"
-import store from './vuex';
-
-const router = useRouter()
-/**
- * todo - CREATE NAVIGATION GUARD TO CHECK CLIENT SECRET IN VUEX BEFORE ALLOWING NAVIGATION INTO PAYMENTS.VUE
- */
-router.beforeEach((to, from, next) => {
-  if (to.name === "Payment") {
-    const access = store.dispatch("checkClientSecret");
-    if (!access) {
-      next(false)
-      console.log("'Before Resolve' guard is forbidding this navigation")
-    } else {
-      next()
-    }
-  } else {
-    next()
-  }
-})
-</script>
-
 <template>
   <Header />
   <router-view class="router" v-slot="{ Component }">
@@ -32,9 +7,33 @@ router.beforeEach((to, from, next) => {
   </router-view>
 </template>
 
+<script setup>
+import Header from './components/Header.vue';
+import { useRouter } from "vue-router"
+import { abortBooking } from "./modules/server.js"
+import store from './vuex';
+
+const router = useRouter()
+router.beforeEach(async (to, from, next) => {
+  console.log("beforeEach", to.name)
+  if (to.name === "Payment") {
+    const access = await store.dispatch("checkClientSecret");
+    if (!access) {
+      console.log("'Before Resolve' guard is forbidding this navigation")
+      store.dispatch("resetAllState")
+      next({ name: "Bookings" })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+</script>
+
 <style scoped lang="scss">
 .router {
-  position: absolute;
+  // position: absolute;
 }
 
 .fade-enter-active {

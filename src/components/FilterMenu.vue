@@ -21,15 +21,14 @@ defineProps({
 </script>
 <style scoped lang="scss">
 .menu {
+    position: absolute;
     display: flex;
     flex-direction: column;
-    position: absolute;
-    top: 4vw;
-    width: 20vw;
-    background-color: hsl(0, 0%, 92%);
-    border-radius: 2vw;
-    opacity: 1;
-    box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
+    top: 3.3rem;
+    width: 100%;
+    background-color: hsl(0, 0%, 99%);
+    border-radius: 2rem;
+    // box-shadow: 0px 6px 15px 0px hsl(0, 0%, 90%);
     overflow: hidden;
     z-index: 1;
 }
@@ -39,12 +38,11 @@ defineProps({
     cursor: pointer;
 
     &:hover {
-        background-color: hsl(0, 0%, 80%);
+        background-color: hsl(0, 0%, 94%);
     }
 
     h1 {
-        margin: 6px 24px;
-        font-size: 1.5vw;
+        font-size: 1.8rem;
     }
 }
 </style>
