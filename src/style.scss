@@ -15,6 +15,7 @@
   -webkit-text-size-adjust: 100%;
 }
 
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -54,18 +55,31 @@ h1 {
   font-size: 2vw;
   line-height: 1.1;
   font-weight: 400;
+  margin: 0;
 }
 h2{
   font-family: 'Raleway', sans-serif;
+  color: black;
+  margin: 0;
 }
 h3{
   color: #1a1a1a;
   font-family: 'Raleway', sans-serif;
-  font-size: 20px;
-  margin: 20px;
+  font-size: 1.4rem;
+  margin: 0;
 }
 button{
-        border: none;
+  border: none;
+  font-family: "Raleway", sans-serif;
+  font-size: 1.2rem;
+  background-color: hsl(260, 40%, 75%);
+  border-radius: 2rem;
+  padding: 1rem;
+  transition: 0.2s ease-out;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0.2rem 0.3rem hsl(260, 0%, 75%);
+  }
 }
 
 #app {
@@ -87,5 +101,29 @@ button{
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+@media (max-width: 1300px),(max-height:800px){
+  :root{
+    font-size: 12px;
+  }
+}
+
+
+@keyframes fixMissingFields {
+  0% {
+      opacity: 0;
+  }
+
+  40% {
+      opacity: 1;
+  }
+
+  85% {
+      opacity: 1;
+  }
+
+  100% {
+      opacity: 0;
   }
 }

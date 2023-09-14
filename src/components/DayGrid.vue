@@ -160,7 +160,8 @@ function handleClick(event) {
 
   h1 {
     font-size: 1.5rem;
-    color: black
+    color: black;
+    padding-top: 1rem;
   }
 }
 

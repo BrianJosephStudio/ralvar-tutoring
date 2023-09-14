@@ -142,6 +142,7 @@ function updateAvailability() {
 }
 
 onMounted(() => {
+  store.commit("resetBookingConfirmation")
   checkDate();
   /**
    * todo: USE AVAILABILITY RESPONSE TO MAKE SURE THE CURRENTLY SELECTED DATES IN SESSIONSTORAGE ALSO ALIGN WITH RECEIVED AVAILABILITY

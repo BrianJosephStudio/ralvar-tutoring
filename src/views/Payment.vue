@@ -22,7 +22,7 @@ import { useStore } from "vuex";
 import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 import { loadStripe } from "@stripe/stripe-js";
 import { createPaymentIntent } from "../modules/server";
-import { abortBooking } from "../modules/server";
+import { abortBooking, checkDate } from "../modules/server";
 const API_KEY = `pk_test_51NgmsQICkqKXp7Quz3Pg96iYp2kMrCDzTv2haJP322fpyrJOQJBWL8WrZexBzfeNnNSQgfqoMqKl8tS9TT1Yv1ip00ZMzwmQzu`
 
 
@@ -62,7 +62,7 @@ onMounted(async () => {
 
 
 })
-onBeforeRouteLeave((to, from) => {
+onBeforeRouteLeave(async (to, from) => {
     if (!store.state.bookings.booking.paymentData.confirmed) {
         const leave = window.confirm("If you leave now you will lose all your progress.")
         if (leave) {
@@ -72,6 +72,7 @@ onBeforeRouteLeave((to, from) => {
             document.removeEventListener("keydown", resetIdleTimeOut)
             abortBooking()
             store.dispatch("resetAllState")
+            await checkDate()
             return true
         } else {
             return false
@@ -89,11 +90,13 @@ async function pay(event) {
     const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-            return_url: "http://localhost:3000/payment_processing",
+            return_url: "http://192.168.1.41:3000/payment_processing",
             receipt_email: store.state.bookings.booking.clientData.email
         }
     })
-
+    if (error) {
+        console.error(error)
+    }
 }
 
 function startIdleTimeOut() {

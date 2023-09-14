@@ -10,11 +10,18 @@
       <div class="navButton">
         <h3>About</h3>
       </div>
+      <div class="navButton" @click="this.$router.push({ name: 'Contact' })">
+        <h3>Contact</h3>
+      </div>
     </div>
   </header>
 </template>
 
 <style scoped>
+h3 {
+  margin: 0 1rem;
+}
+
 header {
   position: relative;
   display: flex;

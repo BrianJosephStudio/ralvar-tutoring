@@ -15,7 +15,6 @@ import store from './vuex';
 
 const router = useRouter()
 router.beforeEach(async (to, from, next) => {
-  console.log("beforeEach", to.name)
   if (to.name === "Payment") {
     const access = await store.dispatch("checkClientSecret");
     if (!access) {
@@ -24,6 +23,14 @@ router.beforeEach(async (to, from, next) => {
       next({ name: "Bookings" })
     } else {
       next()
+    }
+  } else if (to.name === "bookingComplete") {
+    next()
+    return
+    if (store.state.bookings.booking.confirmed) {
+      next()
+    } else {
+      next({ name: "Bookings" })
     }
   } else {
     next()

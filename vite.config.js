@@ -14,5 +14,6 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
+    host: "192.168.1.41",
   },
 });

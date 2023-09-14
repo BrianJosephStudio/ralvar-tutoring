@@ -14,10 +14,12 @@ const store = createStore({
           90: 26,
         },
         booking: {
+          confirmed: false,
           classData: {
             count: null,
             format: null,
             dates: [],
+            platform: null,
           },
           clientData: {
             name: String,
@@ -29,7 +31,6 @@ const store = createStore({
           paymentData: {
             checkoutPrice: 0,
             clientSecret: null,
-            confirmed: false,
           },
         },
         availability: {
@@ -134,6 +135,9 @@ const store = createStore({
       state.bookings.booking.classData.dates = payload;
       console.log(state.bookings.booking.classData.dates);
     },
+    setPlatform: (state, payload) => {
+      state.bookings.booking.classData.platform = payload;
+    },
     // * Client Data
     setClientData: (state, payload) => {
       state.bookings.booking.clientData.name = payload.name;
@@ -157,7 +161,10 @@ const store = createStore({
       state.bookings.booking.paymentData.clientSecret = null;
     },
     confirmBooking: (state) => {
-      state.bookings.booking.paymentData.confirmed = true;
+      state.bookings.booking.confirmed = true;
+    },
+    resetBookingConfirmation: (state) => {
+      state.bookings.booking.confirmed = false;
     },
     resetBookingConfirm: (state) => {
       state.bookings.booking.paymentData.confirmed = false;
@@ -185,32 +192,26 @@ const store = createStore({
     toggleSelectedDate: ({ state, commit, dispatch }, payload) => {
       const targetDate = moment(payload.date);
       const selectedDates = state.bookings.calendar.selectedDates;
-      let i;
-      i = selectedDates.findIndex((selDate) => {
-        selDate = moment(selDate.date);
+      let flag = true;
+      selectedDates.forEach((selected, index) => {
+        const selectedDate = moment(selected.date);
         if (
-          selDate.year() === targetDate.year() &&
-          selDate.month() === targetDate.month() &&
-          selDate.date() === targetDate.date() &&
-          (selDate.hour() !== targetDate.hour() ||
-            selDate.minute() !== targetDate.minute())
+          selectedDate.year() === targetDate.year() &&
+          selectedDate.month() === targetDate.month() &&
+          selectedDate.date() === targetDate.date()
         ) {
-          return true;
+          //*Target date was found, if targetDate is same as selected date then flag is switched off
+          if (
+            selectedDate.hour() === targetDate.hour() &&
+            selectedDate.minute() === targetDate.minute()
+          ) {
+            flag = false;
+          }
+          commit("removeSelectedDate", { index: index });
         }
       });
-      if (i !== -1) {
-        commit("removeSelectedDate", { index: i });
-      }
-
-      i = selectedDates.findIndex((selDate) => {
-        console.log(payload.date);
-        console.log(selDate.date);
-        return selDate.date === payload.date;
-      });
-      if (i === -1) {
+      if (flag) {
         commit("addSelectedDate", payload);
-      } else {
-        commit("removeSelectedDate", { index: i });
       }
       commit("recalculateCheckoutPrice");
       dispatch("buildMonth");
@@ -320,14 +321,19 @@ const store = createStore({
       commit("reposDayWindow", payload.position);
     },
     setClassData: ({ state, commit }) => {
+      if (state.bookings.calendar.selectedDates.length === 0) {
+        return false;
+      }
       commit("setClassCount", state.bookings.calendar.selectedDates.length);
       commit("setClassFormat", state.bookings.availability.classFormat.format);
       commit("setClassDates", state.bookings.calendar.selectedDates);
+      return true;
     },
     resetClassData: ({ state, commit }) => {
       commit("setClassCount", null);
       commit("setClassFormat", null);
       commit("setClassDates", []);
+      commit("setPlatform", null);
     },
     checkClientSecret: ({ state }) => {
       if (state.bookings.booking.paymentData.clientSecret) {
@@ -356,6 +362,7 @@ const store = createStore({
               count: state.bookings.booking.classData.count,
               format: state.bookings.booking.classData.format,
               dates: state.bookings.booking.classData.dates,
+              platform: state.bookings.booking.classData.platform,
             },
             clientData: {
               name: state.bookings.booking.clientData.name,

@@ -51,9 +51,11 @@ onMounted(() => {
 // router.beforeEach(() => {
 //   store.commit("recalculateCheckoutPrice");
 // });
-function consolidateClassSelection() {
-  store.dispatch("setClassData");
-  router.replace("/client-data");
+async function consolidateClassSelection() {
+  const ready = await store.dispatch("setClassData");
+  if (ready) {
+    router.replace("/client-data");
+  }
 }
 function togglePos() {
   const selDates = store.state.bookings.calendar.selectedDates;

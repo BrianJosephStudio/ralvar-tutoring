@@ -244,6 +244,7 @@ function getHourArray() {
       // font-weight: 300;
       color: hsl(0, 0%, 93%);
       font-size: 1.6rem;
+      margin: 1rem 0;
     }
   }
 
