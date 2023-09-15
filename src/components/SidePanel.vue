@@ -218,11 +218,12 @@ function getItemName(selectedDate) {
   width: 1rem;
 }
 
-/* Track */
+/* Track 
 ::-webkit-scrollbar-track {
-  // background: hsl(0, 0%, 96%);
-  // border-radius: 0px 0px 2vw 0px;
+  background: hsl(0, 0%, 96%);
+  border-radius: 0px 0px 2vw 0px;
 }
+*/
 
 /* Handle */
 ::-webkit-scrollbar-thumb {

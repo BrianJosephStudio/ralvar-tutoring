@@ -71,7 +71,6 @@ if (store.state.bookings.booking.classData.dates.length === 0) {
 let timeout
 onMounted(() => {
     const platform = document.querySelector(`[data-platform="${store.state.bookings.booking.classData.platform}"]`)
-    console.log(platform)
     if (platform) {
         platform.classList.add("selectedImg")
     }

@@ -48,10 +48,6 @@ router.beforeEach(async (to, from, next) => {
 </script>
 
 <style scoped lang="scss">
-.router {
-  // position: absolute;
-}
-
 .fade-enter-active {
   transition: 1s ease;
   transition-delay: 0.35s;

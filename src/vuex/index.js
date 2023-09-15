@@ -134,7 +134,6 @@ const store = createStore({
     },
     setClassDates: (state, payload) => {
       state.bookings.booking.classData.dates = payload;
-      console.log(state.bookings.booking.classData.dates);
     },
     setPlatform: (state, payload) => {
       state.bookings.booking.classData.platform = payload;
@@ -335,7 +334,7 @@ const store = createStore({
       commit("setClassCount", null);
       commit("setClassFormat", null);
       commit("setClassDates", []);
-      commit("setPlatform", null);
+      commit("setPlatform", "Skype");
     },
     checkClientSecret: ({ state }) => {
       if (state.bookings.booking.paymentData.clientSecret) {
