@@ -9,16 +9,16 @@
             <h2>Class Platform</h2>
             <div class="contactMethod" id="platformSelection">
                 <div class="imgHolder" @click="event => selectPlatform(event)" data-platform="Skype">
-                    <img src="../../public/assets/skype-logo.png" alt="" title="Skype">
+                    <img src="/assets/skype-logo.png" alt="" title="Skype">
                 </div>
                 <div class="imgHolder" @click="event => selectPlatform(event)" data-platform="Google Meet">
-                    <img src="../../public/assets/google-meet-logo.png" alt="" title="Google Meet">
+                    <img src="/assets/google-meet-logo.png" alt="" title="Google Meet">
                 </div>
                 <div class="imgHolder" @click="event => selectPlatform(event)" data-platform="Zoom">
-                    <img src="../../public/assets/zoom-logo.png" alt="" title="Zoom">
+                    <img src="/assets/zoom-logo.png" alt="" title="Zoom">
                 </div>
                 <div class="imgHolder" @click="event => selectPlatform(event)" data-platform="Teams">
-                    <img src="../../public/assets/microsoft-teams.png" alt="" title="Teams">
+                    <img src="/assets/microsoft-teams.png" alt="" title="Teams">
                 </div>
             </div>
             <form>
@@ -84,7 +84,6 @@ function selectPlatform(event) {
     platform.classList.add("selectedImg")
 
     store.commit("setPlatform", platform.dataset.platform)
-    console.log(store.state.bookings.booking.classData.platform)
 }
 const proceedToPayment = async (event) => {
     try {
