@@ -11,8 +11,9 @@
 import Header from './components/Header.vue';
 import { useRouter } from "vue-router"
 import { abortBooking } from "./modules/server.js"
-import store from './vuex';
+import { useStore } from "vuex"
 
+const store = useStore()
 const router = useRouter()
 router.beforeEach(async (to, from, next) => {
   if (to.name === "Payment") {
@@ -43,9 +44,7 @@ router.beforeEach(async (to, from, next) => {
     next()
   }
 })
-router.beforeEach((to, from) => {
-  console.log()
-})
+
 </script>
 
 <style scoped lang="scss">

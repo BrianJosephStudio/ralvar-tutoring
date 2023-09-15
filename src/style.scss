@@ -129,19 +129,6 @@ button{
   text-align: center;
   overflow: hidden;
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
 @media (max-width: 1300px),(max-height:800px){
   :root{
     font-size: 12px;

@@ -19,12 +19,13 @@ const store = createStore({
             count: null,
             format: null,
             dates: [],
-            platform: null,
+            platform: "Skype",
           },
           clientData: {
             name: String,
             lastName: String,
             email: String,
+            platformEmail: String,
             birthdate: String,
             city: String,
           },
@@ -143,6 +144,7 @@ const store = createStore({
       state.bookings.booking.clientData.name = payload.name;
       state.bookings.booking.clientData.lastName = payload.lastName;
       state.bookings.booking.clientData.email = payload.email;
+      state.bookings.booking.clientData.platformEmail = payload.platformEmail;
       state.bookings.booking.clientData.birthdate = payload.birthdate;
       state.bookings.booking.clientData.city = payload.city;
     },

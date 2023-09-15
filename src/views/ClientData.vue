@@ -6,7 +6,7 @@
             </h1>
         </div>
         <div class="body">
-            <h2>Select a Platform</h2>
+            <h2>Class Platform</h2>
             <div class="contactMethod" id="platformSelection">
                 <div class="imgHolder" @click="event => selectPlatform(event)" data-platform="Skype">
                     <img src="../../public/assets/skype-logo.png" alt="" title="Skype">
@@ -30,6 +30,10 @@
 
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" placeholder="JaneDoe@example.com" required>
+
+                <label for="clientData-platformEmail">{{ store.state.bookings.booking.classData.platform }}</label>
+                <input type="email" id="clientData-platformEmail" autocomplete="off"
+                    :placeholder="`Your ${store.state.bookings.booking.classData.platform} e-mail`" required>
 
                 <label for="birthdate">Date of Birth:</label>
                 <input type="date" id="birthdate" name="birthdate" required>
@@ -70,7 +74,6 @@ onMounted(() => {
     console.log(platform)
     if (platform) {
         platform.classList.add("selectedImg")
-
     }
 })
 function selectPlatform(event) {
@@ -93,6 +96,7 @@ const proceedToPayment = async (event) => {
             name: document.getElementById('first-name'),
             lastName: document.getElementById('last-name'),
             email: document.getElementById('email'),
+            platformEmail: document.getElementById("clientData-platformEmail"),
             birthdate: document.getElementById('birthdate'),
             city: document.getElementById('city'),
         }
@@ -130,6 +134,7 @@ const proceedToPayment = async (event) => {
             name: formInputs.name.value,
             lastName: formInputs.lastName.value,
             email: formInputs.email.value,
+            platformEmail: formInputs.platformEmail.value,
             birthdate: moment(formInputs.birthdate.value, "YYYY-MM-DD").toISOString(),
             city: formInputs.city.value
         };
@@ -283,11 +288,6 @@ async function goHome() {
                 justify-self: flex-end;
             }
 
-            input[type="date"]::-webkit-calendar-picker-indicator {
-                color: red;
-                // background: hsl(260, 40%, 75%);
-                // border-radius: 50%;
-            }
 
 
             input {
@@ -309,6 +309,10 @@ async function goHome() {
 
             input::placeholder {
                 color: hsl(0, 0%, 75%);
+            }
+
+            input[type="checkbox"] {
+                padding: 0;
             }
 
             input:autofill {
