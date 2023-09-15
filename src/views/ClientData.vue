@@ -39,7 +39,7 @@
                 <div class="buttons">
                     <button class="goBack" @click="event => router.push({ name: 'Bookings' })">Back</button>
                     <button class="submit" id="submitContactForm" @click="event => proceedToPayment(event)">Submit
-                        <div class="tooltip" id="submitButtonTooltip">Fix Missing Fields</div>
+                        <div class="fixMissingFieldsTooltip" id="submitButtonTooltip">Fix Missing Fields</div>
                     </button>
                 </div>
             </form>
@@ -352,44 +352,48 @@ async function goHome() {
                     }
                 }
 
-                .tooltip {
-                    position: absolute;
-                    display: flex;
-                    place-content: center;
-                    align-items: center;
-                    font-size: 0.8rem;
-                    width: 8rem;
-                    height: 1.6rem;
-                    border-radius: 1rem;
-                    margin-bottom: 0.1rem;
-                    background-color: hsl(350, 100%, 73%);
-                    bottom: 100%;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    opacity: 0;
-                }
+                // .fixMissingFieldsTooltip {
+                //     position: absolute;
+                //     display: flex;
+                //     place-content: center;
+                //     align-items: center;
+                //     font-size: 0.8rem;
+                //     width: 8rem;
+                //     height: 1.6rem;
+                //     border-radius: 1rem;
+                //     margin-bottom: 0.1rem;
+                //     background-color: hsl(350, 100%, 73%);
+                //     bottom: 100%;
+                //     left: 50%;
+                //     transform: translateX(-50%);
+                //     opacity: 0;
+                // }
 
-                @keyframes fixMissingFields {
-                    0% {
-                        // transform: translateX(-50%) translateY(0);
-                        opacity: 0;
-                    }
+                // .fixMissingFieldsTooltipAnim{
+                //     animation: fixMissingFieldsTooltip 3s ease;
+                // }
 
-                    40% {
-                        // transform: translateX(-50%) translateY(-32px);
-                        opacity: 1;
-                    }
+                // @keyframes fixMissingFields {
+                //     0% {
+                //         // transform: translateX(-50%) translateY(0);
+                //         opacity: 0;
+                //     }
 
-                    85% {
-                        // transform: translateX(-50%) translateY(-32px);
-                        opacity: 1;
-                    }
+                //     40% {
+                //         // transform: translateX(-50%) translateY(-32px);
+                //         opacity: 1;
+                //     }
 
-                    100% {
-                        // transform: translateX(-50%) translateY(-32px);
-                        opacity: 0;
-                    }
-                }
+                //     85% {
+                //         // transform: translateX(-50%) translateY(-32px);
+                //         opacity: 1;
+                //     }
+
+                //     100% {
+                //         // transform: translateX(-50%) translateY(-32px);
+                //         opacity: 0;
+                //     }
+                // }
 
             }
         }

@@ -68,6 +68,14 @@ const routes = [
     component: () => import("../views/Contact.vue"),
   },
   {
+    path: "/contact_confirmation",
+    name: "Contact Confirmation",
+    component: () => import("../views/Contact_Confirmation.vue"),
+    props: (route) => ({
+      SupportTicket: route.query.supportTicket || "No Support Ticket",
+    }),
+  },
+  {
     path: "/:pathMatch(.*)",
     component: () => import("../views/TabNotFound.vue"),
     props: true,

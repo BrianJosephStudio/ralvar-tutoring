@@ -5,20 +5,27 @@
         </div>
         <form class="contactForm">
             <label for="contact-name">Name</label>
-            <input type="text" id="contact-name" required>
+            <input type="text" id="contact-name" placeholder="John Doe" required>
             <label for="contact-email">Email</label>
-            <input type="email" id="contact-email" placeholder="yourname@example.com" required>
+            <input type="email" id="contact-email" placeholder="johndoe@example.com" required>
             <label for="contact-confirmationCode">Confirmation Code</label>
-            <input type="text" id="contact-confirmationCode">
+            <input type="text" id="contact-confirmationCode" placeholder="only if you have one">
+            <label for="contact-subject">Subject</label>
+            <input type="text" id="contact-subject" placeholder="Describe your issue in a few words">
             <label for="contact-message">How can we help you?</label>
             <textarea name="message" id="contact-message" cols="30" rows="10" requried></textarea>
-            <button @click="event => contactRequest(event)">Send</button>
+            <button @click="event => contactRequest(event)">
+                Send
+                <div ref="submitButton" class="fixMissingFieldsTooltip" id="submitButtonTooltip">Fix Missing Fields</div>
+            </button>
         </form>
     </div>
 </template>
 <script setup>
 import { handleContactRequest } from "../modules/server.js"
 import { useRouter } from "vue-router"
+import { ref } from "vue"
+const submitButton = ref(null)
 const router = useRouter()
 
 router.beforeEach((to, from) => {
@@ -30,22 +37,45 @@ function cleanContactForm() {
     document.getElementById("contact-name").value = null;
     document.getElementById("contact-email").value = null;
     document.getElementById("contact-confirmationCode").value = null;
+    document.getElementById("contact-subject").value = null;
     document.getElementById("contact-message").value = null;
 }
 async function contactRequest(event) {
     event.preventDefault()
-    console.log("Starting contact request")
-    const name = document.getElementById("contact-name").value;
-    const email = document.getElementById("contact-email").value;
-    const confirmationCode = document.getElementById("contact-confirmationCode").value;
-    const message = document.getElementById("contact-message").value;
 
+    const inputs = {
+        name: document.getElementById("contact-name"),
+        email: document.getElementById("contact-email"),
+        confirmationCode: document.getElementById("contact-confirmationCode"),
+        subject: document.getElementById("contact-subject"),
+        message: document.getElementById("contact-message"),
+    }
+    console.log(inputs)
+    let valid = true
+    for (const key in inputs) {
+        if (key === "confirmationCode") { continue }
+        const input = inputs[key]
+        if (!input.value) {
+            input.classList.add("incorrectField")
+            submitButton.value.classList.add("fixMissingFieldsTooltipAnim")
+            valid = false
+            setTimeout(() => {
+                if (submitButton.value) {
+                    submitButton.value.classList.remove("fixMissingFieldsTooltipAnim")
+                }
+            }, 3000);
+        }
+    }
+    if (!valid) {
+        return
+    }
     // Create an object to store the form values
     const formData = {
-        name: name,
-        email: email,
-        confirmationCode: confirmationCode,
-        message: message
+        name: inputs.name.value,
+        email: inputs.email.value,
+        confirmationCode: inputs.confirmationCode.value,
+        subject: inputs.subject.value,
+        message: inputs.message.value
     };
     try {
         await handleContactRequest(formData)
@@ -114,8 +144,13 @@ async function contactRequest(event) {
             border-color: hsl(0, 0%, 90%);
         }
 
+        .incorrectField {
+            border-color: hsl(350, 100%, 73%);
+        }
+
         button {
-            margin-top: 2rem;
+            position: relative;
+            margin-top: 2.3rem;
         }
     }
 }
