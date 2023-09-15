@@ -122,7 +122,7 @@ export async function handleContactRequest(contactForm) {
       body: JSON.stringify(contactForm),
     };
     const response = await fetch(url, requestBody);
-    console.log(await response.text());
+    return await response.json();
   } catch (e) {
     console.error(e);
   }

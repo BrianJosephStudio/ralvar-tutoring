@@ -66,13 +66,18 @@ const routes = [
     path: "/contact",
     name: "Contact",
     component: () => import("../views/Contact.vue"),
+    props: (route) => ({
+      ClientName: route.query.ClientName,
+      ClientEmail: route.query.ClientEmail,
+      ConfirmationCode: route.query.ConfirmationCode,
+    }),
   },
   {
     path: "/contact_confirmation",
     name: "Contact Confirmation",
     component: () => import("../views/Contact_Confirmation.vue"),
     props: (route) => ({
-      SupportTicket: route.query.supportTicket || "No Support Ticket",
+      SupportTicket: route.query.supportTicket,
     }),
   },
   {

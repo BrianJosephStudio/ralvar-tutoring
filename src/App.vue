@@ -27,14 +27,24 @@ router.beforeEach(async (to, from, next) => {
   } else if (to.name === "bookingComplete") {
     next()
     return
+    /**
+     * !CHANGE THIS FOR PRODUCTION vv
+     */
     if (store.state.bookings.booking.confirmed) {
       next()
     } else {
       next({ name: "Bookings" })
     }
+  } else if (to.name === "Contact Confirmation" && !Object.keys(to.query).length) {
+    console.log("navigation Guard prevented", to.name)
+    router.push({ name: "Bookings" })
+
   } else {
     next()
   }
+})
+router.beforeEach((to, from) => {
+  console.log()
 })
 </script>
 

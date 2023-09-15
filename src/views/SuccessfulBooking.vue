@@ -37,8 +37,8 @@
             }">Continue</button>
         </div>
         <div class="help">
-            <h3>If anything went wrong with this booking or you need to make any changes please click <a
-                    href="http://localhost:3000/contact">here</a></h3>
+            <h3>If anything went wrong with this booking or you need to make any changes please click <span
+                    @click="requestContact">here</span></h3>
             <!-- <button>Something has gone wrong</button> -->
         </div>
 
@@ -56,12 +56,24 @@ const props = defineProps({
     ConfirmationCode: String,
     ClientEmail: String
 })
-
+function requestContact() {
+    router.push({
+        name: "Contact",
+        query: {
+            ClientName: props.ClientName,
+            ClientEmail: props.ClientEmail,
+            ConfirmationCode: props.ConfirmationCode
+        }
+    })
+}
 function copyConfirmationCode(event) {
-    const codeElem = event.currentTarget.children[0]
-    navigator.clipboard.writeText(codeElem.textContent)
-    const tooltip = event.currentTarget.children[1]
-    tooltip.textContent = "Copied!"
+    try {
+        const codeElem = event.currentTarget.children[0]
+        console.log(window.navigator)
+        navigator.clipboard.writeText(codeElem.textContent)
+        const tooltip = event.currentTarget.children[1]
+        tooltip.textContent = "Copied!"
+    } catch (e) { console.error(e) }
 }
 function resetTooltip(event) {
     const tooltip = event.currentTarget.children[1]
@@ -124,13 +136,14 @@ function resetTooltip(event) {
             .frame {
                 border-radius: 1rem;
                 background-color: hsl(0, 0%, 99%);
-                width: 48rem;
-                padding: 1.2rem 0;
+                width: 42rem;
+                padding: 0.3rem 0;
                 margin-top: 1rem;
 
                 h3 {
-                    font-size: 2rem;
+                    font-size: 1.4rem;
                     font-weight: 400;
+                    margin: 1rem 0;
                 }
 
                 .email {
@@ -158,12 +171,13 @@ function resetTooltip(event) {
                     background-color: hsl(260, 40%, 75%);
                     position: absolute;
                     bottom: calc(100% + 1rem);
-                    width: 12rem;
+                    width: 11rem;
                     right: 0;
                     padding: 0.5rem;
                     border-radius: 1rem 1rem 1rem 0;
                     color: white;
                     transition: 0.2s ease-out;
+                    font-size: 0.9rem;
 
                 }
 
@@ -187,7 +201,7 @@ function resetTooltip(event) {
             h1 {
                 font-size: 1.6rem;
                 color: hsl(260, 40%, 75%);
-                margin: 2rem 0;
+                margin: 1rem 0;
                 font-weight: 400;
             }
 

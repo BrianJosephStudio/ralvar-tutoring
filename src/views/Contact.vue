@@ -5,15 +5,16 @@
         </div>
         <form class="contactForm">
             <label for="contact-name">Name</label>
-            <input type="text" id="contact-name" placeholder="John Doe" required>
+            <input type="text" id="contact-name" placeholder="John Doe" :value="ClientName" required>
             <label for="contact-email">Email</label>
-            <input type="email" id="contact-email" placeholder="johndoe@example.com" required>
+            <input type="email" id="contact-email" placeholder="johndoe@example.com" :value="ClientEmail" required>
             <label for="contact-confirmationCode">Confirmation Code</label>
-            <input type="text" id="contact-confirmationCode" placeholder="only if you have one">
+            <input type="text" id="contact-confirmationCode" placeholder="only if you have one" :value="ConfirmationCode">
             <label for="contact-subject">Subject</label>
             <input type="text" id="contact-subject" placeholder="Describe your issue in a few words">
             <label for="contact-message">How can we help you?</label>
-            <textarea name="message" id="contact-message" cols="30" rows="10" requried></textarea>
+            <textarea name="message" id="contact-message" cols="30" rows="10" placeholder="Describe your issue in detail"
+                required></textarea>
             <button @click="event => contactRequest(event)">
                 Send
                 <div ref="submitButton" class="fixMissingFieldsTooltip" id="submitButtonTooltip">Fix Missing Fields</div>
@@ -27,6 +28,12 @@ import { useRouter } from "vue-router"
 import { ref } from "vue"
 const submitButton = ref(null)
 const router = useRouter()
+
+const props = defineProps({
+    ClientName: String,
+    ClientEmail: String,
+    ConfirmationCode: String,
+})
 
 router.beforeEach((to, from) => {
     if (from.name === "Contact") {
@@ -50,7 +57,6 @@ async function contactRequest(event) {
         subject: document.getElementById("contact-subject"),
         message: document.getElementById("contact-message"),
     }
-    console.log(inputs)
     let valid = true
     for (const key in inputs) {
         if (key === "confirmationCode") { continue }
@@ -78,9 +84,14 @@ async function contactRequest(event) {
         message: inputs.message.value
     };
     try {
-        await handleContactRequest(formData)
-
-        router.push({ name: "Bookings" })
+        const response = await handleContactRequest(formData)
+        console.log(response.message)
+        router.push({
+            name: "Contact Confirmation",
+            query: {
+                supportTicket: response.supportTicket,
+            }
+        })
     } catch (e) {
         console.error(e)
         router.push({ name: "Error" })
