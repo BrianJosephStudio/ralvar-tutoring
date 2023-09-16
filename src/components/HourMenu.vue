@@ -45,7 +45,8 @@ const props = defineProps({
             // position: absolute;
             // transform: translateY(0vh);
             transition: 1s;
-            font-size: 1.8rem;
+            padding: 0.6rem 0;
+            font-size: 1.6rem;
         }
 
         .item {

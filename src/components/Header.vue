@@ -30,7 +30,7 @@ header {
   /* vertical-align: top; */
   color: black;
   background: white;
-  box-shadow: 0px 0px 15px 0px rgb(184, 184, 184);
+  box-shadow: 0px 0px 3rem 0px hsl(0, 0%, 94%);
   width: 100vw;
   height: 4rem;
 }
@@ -41,6 +41,7 @@ header {
   place-content: top;
   margin: auto;
   height: 4rem;
+  z-index: 1;
 }
 
 .navButton {

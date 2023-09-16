@@ -279,7 +279,7 @@ async function goHome() {
                 // margin-right: 1vw;
                 // font-family: 'Raleway', sans-serif;
                 color: black;
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 font-weight: 500;
                 font-style: italic;
                 line-height: 1.1;

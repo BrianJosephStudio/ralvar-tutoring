@@ -27,10 +27,6 @@ router.beforeEach(async (to, from, next) => {
     }
   } else if (to.name === "bookingComplete") {
     next()
-    return
-    /**
-     * !CHANGE THIS FOR PRODUCTION vv
-     */
     if (store.state.bookings.booking.confirmed) {
       next()
     } else {

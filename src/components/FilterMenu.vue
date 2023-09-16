@@ -42,7 +42,8 @@ defineProps({
     }
 
     h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        padding: 0.6rem 0;
     }
 }
 </style>

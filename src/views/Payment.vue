@@ -2,8 +2,10 @@
     <div class="payment">
         <div ref="timeoutWarning" class="timeoutWarning">
             <div class="warningFrame">
-                <h1 ref="warningCountdown">60</h1>
-                <h1>Seems a little quiet in here... are you still there?</h1>
+                <h2>Seems a little quiet in here...</h2>
+                <h1>Are you still there?</h1>
+                <h1 ref="warningCountdown" class="timer">60</h1>
+                <div id="contactDetails-loadingBar"></div>
             </div>
         </div>
         <form id="payment-form" class="form">
@@ -102,7 +104,7 @@ async function pay(event) {
 function startIdleTimeOut() {
     idleTimeOut = setTimeout(() => {
         showTimeOutWarning()
-    }, 1000 * 60 * 4);
+    }, 1000);
 }
 function resetIdleTimeOut() {
     clearTimeout(idleTimeOut)
@@ -110,6 +112,7 @@ function resetIdleTimeOut() {
     hideTimeOutWarning()
 }
 function showTimeOutWarning() {
+    timeoutWarning.value.style.visibility = "visible"
     timeoutWarning.value.style.opacity = "1"
     idleCountdown = 60
     idleWarning = setInterval(() => {
@@ -126,6 +129,7 @@ function showTimeOutWarning() {
     }, 1000);
 }
 function hideTimeOutWarning() {
+    timeoutWarning.value.style.visibility = "hidden"
     timeoutWarning.value.style.opacity = "0"
     clearInterval(idleWarning)
 }
@@ -135,28 +139,32 @@ function hideTimeOutWarning() {
 
 <style scoped lang="scss">
 .payment {
-    height: 100vh;
-    width: 100vw;
+    position: relative;
+    // height: 100vh;
+    // width: 100vw;
     display: flex;
     flex-direction: column;
-    padding-top: 6rem;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    padding: 1.2rem;
+    background-color: hsl(0, 0%, 99%);
+    box-shadow: 1rem 1rem 12px hsl(0, 0%, 94%);
+    margin-top: 3rem;
+    overflow: hidden;
 
     h1 {
         margin: 0;
         padding: 0;
-        font-size: 3vw;
+        font-size: 1rem;
     }
 
     .form {
         display: flex;
+        flex-direction: column;
         // justify-content: center;
         // width: 24rem;
-        border-radius: 2rem;
-        padding: 2rem;
-        background-color: hsl(0, 0%, 99%);
-        box-shadow: 1rem 1rem 12px hsl(0, 0%, 94%);
         // width: 100%;
         // height: 50vh;
 
@@ -164,39 +172,60 @@ function hideTimeOutWarning() {
         button {
             font-family: 'Raleway';
             background-color: hsl(260, 40%, 75%);
-            margin-left: 1rem;
+            // margin-left: 1rem;
+            margin-top: 1.6rem;
         }
     }
 
     .timeoutWarning {
+        visibility: hidden;
         opacity: 0;
-        pointer-events: none;
         position: absolute;
-        top: 0px;
-        left: 0px;
-        width: 100vw;
-        height: 100vh;
-        background-color: hsla(0, 0%, 0%, 0.2);
-        backdrop-filter: blur(12px);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: hsla(260, 40%, 75%, 0.9);
+        backdrop-filter: blur(3px);
         display: flex;
         flex-direction: column;
+        align-items: center;
         place-content: center;
+        z-index: 1;
+        transition: 0.4s;
 
         .warningFrame {
-            background-color: hsl(0, 0%, 90%);
-            width: 48rem;
-            height: 24rem;
+            // background-color: hsl(0, 0%, 90%);
             display: flex;
             flex-direction: column;
-            place-content: center;
+            align-items: center;
 
             h1 {
-                color: red;
-                font-size: 4rem;
+                font-family: "Raleway";
+                color: rgb(255, 255, 255);
+                font-size: 1.4rem;
+                width: 70%;
+                font-weight: 400;
+                margin: 0.2rem 0;
             }
 
             h2 {
-                color: black;
+                font-size: 1.2rem;
+                color: hsl(51, 69%, 70%);
+                font-weight: 500;
+            }
+
+            .timer {
+                color: hsl(350, 100%, 73%);
+                font-size: 2.4rem;
+            }
+
+            .loadingBar {
+                animation: loadingBar 7s linear;
+                height: 0.5rem;
+                background-color: hsl(350, 100%, 73%);
+                width: 0%;
+                border: none;
             }
         }
     }
