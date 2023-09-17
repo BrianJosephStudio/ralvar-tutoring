@@ -1,22 +1,22 @@
 <template>
-    <!-- <div class="container">
-        <h1>Processing</h1>
-    </div>-->
     <div class="container">
-        <div class="square">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" rx="10" ry="10" />
-            </svg>
-        </div>
-        <div class="square">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" rx="10" ry="10" />
-            </svg>
-        </div>
-        <div class="square">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" rx="10" ry="10" />
-            </svg>
+        <h1>Processing</h1>
+        <div class="shapes">
+            <div class="square">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" rx="10" ry="10" />
+                </svg>
+            </div>
+            <div class="square">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" rx="10" ry="10" />
+                </svg>
+            </div>
+            <div class="square">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" rx="10" ry="10" />
+                </svg>
+            </div>
         </div>
     </div>
 </template> 
@@ -59,6 +59,11 @@ async function checkPayment() {
                     checkPayment()
                 }, 1000);
             }
+        } else if (response.status === "waiting for user action") {
+            console.log("Waiting for user action")
+            setTimeout(() => {
+                checkPayment()
+            }, 1000);
         }
     }
     catch (e) {
@@ -79,51 +84,62 @@ onMounted(() => {
 <style scoped lang="scss">
 .container {
     display: flex;
+    flex-direction: column;
+    height: 100vh;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-}
 
-.square {
-    width: 1rem;
-    height: 1rem;
-    margin: 0.5rem;
-    animation: pulse 1.6s ease-in infinite alternate;
+    h1 {
+        font-size: 1rem;
+    }
 
-    svg {
-        rect {
-            fill: hsl(260, 40%, 75%);
+    .shapes {
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
+        .square {
+            width: 1rem;
+            height: 1rem;
+            margin: 0.5rem;
+            animation: pulse 1.6s ease-in infinite alternate;
+
+            svg {
+                rect {
+                    fill: hsl(260, 40%, 75%);
+
+                }
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            20% {
+                transform: scale(1);
+
+            }
+
+            80% {
+                transform: scale(0);
+
+            }
+
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        /* Offset the animations for each square */
+        .square:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .square:nth-child(3) {
+            animation-delay: 0.2s;
         }
     }
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    20% {
-        transform: scale(1);
-
-    }
-
-    80% {
-        transform: scale(0);
-
-    }
-
-    100% {
-        transform: scale(0);
-    }
-}
-
-/* Offset the animations for each square */
-.square:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-.square:nth-child(3) {
-    animation-delay: 0.2s;
 }
 </style>

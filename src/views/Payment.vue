@@ -1,20 +1,26 @@
 <template>
     <div class="payment">
-        <div ref="timeoutWarning" class="timeoutWarning">
-            <div class="warningFrame">
-                <h2>Seems a little quiet in here...</h2>
-                <h1>Are you still there?</h1>
-                <h1 ref="warningCountdown" class="timer">60</h1>
-                <div id="contactDetails-loadingBar"></div>
-            </div>
-        </div>
         <form id="payment-form" class="form">
             <div id="payment-element">
                 <!--Stripe.js injects the Payment Element-->
             </div>
             <button id="submit" @click="event => pay(event)">Pay now</button>
-            <div id="payment-message" class="hidden"></div>
+            <!-- <div id="payment-message" class="hidden"></div> -->
         </form>
+        <Transition name="warningFade">
+            <WarningOverlay v-if="timeoutWarning" :Header="String(`It's a little quiet in here...`)"
+                :Body="String('Are you still there?')" :Timer="true" :Timeout="60" :TimeoutCallback="abort" />
+        </Transition>
+        <Transition name="warningFade">
+            <WarningOverlay v-if="paymentFailedWarning" :Header="paymentCode" :Body="paymentDeclineCode" :Timer="false"
+                :TimeoutCallback="() => { }" :CustomButton="true" :ButtonText="String('Try Again')"
+                :ButtonCallback="tryAgain" />
+        </Transition>
+        <Transition name="warningFade">
+            <WarningOverlay v-if="canceled_payment_warning" :Header="String('The payment was canceled due to inactivity')"
+                :Body="String('Redictering to you to the main page')" :Timer="true" :Timeout="7" :TimeoutCallback="abort"
+                :CustomButton="true" :ButtonText="String('Home')" :ButtonCallback="abort" />
+        </Transition>
     </div>
 </template>
 
@@ -23,26 +29,29 @@ import { onMounted, ref } from "vue"
 import { useStore } from "vuex";
 import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 import { loadStripe } from "@stripe/stripe-js";
-import { createPaymentIntent } from "../modules/server";
+import WarningOverlay from "../components/WarningOverlay.vue"
 import { abortBooking, checkDate } from "../modules/server";
 const API_KEY = `pk_test_51NgmsQICkqKXp7Quz3Pg96iYp2kMrCDzTv2haJP322fpyrJOQJBWL8WrZexBzfeNnNSQgfqoMqKl8tS9TT1Yv1ip00ZMzwmQzu`
 
-
 const store = useStore();
 const router = useRouter();
+const canceled_payment_warning = ref(false)
+const timeoutWarning = ref(false)
+const paymentFailedWarning = ref(false)
+const paymentCode = ref("")
+const paymentDeclineCode = ref("")
 let stripe
 let elements
-const timeoutWarning = ref(null)
-const warningCountdown = ref(null)
 let idleTimeOut;
 let idleWarning
-let idleCountdown
+let timeoutComplete = false
 
 onMounted(async () => {
     startIdleTimeOut()
     document.addEventListener("mousemove", resetIdleTimeOut)
+    document.addEventListener("click", resetIdleTimeOut)
     document.addEventListener("keydown", resetIdleTimeOut)
-    //
+    //dd
     stripe = await loadStripe(API_KEY)
     const clientSecret = store.state.bookings.booking.paymentData.clientSecret
     const appearance = {
@@ -61,16 +70,15 @@ onMounted(async () => {
     const paymentElement = elements.create("payment", paymentElementOptions);
     paymentElement.mount("#payment-element");
     return
-
-
 })
 onBeforeRouteLeave(async (to, from) => {
-    if (!store.state.bookings.booking.paymentData.confirmed) {
+    if (!store.state.bookings.booking.paymentData.confirmed && !timeoutComplete) {
         const leave = window.confirm("If you leave now you will lose all your progress.")
         if (leave) {
             clearTimeout(idleTimeOut)
             clearInterval(idleWarning)
             document.removeEventListener("mousemove", resetIdleTimeOut)
+            document.removeEventListener("click", resetIdleTimeOut)
             document.removeEventListener("keydown", resetIdleTimeOut)
             abortBooking()
             store.dispatch("resetAllState")
@@ -84,11 +92,18 @@ onBeforeRouteLeave(async (to, from) => {
     clearInterval(idleWarning)
 
 })
+function abort() {
+    timeoutComplete = true
+    abortBooking()
+    store.dispatch("resetAllState")
+    router.push({ name: "Bookings" })
+}
+function tryAgain() {
+    paymentFailedWarning.value = false
 
+}
 async function pay(event) {
     event.preventDefault()
-
-
     const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -98,13 +113,24 @@ async function pay(event) {
     })
     if (error) {
         console.error(error)
+        if (error.payment_intent && error.payment_intent.status === "canceled") {
+            canceled_payment_warning.value = true
+        } else {
+            if (error.code) {
+                paymentCode.value = `${error.code.replace("_", " ")}.`
+            }
+            if (error.decline_code) {
+                paymentDeclineCode.value = `${error.decline_code.replace("_", " ")}.`
+            }
+            paymentFailedWarning.value = true
+        }
+
     }
 }
-
 function startIdleTimeOut() {
     idleTimeOut = setTimeout(() => {
         showTimeOutWarning()
-    }, 1000);
+    }, 1000 * 60 * 2);
 }
 function resetIdleTimeOut() {
     clearTimeout(idleTimeOut)
@@ -112,26 +138,10 @@ function resetIdleTimeOut() {
     hideTimeOutWarning()
 }
 function showTimeOutWarning() {
-    timeoutWarning.value.style.visibility = "visible"
-    timeoutWarning.value.style.opacity = "1"
-    idleCountdown = 60
-    idleWarning = setInterval(() => {
-        if (idleCountdown === 0) {
-            hideTimeOutWarning()
-            /**
-             * todo: cancel payment
-             */
-        } else {
-            console.log(warningCountdown)
-            warningCountdown.value.textContent = String(idleCountdown)
-        }
-        idleCountdown--
-    }, 1000);
+    timeoutWarning.value = true
 }
 function hideTimeOutWarning() {
-    timeoutWarning.value.style.visibility = "hidden"
-    timeoutWarning.value.style.opacity = "0"
-    clearInterval(idleWarning)
+    timeoutWarning.value = false
 }
 
 
@@ -146,9 +156,9 @@ function hideTimeOutWarning() {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    align-items: center;
     border-radius: 2rem;
     padding: 1.2rem;
+    gap: 1rem;
     background-color: hsl(0, 0%, 99%);
     box-shadow: 1rem 1rem 12px hsl(0, 0%, 94%);
     margin-top: 3rem;
@@ -163,6 +173,7 @@ function hideTimeOutWarning() {
     .form {
         display: flex;
         flex-direction: column;
+        align-items: stretch;
         // justify-content: center;
         // width: 24rem;
         // width: 100%;
@@ -170,65 +181,13 @@ function hideTimeOutWarning() {
 
 
         button {
+            width: auto;
             font-family: 'Raleway';
             background-color: hsl(260, 40%, 75%);
             // margin-left: 1rem;
             margin-top: 1.6rem;
+            flex-grow: 1;
         }
     }
-
-    .timeoutWarning {
-        visibility: hidden;
-        opacity: 0;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: hsla(260, 40%, 75%, 0.9);
-        backdrop-filter: blur(3px);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        place-content: center;
-        z-index: 1;
-        transition: 0.4s;
-
-        .warningFrame {
-            // background-color: hsl(0, 0%, 90%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            h1 {
-                font-family: "Raleway";
-                color: rgb(255, 255, 255);
-                font-size: 1.4rem;
-                width: 70%;
-                font-weight: 400;
-                margin: 0.2rem 0;
-            }
-
-            h2 {
-                font-size: 1.2rem;
-                color: hsl(51, 69%, 70%);
-                font-weight: 500;
-            }
-
-            .timer {
-                color: hsl(350, 100%, 73%);
-                font-size: 2.4rem;
-            }
-
-            .loadingBar {
-                animation: loadingBar 7s linear;
-                height: 0.5rem;
-                background-color: hsl(350, 100%, 73%);
-                width: 0%;
-                border: none;
-            }
-        }
-    }
-
 }
 </style>

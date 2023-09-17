@@ -181,7 +181,7 @@ onMounted(() => {
     h2 {
       color: black;
       margin: 0;
-      padding: 0.6rem 0;
+      // padding: 0.6rem 0;
       font-weight: 200;
       font-size: 1.3rem;
     }

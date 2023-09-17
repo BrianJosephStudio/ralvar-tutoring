@@ -76,6 +76,7 @@ button{
   border-radius: 2rem;
   padding: 1rem;
   transition: 0.2s ease-out;
+  width: 12rem;
   cursor: pointer;
   &:hover {
     box-shadow: 0 0.2rem 0.3rem hsl(260, 0%, 75%);
@@ -121,6 +122,11 @@ button{
       opacity: 0;
   }
 }
+@keyframes timeoutBar {
+  100% {
+      stroke-dashoffset: 26rem;
+  }
+}
 #app {
   display: flex;
   flex-direction: column;
@@ -129,11 +135,8 @@ button{
   text-align: center;
   overflow: hidden;
 }
-@media (max-width: 1300px),(max-height:800px){
-  :root{
-    font-size: 12px;
-  }
-}
+
+
 
 
 @keyframes fixMissingFields {
@@ -151,5 +154,21 @@ button{
 
   100% {
       opacity: 0;
+  }
+}
+.warningFade-enter-active,
+.warningFade-leave-active {
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.warningFade-enter-from,
+.warningFade-leave-to {
+    opacity: 0;
+}
+
+@media (max-width: 1300px),(max-height:800px){
+  :root{
+    font-size: 12px;
   }
 }

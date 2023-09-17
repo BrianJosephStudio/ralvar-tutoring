@@ -17,11 +17,18 @@ const props = defineProps({
     flex-grow: 1;
     justify-content: center;
     align-items: center;
+    gap: 1.2rem;
 
     h1 {
         font-size: 2.5rem;
         color: hsl(0, 0%, 80%);
         font-weight: 500;
+    }
+
+    h2 {
+        a {
+            color: hsl(260, 40%, 75%, );
+        }
     }
 
 }

@@ -47,28 +47,28 @@
                     </button>
                 </div>
             </form>
-            <div class="errorView">
-                <h2>Sorry, these dates are not available anymore</h2>
-                <h3>Redirecting you to main page</h3>
-                <div id="contactDetails-loadingBar"></div>
-                <button @click="goHome">Home Page</button>
-            </div>
         </div>
+        <Transition name="warningFade">
+            <WarningOverlay v-if="unavailabilityWarning" :Header="String('Sorry, these dates are not available anymore.')"
+                :Body="String('Redirecting you to the main page')" :Timer="true" :Timeout="7" :CustomButton="true"
+                :TimeoutCallback="redirection" :ButtonText="String('Home')" :ButtonCallback="redirection" />
+        </Transition>
     </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue"
+import { onMounted, ref } from "vue"
 import { useStore } from "vuex";
 import { useRouter } from 'vue-router'
 import { submitBookingData } from "../modules/server.js"
 import moment from "moment"
+import WarningOverlay from "../components/WarningOverlay.vue"
 const store = useStore();
 const router = useRouter();
 if (store.state.bookings.booking.classData.dates.length === 0) {
     router.replace("/bookings")
 }
-let timeout
+let unavailabilityWarning = ref(false)
 onMounted(() => {
     const platform = document.querySelector(`[data-platform="${store.state.bookings.booking.classData.platform}"]`)
     if (platform) {
@@ -139,20 +139,12 @@ const proceedToPayment = async (event) => {
 
         store.commit("setClientData", formData)
         //
-        console.log("About to submit booking data")
         const response = await submitBookingData(store.state.bookings.booking)
         if (!response.ok) {
-            const errorView = document.querySelector(".errorView")
-            errorView.classList.add("showError")
-            const loadingBar = document.getElementById("contactDetails-loadingBar")
-            loadingBar.classList.add("loadingBar")
-            timeout = setTimeout(async () => {
-                store.dispatch("resetAllState")
-                router.push({ name: "Bookings" })
-                const message = await response.text()
-                console.log("Server response: ", message)
-                throw new Error(await response.text())
-            }, 7000);
+
+            const message = await response.text()
+            console.log("Server response: ", message)
+            unavailabilityWarning.value = true
         }
         const body = await response.json()
         console.log(body)
@@ -168,11 +160,10 @@ const proceedToPayment = async (event) => {
         console.log("Something has gone wrong, please try again.")
     }
 }
-async function goHome() {
-    clearTimeout(timeout)
+async function redirection() {
     store.dispatch("resetAllState")
     router.push({ name: "Bookings" })
-
+    throw new Error(await response.text())
 }
 </script>
 
@@ -185,6 +176,7 @@ async function goHome() {
     overflow: hidden;
     border-radius: 2rem;
     box-shadow: 0.5rem 0.5rem 6px hsl(0, 0%, 94%);
+    position: relative;
 
     .panelHeader {
         background-color: hsl(260, 40%, 75%);
@@ -199,7 +191,6 @@ async function goHome() {
     }
 
     .body {
-        position: relative;
         background-color: hsl(0, 0%, 99%);
         border: solid hsl(0, 0%, 90%);
         border-width: 0 1px 1px 1px;
@@ -442,22 +433,8 @@ async function goHome() {
             opacity: 1;
         }
 
-        .loadingBar {
-            animation: loadingBar 7s linear;
-            height: 0.5rem;
-            background-color: hsl(350, 100%, 73%);
-            width: 0%;
-            border: none;
-        }
-
-        @keyframes loadingBar {
-            0% {
-                width: 50%
-            }
-
-            100% {
-                width: 0%;
-            }
+        .timeoutBarAnim {
+            animation: timeoutBar 7s linear;
         }
     }
 
