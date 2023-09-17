@@ -4,12 +4,12 @@
       <div class="navButton" @click="this.$router.push('/bookings')">
         <h3>Bookings</h3>
       </div>
-      <div class="navButton" @click="this.$router.push('/classes')">
+      <!-- <div class="navButton" @click="this.$router.push('/classes')">
         <h3>Classes</h3>
       </div>
       <div class="navButton">
         <h3>About</h3>
-      </div>
+      </div> -->
       <div class="navButton" @click="this.$router.push({ name: 'Contact' })">
         <h3>Contact</h3>
       </div>
@@ -30,7 +30,7 @@ header {
   /* vertical-align: top; */
   color: black;
   background: white;
-  box-shadow: 0px 0px 3rem 0px hsl(0, 0%, 94%);
+  /* box-shadow: 0px 0px 3rem 0px hsl(0, 0%, 94%); */
   width: 100vw;
   height: 4rem;
 }
