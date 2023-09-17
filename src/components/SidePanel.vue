@@ -4,9 +4,9 @@
       <h1>
         {{ store.state.bookings.calendar.selectedDates.length }}
         {{
-          store.state.bookings.calendar.selectedDates.length > 1
-          ? "classes"
-          : "class"
+          store.state.bookings.calendar.selectedDates.length === 1
+          ? "class"
+          : "classes"
         }}
       </h1>
     </div>
