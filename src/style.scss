@@ -172,3 +172,8 @@ button{
     font-size: 12px;
   }
 }
+@media (max-width: 767px){
+  :root{
+    font-size: 10px;
+  }
+}

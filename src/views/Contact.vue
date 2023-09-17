@@ -165,4 +165,12 @@ async function contactRequest(event) {
         }
     }
 }
+
+@media (max-width: 767px) {
+    .wrapper {
+        margin-top: 0;
+        width: 100vw;
+        justify-self: stretch;
+    }
+}
 </style>
