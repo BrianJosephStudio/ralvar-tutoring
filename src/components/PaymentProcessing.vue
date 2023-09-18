@@ -22,13 +22,14 @@
 </template> 
 <script setup>
 import { onMounted } from "vue"
-import { useRouter } from "vue-router"
+import { useRouter, onBeforeRouteLeave } from "vue-router"
 import { checkPaymentStatus } from "../modules/server.js"
 import { useStore } from "vuex";
 
 const store = useStore()
 const router = useRouter()
 let timeout = 10
+let processing = true
 
 async function checkPayment() {
     try {
@@ -49,7 +50,7 @@ async function checkPayment() {
         } else if (response.status === "failed") {
             store.dispatch("resetAllState")
             router.push({ name: "paymentError" })
-        } else if (response.status === "processing") {
+        } else if (response.status === "processing" && processing) {
             console.log(timeout)
             if (timeout === 0) {
                 router.push({ name: "paymentError" })
@@ -59,7 +60,7 @@ async function checkPayment() {
                     checkPayment()
                 }, 1000);
             }
-        } else if (response.status === "waiting for user action") {
+        } else if (response.status === "waiting for user action" && processing) {
             console.log("Waiting for user action")
             setTimeout(() => {
                 checkPayment()
@@ -78,6 +79,9 @@ onMounted(() => {
     // return
     console.log("mounted")
     checkPayment()
+})
+onBeforeRouteLeave(() => {
+    processing = false
 })
 
 </script>

@@ -53,6 +53,11 @@
                 :Body="String('Redirecting you to the main page')" :Timer="true" :Timeout="7" :CustomButton="true"
                 :TimeoutCallback="redirection" :ButtonText="String('Home')" :ButtonCallback="redirection" />
         </Transition>
+        <Transition name="warningFade">
+            <WarningOverlay v-if="badRequest" :Header="String('Some of the fields have incorrect data.')"
+                :Body="String('Please, review the form and try again.')" :Timer="false" :CustomButton="true"
+                :ButtonText="String('Try Again')" :ButtonCallback="() => { badRequest = false }" />
+        </Transition>
     </div>
 </template>
 
@@ -68,7 +73,8 @@ const router = useRouter();
 if (store.state.bookings.booking.classData.dates.length === 0) {
     router.replace("/bookings")
 }
-let unavailabilityWarning = ref(false)
+const unavailabilityWarning = ref(false)
+const badRequest = ref(false)
 onMounted(() => {
     const platform = document.querySelector(`[data-platform="${store.state.bookings.booking.classData.platform}"]`)
     if (platform) {
@@ -101,7 +107,6 @@ const proceedToPayment = async (event) => {
         let valid = true
         for (const key in formInputs) {
             const input = formInputs[key]
-            console.log(input)
             if (key === "platform") {
                 const selected = input.querySelector(".selectedImg")
                 if (!selected) {
@@ -141,10 +146,17 @@ const proceedToPayment = async (event) => {
         //
         const response = await submitBookingData(store.state.bookings.booking)
         if (!response.ok) {
-
-            const message = await response.text()
-            console.log("Server response: ", message)
-            unavailabilityWarning.value = true
+            console.log(response.status)
+            if (response.status === 500) {
+                const message = await response.text()
+                console.log("Server response: ", message)
+                unavailabilityWarning.value = true
+            } else if (response.status === 400) {
+                badRequest.value = true
+                const message = await response.text()
+                console.log("Server response: ", message)
+            }
+            return
         }
         const body = await response.json()
         console.log(body)

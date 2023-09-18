@@ -67,6 +67,8 @@ const store = useStore();
 const router = useRouter();
 
 onUpdated(() => {
+  checkDate();
+
   // store.dispatch("renderSelectedDates");
 });
 

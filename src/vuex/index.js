@@ -31,7 +31,7 @@ const store = createStore({
           },
           paymentData: {
             checkoutPrice: 0,
-            clientSecret: null,
+            clientSecret: undefined,
           },
         },
         availability: {
@@ -159,7 +159,7 @@ const store = createStore({
       state.bookings.booking.paymentData.clientSecret = payload;
     },
     removeClientSecret: (state) => {
-      state.bookings.booking.paymentData.clientSecret = null;
+      state.bookings.booking.paymentData.clientSecret = undefined;
     },
     confirmBooking: (state) => {
       state.bookings.booking.confirmed = true;
