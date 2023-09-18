@@ -15,7 +15,6 @@
                 <p>This number helps us keep track of your issue.</p>
                 <p>Talk to you soon!</p>
                 <button @click="$router.push({ name: 'Bookings' })">Home</button>
-                <!-- <h3><span style="color: hsl(260, 40%, 75%);">Conversy</span>.com</h3> -->
             </div>
         </div>
     </div>
