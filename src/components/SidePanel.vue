@@ -236,10 +236,12 @@ function getItemName(selectedDate) {
   background: hsl(0, 0%, 90%);
 }
 
-@media (max-width: 660px) {
+@media (max-width: 918px) {
   .sidePanel {
-    width: 100vw;
+    width: auto;
     border-radius: 0;
+    height: auto;
+    // flex-grow: 1;
   }
 
 }

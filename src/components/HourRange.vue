@@ -126,9 +126,19 @@ function clickOut() {
             border-radius: 2rem 0 0 2rem;
         }
 
+
         .endTime {
             @include timeFrame;
             border-radius: 0 2rem 2rem 0;
+        }
+
+        @media (max-width:918px) {
+
+            .startTime,
+            .endTime {
+                border-radius: 0;
+                padding: 1rem 0;
+            }
         }
     }
 }

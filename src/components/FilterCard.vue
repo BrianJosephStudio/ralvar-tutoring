@@ -37,6 +37,13 @@ h1 {
     }
 }
 
+@media (max-width:918px) {
+    .frame {
+        border-radius: 0;
+        padding: 1rem 0;
+    }
+}
+
 .frame:hover {
     box-shadow: 0px 6px 15px 0px hsl(0, 0%, 80%);
 }

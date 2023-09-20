@@ -187,6 +187,12 @@ onMounted(() => {
       font-weight: 200;
       font-size: 1.3rem;
     }
+
+    @media (max-width:918px) {
+      h2 {
+        display: none;
+      }
+    }
   }
 
   .filterHeader {
@@ -274,7 +280,9 @@ onMounted(() => {
       width: 96vw;
       overflow: hidden;
       flex-direction: column;
+      margin-top: 0.3rem;
       gap: 1rem;
+      height: 100%;
     }
 
     .calendarHeader {
@@ -284,12 +292,21 @@ onMounted(() => {
 
       h1 {
         margin: 1rem;
+        font-size: 1.6rem;
       }
     }
 
-    .calendarBody {
-      border-radius: 0;
-      width: 96vw;
+    .arrowButton {
+
+      &:hover {}
+
+      &:hover .arrow {}
+
+      svg {
+        scale: 0.5;
+      }
+
+      .calendarBody {}
     }
   }
 }

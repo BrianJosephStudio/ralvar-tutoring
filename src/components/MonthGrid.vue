@@ -38,4 +38,10 @@ const store = useStore();
   /* box-shadow: 10px 30px 50px 0px hsl(133, 0%, 85%); */
 }
 
+@media (max-width: 918px) {
+  .monthGrid {
+    grid-template-columns: repeat(7, auto);
+    border-radius: 0;
+  }
+}
 </style>

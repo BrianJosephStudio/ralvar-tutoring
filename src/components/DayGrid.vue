@@ -290,11 +290,55 @@ function handleClick(event) {
   }
 }
 
-@media (max-width: 660px) {
-  .daygrid {
-    width: 1rem;
-    background-color: red;
+@media (max-width: 918px) {
+  .dayGrid {
+    width: auto;
+    height: 3rem;
   }
 
+  .dayGrid_unavailable {
+    width: auto;
+    height: 3rem;
+  }
+
+  .dayGrid_partial {
+    width: auto;
+    height: 3rem;
+  }
+
+  .weekend {
+    width: auto;
+    height: 3rem;
+  }
+
+  .pastDate {
+    width: auto;
+    height: 3rem;
+  }
+
+  .pastMonth {
+    width: auto;
+    height: 3rem;
+  }
+
+  .otherMonth_available {
+    width: auto;
+    height: 3rem;
+  }
+
+  .otherMonth_unavailable {
+    width: auto;
+    height: 3rem;
+  }
+
+  .otherMonth_partial {
+    width: auto;
+    height: 3rem;
+  }
+
+  .otherMonthWeekend {
+    width: auto;
+    height: 3rem;
+  }
 }
 </style>
