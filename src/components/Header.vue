@@ -17,7 +17,7 @@
   </header>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 h3 {
   margin: 0 1rem;
 }
@@ -61,5 +61,25 @@ header {
 
 .navButton:active {
   background: hsl(0, 0%, 90%);
+}
+
+@media (max-width: 660px) {
+  header {
+    align-items: stretch;
+  }
+
+  .navBar {
+    margin: auto;
+    width: 100%;
+  }
+
+  .navButton {
+    flex-grow: 1;
+
+    h3 {
+      font-size: 1.6rem;
+    }
+  }
+
 }
 </style>

@@ -41,7 +41,7 @@ body {
   /* place-items: top; */
   min-width: 100vw;
   min-height: 100vh;
-  overflow: hidden;
+  overflow: auto;
 }
 p{
   color: black;
@@ -172,8 +172,8 @@ button{
     font-size: 12px;
   }
 }
-@media (max-width: 767px){
+@media (max-width: 660px){
   :root{
-    font-size: 10px;
+    font-size: 9px;
   }
 }

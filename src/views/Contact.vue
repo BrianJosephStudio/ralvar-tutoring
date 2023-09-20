@@ -162,6 +162,7 @@ async function contactRequest(event) {
         button {
             position: relative;
             margin-top: 2.3rem;
+            width: auto;
         }
     }
 }

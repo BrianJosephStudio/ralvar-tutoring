@@ -37,4 +37,5 @@ const store = useStore();
   border-radius: 0 0 0 2rem;
   /* box-shadow: 10px 30px 50px 0px hsl(133, 0%, 85%); */
 }
+
 </style>

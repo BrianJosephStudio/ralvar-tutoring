@@ -235,4 +235,12 @@ function getItemName(selectedDate) {
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(0, 0%, 90%);
 }
+
+@media (max-width: 660px) {
+  .sidePanel {
+    width: 100vw;
+    border-radius: 0;
+  }
+
+}
 </style>

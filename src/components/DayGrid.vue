@@ -289,4 +289,12 @@ function handleClick(event) {
     @include dayFontSize;
   }
 }
+
+@media (max-width: 660px) {
+  .daygrid {
+    width: 1rem;
+    background-color: red;
+  }
+
+}
 </style>

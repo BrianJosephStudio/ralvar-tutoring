@@ -197,8 +197,6 @@ onMounted(() => {
     padding: 1rem 0;
   }
 
-
-
   .calendarWrapper {
     display: flex;
     // align-items: center;
@@ -256,6 +254,42 @@ onMounted(() => {
     .arrow {
       fill: hsl(260, 0%, 100%);
       transition: 0.2s;
+    }
+  }
+}
+
+@media (max-width: 918px) {
+  .ether {
+    padding: 0;
+    width: 100vw;
+    overflow: auto;
+    margin: 0;
+  }
+
+  .wrapper {
+    width: 96vw;
+    align-items: center;
+
+    .calendarWrapper {
+      width: 96vw;
+      overflow: hidden;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .calendarHeader {
+      width: 96vw;
+      border-radius: 0;
+      height: 4rem;
+
+      h1 {
+        margin: 1rem;
+      }
+    }
+
+    .calendarBody {
+      border-radius: 0;
+      width: 96vw;
     }
   }
 }
