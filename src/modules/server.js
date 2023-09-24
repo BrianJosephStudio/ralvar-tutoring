@@ -11,7 +11,7 @@ export async function checkDate() {
     params.append("endTime", store.state.bookings.availability.endTime);
     const queryStrings = params.toString();
 
-    const url = `api/availability/fetchAvailableDates?${queryStrings}`;
+    const url = `${config.api}/availability/fetchAvailableDates?${queryStrings}`;
     const res = await fetch(url);
     const unavailable = await res.json();
     const selectedDates = store.state.bookings.calendar.selectedDates;
@@ -33,6 +33,7 @@ export async function checkDate() {
         }
       });
     });
+    console.log(unavailable);
     store.commit("changeUnavailable", unavailable);
   } catch (e) {
     console.error(e);

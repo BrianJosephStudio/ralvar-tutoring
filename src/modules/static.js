@@ -31,20 +31,13 @@ export const getHourArray = (filter, classFormat) => {
   const startTime = filter === "start" ? 12 * 60 : 12 * 60 + classFormat;
   const hour = date.startOf("day").add(startTime, "minutes");
   const closingTime = "20:00";
-  const maxStartTime = moment(closingTime, "HH:mm").subtract(
-    classFormat,
-    "minutes"
-  );
+  const maxStartTime = moment(closingTime, "HH:mm").subtract(classFormat, "minutes");
   const output = [];
   do {
     let item = hour.format("HH:mm");
     output.push(item);
     hour.add(30, "minutes");
-  } while (
-    hour.isSameOrBefore(
-      filter === "start" ? maxStartTime : moment(closingTime, "HH:mm")
-    )
-  );
+  } while (hour.isSameOrBefore(filter === "start" ? maxStartTime : moment(closingTime, "HH:mm")));
   return output;
 };
 /** Takes a date as an input and returns an object with className and availability
@@ -72,15 +65,9 @@ export function dayGridType(day) {
 
   if (day.isBefore(moment()) && day.weekday() !== 0) {
     output.available = false;
-    if (
-      dayMonth ===
-      moment(store.state.bookings.calendar.currentMonth, "MMMM").month()
-    ) {
+    if (dayMonth === moment(store.state.bookings.calendar.currentMonth, "MMMM").month()) {
       output.class = "pastDate";
-    } else if (
-      dayMonth <
-      moment(store.state.bookings.calendar.currentMonth, "MMMM").month()
-    ) {
+    } else if (dayMonth < moment(store.state.bookings.calendar.currentMonth, "MMMM").month()) {
       output.class = "pastMonth";
     } else {
       if (day.isBefore(moment())) {

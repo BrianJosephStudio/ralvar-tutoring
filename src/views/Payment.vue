@@ -112,9 +112,7 @@ async function pay(event) {
             receipt_email: store.state.bookings.booking.clientData.email
         }
     })
-    console.log("hmmmmm ay chiamo")
     if (error) {
-        console.log("hmmmmm ay chiamo!!")
         console.error(error)
         if (error.payment_intent && error.payment_intent.status === "canceled") {
             canceled_payment_warning.value = true
@@ -129,7 +127,6 @@ async function pay(event) {
         }
 
     }
-    console.log("not here buddy")
 }
 function startIdleTimeOut() {
     idleTimeOut = setTimeout(() => {
