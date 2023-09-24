@@ -31,6 +31,7 @@ import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 import { loadStripe } from "@stripe/stripe-js";
 import WarningOverlay from "../components/WarningOverlay.vue"
 import { abortBooking, checkDate } from "../modules/server";
+import config from "../../config.js"
 const API_KEY = `pk_test_51NgmsQICkqKXp7Quz3Pg96iYp2kMrCDzTv2haJP322fpyrJOQJBWL8WrZexBzfeNnNSQgfqoMqKl8tS9TT1Yv1ip00ZMzwmQzu`
 
 const store = useStore();
@@ -107,11 +108,13 @@ async function pay(event) {
     const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-            return_url: "http://192.168.1.41:3000/payment_processing",
+            return_url: `${config.url}/payment_processing`,
             receipt_email: store.state.bookings.booking.clientData.email
         }
     })
+    console.log("hmmmmm ay chiamo")
     if (error) {
+        console.log("hmmmmm ay chiamo!!")
         console.error(error)
         if (error.payment_intent && error.payment_intent.status === "canceled") {
             canceled_payment_warning.value = true
@@ -126,6 +129,7 @@ async function pay(event) {
         }
 
     }
+    console.log("not here buddy")
 }
 function startIdleTimeOut() {
     idleTimeOut = setTimeout(() => {

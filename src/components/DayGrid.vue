@@ -68,7 +68,7 @@ function handleClick(event) {
   }
 
   store.commit("changeTargetDate", props.dataDate);
-  this.nextTick(() => {
+  nextTick(() => {
     store.commit("reposDayWindow", getDayGridPosition(event));
   })
   // store.dispatch("renderDayWindow", {

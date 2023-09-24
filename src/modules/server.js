@@ -1,21 +1,17 @@
 import moment from "moment";
 import store from "../vuex";
-
-const api = "http://192.168.1.41:3000/api";
+import config from "../../config.js";
 
 export async function checkDate() {
   try {
     const params = new URLSearchParams();
 
-    params.append(
-      "classFormat",
-      store.state.bookings.availability.classFormat.format
-    );
+    params.append("classFormat", store.state.bookings.availability.classFormat.format);
     params.append("startTime", store.state.bookings.availability.startTime);
     params.append("endTime", store.state.bookings.availability.endTime);
     const queryStrings = params.toString();
 
-    const url = `${api}/availability/fetchAvailableDates?${queryStrings}`;
+    const url = `api/availability/fetchAvailableDates?${queryStrings}`;
     const res = await fetch(url);
     const unavailable = await res.json();
     const selectedDates = store.state.bookings.calendar.selectedDates;
@@ -27,9 +23,6 @@ export async function checkDate() {
             if (dayObject.day === selectedDate.date()) {
               dayObject.items.forEach((timeObject) => {
                 if (timeObject.time === selectedDate.format("HH:mm")) {
-                  console.log(
-                    `Match in unavailable! Removing ${selected.date} from selected dates`
-                  );
                   store.dispatch("toggleSelectedDate", {
                     date: selectedDate.toISOString(),
                   });
@@ -48,7 +41,7 @@ export async function checkDate() {
 }
 export async function submitBookingData(booking) {
   try {
-    const url = `${api}/bookings/submitBookingData`;
+    const url = `${config.api}/bookings/submitBookingData`;
     const options = {
       method: "post",
       headers: {
@@ -63,7 +56,7 @@ export async function submitBookingData(booking) {
   }
 }
 export async function createPaymentIntent() {
-  return await fetch(`${api}/payments/paymentIntent`, {
+  return await fetch(`${config.api}/payments/paymentIntent`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -82,7 +75,7 @@ export async function createPaymentIntent() {
 }
 export async function abortBooking() {
   const clientSecret = store.state.bookings.booking.paymentData.clientSecret;
-  return await fetch(`${api}/bookings/abortBooking`, {
+  return await fetch(`${config.api}/bookings/abortBooking`, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -103,7 +96,7 @@ export async function abortBooking() {
 }
 export async function checkPaymentStatus() {
   try {
-    const res = await fetch(`${api}/payments/payment_status`);
+    const res = await fetch(`${config.api}/payments/payment_status`);
     if (!res.ok) {
       throw new Error("Server did not respond successfully");
     }
@@ -115,7 +108,7 @@ export async function checkPaymentStatus() {
 }
 export async function handleContactRequest(contactForm) {
   try {
-    const url = `${api}/contact/requestContact`;
+    const url = `${config.api}/contact/requestContact`;
     const requestBody = {
       method: "post",
       headers: { "Content-Type": "application/json" },
