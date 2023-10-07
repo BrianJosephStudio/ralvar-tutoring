@@ -67,7 +67,6 @@ function getHourArray() {
   const endTime = moment(store.state.bookings.availability.endTime, "HH:mm")
     .set("month", date.month())
     .set("date", date.date());
-  // console.log(store.state.bookings.availability.unavailable);
   const unavailable = JSON.parse(store.state.bookings.availability.unavailable);
 
   const output = [];

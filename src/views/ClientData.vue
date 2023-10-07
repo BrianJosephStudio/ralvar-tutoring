@@ -159,8 +159,6 @@ const proceedToPayment = async (event) => {
             return
         }
         const body = await response.json()
-        console.log(body)
-        console.log(body.clientSecret)
         store.commit("setClientSecret", body.clientSecret)
         router.push("/payment")
 
