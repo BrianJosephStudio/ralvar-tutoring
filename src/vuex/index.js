@@ -8,10 +8,10 @@ const store = createStore({
     return {
       bookings: {
         classPrices: {
-          30: 10,
-          45: 16,
-          60: 18,
-          90: 26,
+          30: 11,
+          45: 17,
+          60: 19,
+          90: 28,
         },
         booking: {
           confirmed: false,
@@ -81,11 +81,7 @@ const store = createStore({
       state.bookings.availability.endTime = payload;
     },
     changeUnavailable: (state, payload) => {
-      state.bookings.availability.unavailable = JSON.stringify(
-        payload,
-        null,
-        2
-      );
+      state.bookings.availability.unavailable = JSON.stringify(payload, null, 2);
     },
     reposDayWindow: (state, payload) => {
       state.bookings.calendar.dayWindowPos = payload;
@@ -122,8 +118,7 @@ const store = createStore({
       const classAmount = state.bookings.calendar.selectedDates.length;
       const classFormat = state.bookings.availability.classFormat.format;
       const classPrice = state.bookings.classPrices[classFormat];
-      state.bookings.booking.paymentData.checkoutPrice =
-        classPrice * classAmount;
+      state.bookings.booking.paymentData.checkoutPrice = classPrice * classAmount;
     },
     // * Class data(Once selection has been confirmed)
     setClassCount: (state, payload) => {
@@ -196,16 +191,9 @@ const store = createStore({
       let flag = true;
       selectedDates.forEach((selected, index) => {
         const selectedDate = moment(selected.date);
-        if (
-          selectedDate.year() === targetDate.year() &&
-          selectedDate.month() === targetDate.month() &&
-          selectedDate.date() === targetDate.date()
-        ) {
+        if (selectedDate.year() === targetDate.year() && selectedDate.month() === targetDate.month() && selectedDate.date() === targetDate.date()) {
           //*Target date was found, if targetDate is same as selected date then flag is switched off
-          if (
-            selectedDate.hour() === targetDate.hour() &&
-            selectedDate.minute() === targetDate.minute()
-          ) {
+          if (selectedDate.hour() === targetDate.hour() && selectedDate.minute() === targetDate.minute()) {
             flag = false;
           }
           commit("removeSelectedDate", { index: index });
@@ -231,10 +219,7 @@ const store = createStore({
         const minEndTime = startTime.add(classFormat, "minutes");
 
         if (minEndTime.isAfter(closingTime)) {
-          commit(
-            "changeStartTime",
-            closingTime.subtract(classFormat, "minutes").format("HH:mm")
-          );
+          commit("changeStartTime", closingTime.subtract(classFormat, "minutes").format("HH:mm"));
           commit("changeEndTime", closingTime.format("HH:mm"));
           return;
         } else if (endTime.isBefore(minEndTime)) {
@@ -242,19 +227,13 @@ const store = createStore({
         }
         commit("changeStartTime", payload.value);
       } else if (payload.filter == "end") {
-        const startTime = moment(
-          state.bookings.availability.startTime,
-          "HH:mm"
-        );
+        const startTime = moment(state.bookings.availability.startTime, "HH:mm");
         const endTime = moment(payload.value, "HH:mm");
         const minStartTime = endTime.subtract(classFormat, "minutes");
 
         if (minStartTime.isBefore(openingTime)) {
           commit("changeStartTime", openingTime.format("HH:mm"));
-          commit(
-            "changeEndTime",
-            openingTime.add(classFormat, "minutes").format("HH:mm")
-          );
+          commit("changeEndTime", openingTime.add(classFormat, "minutes").format("HH:mm"));
 
           return;
         } else if (startTime.isAfter(minStartTime)) {
@@ -280,10 +259,7 @@ const store = createStore({
 
       if (minEndTime.isAfter(closingTime)) {
         commit("changeEndTime", closingTime.format("HH:mm"));
-        commit(
-          "changeStartTime",
-          closingTime.subtract(classFormat, "minutes").format("HH:mm")
-        );
+        commit("changeStartTime", closingTime.subtract(classFormat, "minutes").format("HH:mm"));
       } else if (endTime.isBefore(minEndTime)) {
         commit("changeEndTime", minEndTime.format("HH:mm"));
       }
@@ -308,9 +284,7 @@ const store = createStore({
         selectedDates.forEach((sItem) => {
           const sItemDate = moment(sItem.date);
 
-          if (
-            itemDate.format("YYYY/MM/DD") === sItemDate.format("YYYY/MM/DD")
-          ) {
+          if (itemDate.format("YYYY/MM/DD") === sItemDate.format("YYYY/MM/DD")) {
             item.className = "dayGrid";
             item.classList.add("dayGridActive");
           }
