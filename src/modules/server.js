@@ -93,7 +93,7 @@ export async function abortBooking() {
     .then((response) => {
       console.log(response.message);
     })
-    .catch((e) => console.console.error(e));
+    .catch((e) => console.error(e));
 }
 export async function checkPaymentStatus() {
   try {
