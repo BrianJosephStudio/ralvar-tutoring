@@ -32,7 +32,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import WarningOverlay from "../components/WarningOverlay.vue"
 import { abortBooking, checkDate } from "../modules/server";
 import config from "../../config.js"
-const API_KEY = `pk_live_51NgmsQICkqKXp7QuCOXAXrw81fn8dQgEUycUH4v6bk44zuiCfTDttPn97U48Dwlfeo8W1OS54mpBhPjzDOliG6kJ001WxjWX3x`
+const API_KEY = config.API_KEY
 
 const store = useStore();
 const router = useRouter();
@@ -108,7 +108,7 @@ async function pay(event) {
     const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-            return_url: `${config.url}/payment_processing`,
+            return_url: config.stripe.stripe_return_url,
             receipt_email: store.state.bookings.booking.clientData.email
         }
     })
