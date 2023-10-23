@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 src/components/Rachel Tutoring.code-workspace
 config.js
+public
