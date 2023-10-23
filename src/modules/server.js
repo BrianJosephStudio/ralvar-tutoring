@@ -11,7 +11,7 @@ export async function checkDate() {
     params.append("endTime", store.state.bookings.availability.endTime);
     const queryStrings = params.toString();
 
-    const url = `${config.api}/availability/fetchAvailableDates?${queryStrings}`;
+    const url = `${config.api_endpoints.availability.fetchAvailableDates}?${queryStrings}`;
     const res = await fetch(url);
     const unavailable = await res.json();
     const selectedDates = store.state.bookings.calendar.selectedDates;
@@ -42,7 +42,7 @@ export async function checkDate() {
 }
 export async function submitBookingData(booking) {
   try {
-    const url = `${config.api}/bookings/submitBookingData`;
+    const url = config.api_endpoints.bookings.submitBookingData;
     const options = {
       method: "post",
       headers: {
@@ -57,7 +57,7 @@ export async function submitBookingData(booking) {
   }
 }
 export async function createPaymentIntent() {
-  return await fetch(`${config.api}/payments/paymentIntent`, {
+  return await fetch(config.api_endpoints.payments.paymentIntent, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -76,7 +76,7 @@ export async function createPaymentIntent() {
 }
 export async function abortBooking() {
   const clientSecret = store.state.bookings.booking.paymentData.clientSecret;
-  return await fetch(`${config.api}/bookings/abortBooking`, {
+  return await fetch(config.api_endpoints.bookings.abortBooking, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export async function abortBooking() {
 }
 export async function checkPaymentStatus() {
   try {
-    const res = await fetch(`${config.api}/payments/payment_status`);
+    const res = await fetch(config.api_endpoints.payments.paymentStatus);
     if (!res.ok) {
       throw new Error("Server did not respond successfully");
     }
@@ -109,7 +109,7 @@ export async function checkPaymentStatus() {
 }
 export async function handleContactRequest(contactForm) {
   try {
-    const url = `${config.api}/contact/requestContact`;
+    const url = config.api_endpoints.contact.requestContact;
     const requestBody = {
       method: "post",
       headers: { "Content-Type": "application/json" },
