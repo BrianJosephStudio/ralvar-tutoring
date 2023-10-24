@@ -77,7 +77,6 @@ async function checkPayment() {
 
 onMounted(() => {
     // return
-    console.log("mounted")
     checkPayment()
 })
 onBeforeRouteLeave(() => {
