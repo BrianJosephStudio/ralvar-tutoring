@@ -32,7 +32,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import WarningOverlay from "../components/WarningOverlay.vue"
 import { abortBooking, checkDate } from "../modules/server";
 import config from "../../config.js"
-const API_KEY = config.API_KEY
+const API_KEY = config.stripe.API_KEY
 
 const store = useStore();
 const router = useRouter();
